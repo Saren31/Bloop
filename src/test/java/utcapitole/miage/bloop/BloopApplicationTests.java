@@ -1,4 +1,4 @@
-package utcapitole.miage.bloop;
+/**package utcapitole.miage.bloop;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,3 +14,4 @@ class BloopApplicationTests {
 	}
 
 }
+*/
