@@ -12,7 +12,6 @@ public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idUser;
-
     private String nomUser;
     private String prenomUser;
     private String emailUser;

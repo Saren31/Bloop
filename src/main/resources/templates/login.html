@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion à votre compte</title>
+</head>
+<body>
+<h2>Connexion à Bloop</h2>
+<form action="/profil/seConnecter" method="post">
+    <label>Email :</label>
+    <input type="text" name="email"><br><br>
+    <label>Mot de passe :</label>
+    <input type="password" name="mdp"><br><br>
+    <button type="submit">Se connecter</button>
+</form>
+</body>
+</html>
