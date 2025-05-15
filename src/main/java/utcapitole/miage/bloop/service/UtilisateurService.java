@@ -32,6 +32,7 @@ public class UtilisateurService {
 
         envoyeur.getDemandesEnvoyees().add(receveur);
         utilisateurRepository.save(envoyeur);
+        utilisateurRepository.save(receveur);
 
         return "Demande d’amitié envoyée avec succès.";
     }
