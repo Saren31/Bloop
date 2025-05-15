@@ -5,10 +5,17 @@ import jakarta.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Classe Utilisateur
+ * Représente un utilisateur de l'application
+ */
 @Entity
 @Table(name = "utilisateur")
 public class Utilisateur {
 
+    /**
+     * Identifiant unique de l'utilisateur
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idUser;
@@ -21,9 +28,8 @@ public class Utilisateur {
     private byte[] avatarUser;
     private String telUser;
     private boolean visibiliteUser;
-
-    public Utilisateur() {
-    }
+    private boolean validerInscription;
+    private String tokenInscription;
 
     public long getIdUser() {
         return idUser;
@@ -97,6 +103,22 @@ public class Utilisateur {
         this.visibiliteUser = visibiliteUser;
     }
 
+    public boolean isValiderInscription() {
+        return validerInscription;
+    }
+
+    public void setValiderInscription(boolean validerInscription) {
+        this.validerInscription = validerInscription;
+    }
+
+    public String getTokenInscription() {
+        return tokenInscription;
+    }
+
+    public void setTokenInscription(String tokenInscription) {
+        this.tokenInscription = tokenInscription;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -123,4 +145,5 @@ public class Utilisateur {
                 ", visibiliteUser=" + visibiliteUser +
                 '}';
     }
+
 }
