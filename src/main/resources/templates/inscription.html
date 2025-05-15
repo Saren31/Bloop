@@ -7,19 +7,19 @@
 
 <h2>Créer un compte utilisateur</h2>
 
-<form th:action="@{/profil/register_user}" th:object="${user}" method="post">
+<form th:action="@{/auth/register_user}" th:object="${user}" method="post" autocomplete="off">
     <label>Nom :</label>
-    <input type="text" th:field="*{nomUser}" th:value="${user.nomUser}" required />
+    <input type="text" th:field="*{nomUser}" autocomplete="name" required />
     <label>Prénom :</label>
-    <input type="text" th:field="*{prenomUser}" th:value="${user.nomUser}" required />
+    <input type="text" th:field="*{prenomUser}" autocomplete="given-name" required />
     <label>Email :</label>
-    <input type="text" th:field="*{emailUser}" th:value="${user.nomUser}" required />
+    <input type="email" th:field="*{emailUser}" autocomplete="email" required />
     <label>Mot de passe :</label>
-    <input type="password" th:field="*{mdpUser}" th:value="${user.nomUser}" required />
+    <input type="password" th:field="*{mdpUser}" autocomplete="new-password" required />
     <label>Pseudo :</label>
-    <input type="text" th:field="*{pseudoUser}" th:value="${user.nomUser}" required />
+    <input type="text" th:field="*{pseudoUser}" autocomplete="nickname" required />
     <label>Téléphone :</label>
-    <input type="text" th:field="*{telUser}" th:value="${user.nomUser}" required />
+    <input type="text" th:field="*{telUser}" autocomplete="tel" required />
 
     <button type="submit">Créer son compte</button>
 </form>

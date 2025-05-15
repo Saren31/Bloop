@@ -8,7 +8,7 @@
 <div class="container">
     <h1 th:if="${success}">Inscription confirmée !</h1>
     <p th:if="${success}">Votre compte a été activé avec succès. Vous pouvez maintenant vous connecter.</p>
-    <a th:if="${success}" href="/login">➡️ Se connecter</a>
+    <a th:if="${success}" href="/auth/login">➡️ Se connecter</a>
 
     <h1 th:if="${success == false}">Erreur de confirmation</h1>
     <p th:if="${success == false}">Le lien de confirmation est invalide ou a déjà été utilisé.</p>
