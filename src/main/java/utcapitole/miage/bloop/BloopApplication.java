@@ -14,7 +14,6 @@ public class BloopApplication {
 		SpringApplication.run(BloopApplication.class, args);
 	}
 
-
 	@Bean
 	CommandLineRunner initParticipant(UtilisateurRepository utilisateurRepository){
 		return args -> {
@@ -26,6 +25,7 @@ public class BloopApplication {
 			u.setEmailUser("email");
 			u.setMdpUser("fdd");
 			u.setVisibiliteUser(true);
+			u.setValiderInscription(false);
 			utilisateurRepository.save(u);
 		};
 	}
