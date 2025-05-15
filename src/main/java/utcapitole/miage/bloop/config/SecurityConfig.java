@@ -13,15 +13,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // A enlever au plus vite
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/profil/register", "/profil/register_user", "confirm", "/confirm**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/api/utilisateurs","/api/utilisateurs/**","/login", "/profil/register", "/profil/register_user", "confirm", "/confirm**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
-                .formLogin(form -> form
-                        //.loginPage("/login") // ou autre page personnalisée
-                        .permitAll()
+
+               .formLogin(form -> form
+                     //.loginPage("/login") // ou autre page personnalisée
+                      .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+               .logout(logout -> logout.permitAll());
 
         return http.build();
     }

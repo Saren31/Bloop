@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -63,5 +64,31 @@ public class UtilisateurService {
         user.setEmailUser(null);
         model.addAttribute("user", user);
         return "inscription";
+    }
+
+    public String envoyerDemandeAmitie(Long idEnvoyeur, Long idReceveur) {
+        if (idEnvoyeur.equals(idReceveur)) {
+            return "Vous ne pouvez pas vous envoyer une demande à vous-même.";
+        }
+
+        Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
+        Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
+
+        if (optEnvoyeur.isEmpty() || optReceveur.isEmpty()) {
+            return "Utilisateur non trouvé.";
+        }
+
+        Utilisateur envoyeur = optEnvoyeur.get();
+        Utilisateur receveur = optReceveur.get();
+
+        if (envoyeur.getDemandesEnvoyees().contains(receveur)) {
+            return "Demande déjà envoyée.";
+        }
+
+        envoyeur.getDemandesEnvoyees().add(receveur);
+        utilisateurRepository.save(envoyeur);
+        utilisateurRepository.save(receveur);
+
+        return "Demande d’amitié envoyée avec succès.";
     }
 }
