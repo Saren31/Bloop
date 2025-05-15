@@ -29,5 +29,4 @@ public class BloopApplication {
 			utilisateurRepository.save(u);
 		};
 	}
-
 }
