@@ -1,6 +1,7 @@
 package utcapitole.miage.bloop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +36,16 @@ public class ProfilController {
     public String registerUser(@ModelAttribute Utilisateur user, HttpServletRequest request, RedirectAttributes redirectAttributes, Model model) {
 
         // Vérification de l'adrrese e-mail du nouvel utilisateur
-        if (!user.getEmailUser().toLowerCase().endsWith("@ut-capitole.fr")) {
+        if (!user.getEmailUser().toLowerCase().endsWith("@ut-capitole.fr") ) {
             model.addAttribute("error", "L'adresse e-mail doit se terminer par @ut-capitole.fr");
+            user.setEmailUser(null);
+            model.addAttribute("user", user);
+            return "inscription";
+        }
+
+        Utilisateur existingUser = utilisateurRepository.findByEmailUser(user.getEmailUser());
+        if (existingUser != null) {
+            model.addAttribute("error", "L'adresse e-mail est déjà utilisée");
             user.setEmailUser(null);
             model.addAttribute("user", user);
             return "inscription";

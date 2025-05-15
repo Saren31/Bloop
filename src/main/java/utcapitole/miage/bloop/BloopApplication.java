@@ -22,7 +22,7 @@ public class BloopApplication {
 
 			Utilisateur u = new Utilisateur();
 			u.setNomUser("Dupont");
-			u.setEmailUser("email");
+			u.setEmailUser("email@ut-capitole.fr");
 			u.setMdpUser("fdd");
 			u.setVisibiliteUser(true);
 			u.setValiderInscription(false);
