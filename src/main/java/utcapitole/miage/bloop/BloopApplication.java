@@ -14,7 +14,6 @@ public class BloopApplication {
 		SpringApplication.run(BloopApplication.class, args);
 	}
 
-
 	@Bean
 	CommandLineRunner initParticipant(UtilisateurRepository utilisateurRepository){
 		return args -> {
@@ -29,5 +28,4 @@ public class BloopApplication {
 			utilisateurRepository.save(u);
 		};
 	}
-
 }
