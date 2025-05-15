@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/profil")
-public class ProfilController {
+public class ProfilRestController {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;

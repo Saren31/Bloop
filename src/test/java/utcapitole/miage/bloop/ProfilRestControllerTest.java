@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import utcapitole.miage.bloop.controller.ProfilController;
+import utcapitole.miage.bloop.controller.ProfilRestController;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
@@ -15,8 +15,8 @@ import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ProfilController.class)
-public class ProfilControllerTest {
+@WebMvcTest(ProfilRestController.class)
+public class ProfilRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
