@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
+</head>
+<body>
+<h1>Bienvenue sur votre profil</h1>
+
+<p><strong>Nom:</strong> <span th:text="${utilisateur.nomUser}"></span></p>
+<p><strong>Prénom:</strong> <span th:text="${utilisateur.prenomUser}"></span></p>
+<p><strong>Email:</strong> <span th:text="${utilisateur.emailUser}"></span></p>
+<p><strong>Pseudo:</strong> <span th:text="${utilisateur.pseudoUser}"></span></p>
+<p><strong>Téléphone:</strong> <span th:text="${utilisateur.telUser}"></span></p>
+<p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
+<br>
+<a href="/accueil">Retour à l'accueil</a>
+</body>
+</html>

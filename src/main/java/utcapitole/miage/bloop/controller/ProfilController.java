@@ -1,6 +1,7 @@
 package utcapitole.miage.bloop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,5 +59,20 @@ public class ProfilController {
 
         utilisateurRepository.save(user);
         return "accueil";
+    }
+
+
+
+    // ---------------------------- Yan US06 Pour voir mon profil ---------------------------------- //
+    @GetMapping("/voirProfil")
+    public String afficherMonProfil(HttpSession session, Model model) {
+        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
+
+        if (utilisateur == null) {
+            return "accueil";
+        }
+
+        model.addAttribute("utilisateur", utilisateur);
+        return "voirProfil";
     }
 }
