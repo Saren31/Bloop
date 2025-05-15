@@ -1,20 +1,20 @@
-package utcapitole.miage.bloop;
+package utcapitole.miage.bloop.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import utcapitole.miage.bloop.controller.EmailController;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ActiveProfiles("test")
 @WebMvcTest(EmailController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class EmailControllerTest {
@@ -26,23 +26,25 @@ class EmailControllerTest {
     private UtilisateurRepository utilisateurRepository;
 
     @Test
-    void testConfirmUserAvecTokenValide() throws Exception {
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setTokenInscription("abc123");
+    void shouldConfirmUserWithValidToken() throws Exception {
+        Utilisateur u = new Utilisateur();
+        u.setEmailUser("test@ut-capitole.fr");
 
-        Mockito.when(utilisateurRepository.findByTokenInscription("abc123")).thenReturn(utilisateur);
+        when(utilisateurRepository.findByTokenInscription("valid-token")).thenReturn(u);
 
-        mockMvc.perform(get("/confirm").param("token", "abc123"))
+        mockMvc.perform(get("/confirm").param("token", "valid-token"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("confirmer_profil"));
+                .andExpect(view().name("confirmer_inscription"))
+                .andExpect(model().attribute("success", true));
     }
 
     @Test
-    void testConfirmUserAvecTokenInvalide() throws Exception {
-        Mockito.when(utilisateurRepository.findByTokenInscription("wrongToken")).thenReturn(null);
+    void shouldHandleInvalidToken() throws Exception {
+        when(utilisateurRepository.findByTokenInscription("invalid")).thenReturn(null);
 
-        mockMvc.perform(get("/confirm").param("token", "wrongToken"))
+        mockMvc.perform(get("/confirm").param("token", "invalid"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("confirmer_profil"));
+                .andExpect(view().name("confirmer_inscription"))
+                .andExpect(model().attribute("success", false));
     }
 }
