@@ -2,8 +2,7 @@ package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "utilisateur")
@@ -23,6 +22,32 @@ public class Utilisateur {
     private boolean visibiliteUser;
 
     public Utilisateur() {
+    }
+    //demande envoyé
+    @ManyToMany
+    @JoinTable(
+            name = "demandes_envoyees",
+            joinColumns = @JoinColumn(name = "envoyeur_id"),
+            inverseJoinColumns = @JoinColumn(name = "receveur_id")
+    )
+
+    private List<Utilisateur> demandesEnvoyees = new ArrayList<>();
+    public List<Utilisateur> getDemandesEnvoyees() {
+        return demandesEnvoyees;
+    }
+    public void setDemandesEnvoyees(List<Utilisateur> demandesEnvoyees) {
+        this.demandesEnvoyees = demandesEnvoyees;
+    }
+
+    //demande recues
+    // Demandes reçues (mappées depuis l'autre côté)
+    @ManyToMany(mappedBy = "demandesEnvoyees")
+    private List<Utilisateur> demandesRecues = new ArrayList<>();
+    public List<Utilisateur> getDemandesRecues() {
+        return demandesRecues;
+    }
+    public void setDemandesRecues(List<Utilisateur> demandesRecues) {
+        this.demandesRecues = demandesRecues;
     }
 
     public long getIdUser() {
@@ -123,4 +148,6 @@ public class Utilisateur {
                 ", visibiliteUser=" + visibiliteUser +
                 '}';
     }
+
+
 }
