@@ -2,13 +2,19 @@ package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
+/**
+ * Classe Utilisateur
+ * Représente un utilisateur de l'application
+ */
 @Entity
 @Table(name = "utilisateur")
 public class Utilisateur {
 
+    /**
+     * Identifiant unique de l'utilisateur
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idUser;
@@ -20,8 +26,36 @@ public class Utilisateur {
     private byte[] avatarUser;
     private String telUser;
     private boolean visibiliteUser;
+    private boolean validerInscription;
+    private String tokenInscription;
 
     public Utilisateur() {
+    }
+    //demande envoyé
+    @ManyToMany
+    @JoinTable(
+            name = "demandes_envoyees",
+            joinColumns = @JoinColumn(name = "envoyeur_id"),
+            inverseJoinColumns = @JoinColumn(name = "receveur_id")
+    )
+
+    private List<Utilisateur> demandesEnvoyees = new ArrayList<>();
+    public List<Utilisateur> getDemandesEnvoyees() {
+        return demandesEnvoyees;
+    }
+    public void setDemandesEnvoyees(List<Utilisateur> demandesEnvoyees) {
+        this.demandesEnvoyees = demandesEnvoyees;
+    }
+
+    //demande recues
+    // Demandes reçues (mappées depuis l'autre côté)
+    @ManyToMany(mappedBy = "demandesEnvoyees")
+    private List<Utilisateur> demandesRecues = new ArrayList<>();
+    public List<Utilisateur> getDemandesRecues() {
+        return demandesRecues;
+    }
+    public void setDemandesRecues(List<Utilisateur> demandesRecues) {
+        this.demandesRecues = demandesRecues;
     }
 
     public long getIdUser() {
@@ -94,6 +128,22 @@ public class Utilisateur {
 
     public void setVisibiliteUser(boolean visibiliteUser) {
         this.visibiliteUser = visibiliteUser;
+    }
+
+    public boolean isValiderInscription() {
+        return validerInscription;
+    }
+
+    public void setValiderInscription(boolean validerInscription) {
+        this.validerInscription = validerInscription;
+    }
+
+    public String getTokenInscription() {
+        return tokenInscription;
+    }
+
+    public void setTokenInscription(String tokenInscription) {
+        this.tokenInscription = tokenInscription;
     }
 
     @Override

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <title>Inscription</title>
+</head>
+<body>
+
+<h2>Créer un compte utilisateur</h2>
+
+<form th:action="@{/profil/register_user}" th:object="${user}" method="post">
+    <label>Nom :</label>
+    <input type="text" th:field="*{nomUser}" th:value="${user.nomUser}" required />
+    <label>Prénom :</label>
+    <input type="text" th:field="*{prenomUser}" th:value="${user.nomUser}" required />
+    <label>Email :</label>
+    <input type="text" th:field="*{emailUser}" th:value="${user.nomUser}" required />
+    <label>Mot de passe :</label>
+    <input type="password" th:field="*{mdpUser}" th:value="${user.nomUser}" required />
+    <label>Pseudo :</label>
+    <input type="text" th:field="*{pseudoUser}" th:value="${user.nomUser}" required />
+    <label>Téléphone :</label>
+    <input type="text" th:field="*{telUser}" th:value="${user.nomUser}" required />
+
+    <button type="submit">Créer son compte</button>
+</form>
+
+<p th:if="${error}" th:text="${error}"></p>
+
+</body>
+</html>
