@@ -2,6 +2,7 @@ package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -10,7 +11,7 @@ import java.util.*;
  */
 @Entity
 @Table(name = "utilisateur")
-public class Utilisateur {
+public class Utilisateur implements Serializable {
 
     /**
      * Identifiant unique de l'utilisateur
@@ -29,8 +30,6 @@ public class Utilisateur {
     private boolean validerInscription;
     private String tokenInscription;
 
-    public Utilisateur() {
-    }
     //demande envoyé
     @ManyToMany
     @JoinTable(

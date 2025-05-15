@@ -22,17 +22,17 @@ public class ProfilRestController {
     public ResponseEntity<String> seConnecter(@RequestParam String email,
                                               @RequestParam String mdp,
                                               HttpSession session) {
-        Optional<Utilisateur> utilisateur = utilisateurRepository.findByEmailUser(email);
+        Utilisateur utilisateur = utilisateurRepository.findByEmailUser(email);
 
-        if (utilisateur.isEmpty()) {
+        if (utilisateur == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email incorrect");
         }
 
-        if (!utilisateur.get().getMdpUser().equals(mdp)) {
+        if (!utilisateur.getMdpUser().equals(mdp)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mot de passe incorrect");
         }
 
-        session.setAttribute("utilisateur", utilisateur.get());
+        session.setAttribute("utilisateur", utilisateur);
         return ResponseEntity.ok("Connexion réussie !");
     }
 
