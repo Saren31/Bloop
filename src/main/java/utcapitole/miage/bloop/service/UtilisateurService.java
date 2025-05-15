@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
-import java.util.UUID;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UtilisateurService {
@@ -30,45 +30,27 @@ public class UtilisateurService {
 
         if (utilisateurExiste(user.getEmailUser())) {
             return handleErreur(model, user, "L'adresse e-mail est déjà utilisée");
-    public String envoyerDemandeAmitie(Long idEnvoyeur, Long idReceveur) {
-        if (idEnvoyeur.equals(idReceveur)) {
-            return "Vous ne pouvez pas vous envoyer une demande à vous-même.";
         }
 
         preparerUtilisateurPourSauvegarde(user);
         utilisateurRepository.save(user);
         envoyerLienDeConfirmation(user, request);
-        Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
-        Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
 
         return "accueil";
     }
-        if (optEnvoyeur.isEmpty() || optReceveur.isEmpty()) {
-            return "Utilisateur non trouvé.";
-        }
 
     private boolean estEmailValide(String email) {
         return email != null && email.toLowerCase().endsWith("@ut-capitole.fr");
     }
-        Utilisateur envoyeur = optEnvoyeur.get();
-        Utilisateur receveur = optReceveur.get();
-
-        if (envoyeur.getDemandesEnvoyees().contains(receveur)) {
-            return "Demande déjà envoyée.";
-        }
 
     private boolean utilisateurExiste(String email) {
         return utilisateurRepository.findByEmailUser(email) != null;
     }
-        envoyeur.getDemandesEnvoyees().add(receveur);
-        utilisateurRepository.save(envoyeur);
-        utilisateurRepository.save(receveur);
 
     private void preparerUtilisateurPourSauvegarde(Utilisateur user) {
         user.setValiderInscription(false);
         user.setMdpUser(passwordEncoder.encode(user.getMdpUser()));
         user.setTokenInscription(UUID.randomUUID().toString());
-        return "Demande d’amitié envoyée avec succès.";
     }
 
     private void envoyerLienDeConfirmation(Utilisateur user, HttpServletRequest request) {
@@ -82,5 +64,31 @@ public class UtilisateurService {
         user.setEmailUser(null);
         model.addAttribute("user", user);
         return "inscription";
+    }
+
+    public String envoyerDemandeAmitie(Long idEnvoyeur, Long idReceveur) {
+        if (idEnvoyeur.equals(idReceveur)) {
+            return "Vous ne pouvez pas vous envoyer une demande à vous-même.";
+        }
+
+        Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
+        Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
+
+        if (optEnvoyeur.isEmpty() || optReceveur.isEmpty()) {
+            return "Utilisateur non trouvé.";
+        }
+
+        Utilisateur envoyeur = optEnvoyeur.get();
+        Utilisateur receveur = optReceveur.get();
+
+        if (envoyeur.getDemandesEnvoyees().contains(receveur)) {
+            return "Demande déjà envoyée.";
+        }
+
+        envoyeur.getDemandesEnvoyees().add(receveur);
+        utilisateurRepository.save(envoyeur);
+        utilisateurRepository.save(receveur);
+
+        return "Demande d’amitié envoyée avec succès.";
     }
 }
