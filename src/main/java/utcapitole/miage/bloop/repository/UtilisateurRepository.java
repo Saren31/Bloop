@@ -7,4 +7,8 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 
+    Utilisateur findByTokenInscription(String token);
+
+    Utilisateur findByEmailUser(String emailUser);
+
 }
