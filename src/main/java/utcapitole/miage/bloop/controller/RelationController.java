@@ -42,4 +42,14 @@ public class RelationController {
             return ResponseEntity.badRequest().body(resultat);
         }
     }
+
+    @PostMapping("/accepter")
+    public ResponseEntity<String> accepterDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
+        String resultat = relationService.accepterDemandeAmitie(idReceveur, idEnvoyeur);
+        if (resultat.contains("acceptée")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
 }

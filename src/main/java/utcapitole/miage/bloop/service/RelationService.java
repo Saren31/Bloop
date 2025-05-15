@@ -64,4 +64,35 @@ public class RelationService {
 
         return "Demande d’amitié envoyée avec succès.";
     }
+//accepter une demande
+    public String accepterDemandeAmitie(Long idReceveur, Long idEnvoyeur) {
+        Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
+        Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
+
+        if (optReceveur.isEmpty() || optEnvoyeur.isEmpty()) {
+            return "L'un des utilisateurs n'existe pas.";
+        }
+
+        Utilisateur receveur = optReceveur.get();
+        Utilisateur envoyeur = optEnvoyeur.get();
+
+        if (!receveur.getDemandesRecues().contains(envoyeur)) {
+            return "Aucune demande à accepter de cet utilisateur.";
+        }
+
+        // Retirer la demande
+        receveur.getDemandesRecues().remove(envoyeur);
+        envoyeur.getDemandesEnvoyees().remove(receveur);
+
+
+        // ajouter chacun dans la liste d’amis de l’autre
+        receveur.getAmis().add(envoyeur);
+        envoyeur.getAmis().add(receveur);
+
+        // Sauvegarde des modifications
+        utilisateurRepository.save(envoyeur);
+        utilisateurRepository.save(receveur);
+
+        return "Demande d'amitié acceptée.";
+    }
 }
