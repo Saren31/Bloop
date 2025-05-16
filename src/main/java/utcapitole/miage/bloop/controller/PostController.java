@@ -14,7 +14,6 @@ import utcapitole.miage.bloop.service.PostService;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping("/post")
@@ -37,22 +36,21 @@ public class PostController {
     public String creerPost(@ModelAttribute PostDTO postDTO, Model model) {
         try {
             Utilisateur utilisateur = getUtilisateurConnecte();
-            if (utilisateur == null) {
-                return "login"; // Rediriger vers login si pas connecté
-            }
+            if (utilisateur == null) return "login";
 
             Post post = new Post();
             post.setTextePost(postDTO.getTextePost());
             post.setUtilisateur(utilisateur);
             post.setDatePost(new Date());
 
-            // Déléguer le traitement de l'image à un service
-            if (postDTO.getImageFile() != null && !postDTO.getImageFile().isEmpty()) {
-                if (!postDTO.getImageFile().getContentType().startsWith("image/")) {
+            MultipartFile imageFile = postDTO.getImageFile();
+            if (imageFile != null && !imageFile.isEmpty()) {
+                if (!imageFile.getContentType().startsWith("image/")) {
                     model.addAttribute("error", "Le fichier doit être une image.");
+                    model.addAttribute("post", postDTO);
                     return "creerPost";
                 }
-                post.setImagePost(postDTO.getImageFile().getBytes());
+                post.setImagePost(imageFile.getBytes());
             }
 
             postService.creerPost(post);
@@ -60,12 +58,13 @@ public class PostController {
             return "confirmationPost";
         } catch (IOException e) {
             model.addAttribute("error", "Erreur lors du traitement de l'image.");
-            return "creerPost";
         } catch (Exception e) {
             model.addAttribute("error", "Une erreur est survenue lors de la création du post.");
-            return "creerPost";
         }
+        model.addAttribute("post", postDTO);
+        return "creerPost";
     }
+
 
     private Utilisateur getUtilisateurConnecte() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

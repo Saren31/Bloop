@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import static org.mockito.Mockito.when;
@@ -25,6 +26,9 @@ class ProfilControllerTest {
 
     @MockitoBean
     private UtilisateurService utilisateurService;
+
+    @MockitoBean
+    private PostService postService;
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")

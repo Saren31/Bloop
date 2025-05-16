@@ -2,7 +2,6 @@ package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +14,6 @@ public class Post {
 
     private String textePost;
 
-    @Lob
     private byte[] imagePost;
 
     @Temporal(TemporalType.TIMESTAMP)

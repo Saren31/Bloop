@@ -1,8 +1,6 @@
 package utcapitole.miage.bloop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +27,7 @@ public class ProfilController {
 
     @GetMapping("/voirProfil")
     public String afficherMonProfil(Model model) {
-        Utilisateur utilisateur = getUtilisateurConnecte();
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
         if (utilisateur == null) {
             return "accueil"; // Redirige vers l'accueil si l'utilisateur n'est pas connecté
@@ -41,10 +39,5 @@ public class ProfilController {
         model.addAttribute("posts", posts);
 
         return "voirProfil";
-    }
-
-    private Utilisateur getUtilisateurConnecte() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (Utilisateur) authentication.getPrincipal();
     }
 }
