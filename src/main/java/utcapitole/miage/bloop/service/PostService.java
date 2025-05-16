@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class PostService {
 
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
     @Autowired
     public PostService(PostRepository postRepository) {
@@ -26,7 +26,7 @@ public class PostService {
         if (post == null || post.getTextePost() == null || post.getTextePost().isBlank()) {
             throw new IllegalArgumentException("Le contenu du post ne peut pas être vide.");
         }
-        post.setDatePost(new Date());
+        post.setDatePost(java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
         postRepository.save(post);
     }
 

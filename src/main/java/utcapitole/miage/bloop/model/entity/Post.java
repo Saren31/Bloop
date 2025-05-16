@@ -23,11 +23,6 @@ public class Post {
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
-    public Post() {
-        this.datePost = new Date();
-    }
-
-
     public Long getIdPost() { return idPost; }
     public void setIdPost(Long idPost) { this.idPost = idPost; }
     public String getTextePost() { return textePost; }
