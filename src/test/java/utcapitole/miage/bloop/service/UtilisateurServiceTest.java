@@ -81,4 +81,22 @@ public class UtilisateurServiceTest {
         String resultat = utilisateurService.envoyerDemandeAmitie(1L, 2L);
         assertEquals("Utilisateur non trouvé.", resultat);
     }
+
+
+
+    // --------------------- US31 Pour créer un post -------------------------//
+    @Test
+    void testGetUtilisateurParId() {
+        Utilisateur user = new Utilisateur();
+        user.setIdUser(1L);
+        user.setNomUser("Dupont");
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        Utilisateur result = utilisateurService.getUtilisateurParId(1L);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getNomUser()).isEqualTo("Dupont");
+        verify(utilisateurRepository, times(1)).findById(1L);
+    }
 }

@@ -101,5 +101,6 @@ public class UtilisateurService {
     }
 
     public Utilisateur getUtilisateurParId(long idUser) {
+        return utilisateurRepository.findById(idUser).orElse(null);
     }
 }

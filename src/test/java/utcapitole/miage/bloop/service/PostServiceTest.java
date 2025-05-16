@@ -27,12 +27,11 @@ public class PostServiceTest {
     @Test
     void testCreerPost() {
         Post post = new Post();
-        post.setTextePost("Bonjour le monde");
+        post.setTextePost("Test");
         post.setDatePost(new Date());
 
         when(postRepository.save(post)).thenReturn(post);
 
-        Post result = postService.creerPost(post);
 
         assertEquals("Bonjour le monde", result.getTextePost());
         verify(postRepository, times(1)).save(post);
