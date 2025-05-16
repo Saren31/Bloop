@@ -3,9 +3,9 @@ package utcapitole.miage.bloop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import utcapitole.miage.bloop.model.entity.Post;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
@@ -40,4 +40,22 @@ public class ProfilController {
 
         return "voirProfil";
     }
+    // voir le profil d'un autre user par son id
+    @GetMapping("/voir/{id}")
+    public String voirProfilAutre(@PathVariable Long id, Model model, Authentication authentication) {
+        Utilisateur moi = (Utilisateur) authentication.getPrincipal();
+
+        Utilisateur autre = utilisateurService.getUtilisateurParId(id);
+        if (autre == null ) {
+            return "accueil"; // redirection vers accueil
+        }
+        if (autre.getIdUser() == moi.getIdUser() ) {
+            return "redirect:/profil/voirProfil"; // redirection vers ton propre profil
+        }
+
+        model.addAttribute("utilisateur", autre);
+        return "VoirAutreProfil";
+    }
+
+
 }
