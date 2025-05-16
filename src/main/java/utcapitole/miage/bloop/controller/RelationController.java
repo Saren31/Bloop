@@ -60,6 +60,17 @@ public class RelationController {
         List<Utilisateur> amis = relationService.getListeAmis(idUser);
         return ResponseEntity.ok(amis);
     }
+//Supprimer un ami
+    @DeleteMapping("/supprimer")
+    public ResponseEntity<String> supprimerAmi(@RequestParam Long idUser, @RequestParam Long idAmi) {
+        String resultat = relationService.supprimerAmi(idUser, idAmi);
+        if (resultat.contains("succès")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
 
 
 
