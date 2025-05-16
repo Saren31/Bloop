@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion à votre compte</title>
-</head>
+<head><title>Connexion</title></head>
 <body>
-<h2>Connexion à Bloop</h2>
-<form action="/profil/seConnecter" method="post">
-    <label>Email :</label>
-    <input type="text" name="email"><br><br>
-    <label>Mot de passe :</label>
-    <input type="password" name="mdp"><br><br>
+<h2>Connexion</h2>
+<form th:action="@{/auth/login}" method="post">
+    <label>Email:</label>
+    <input type="text" name="username" />
+    <br>
+    <label>Mot de passe:</label>
+    <input type="password" name="password" />
+    <br>
     <button type="submit">Se connecter</button>
 </form>
+<p th:if="${param.error}">Identifiants invalides</p>
+<p th:if="${param.logout}">Déconnecté</p>
 </body>
 </html>

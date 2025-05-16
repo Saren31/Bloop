@@ -2,63 +2,83 @@ package utcapitole.miage.bloop.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+/**
+ * Service pour gérer les opérations liées aux utilisateurs.
+ */
 @Service
 public class UtilisateurService {
 
+    private final UtilisateurRepository utilisateurRepository;
+
+    /**
+     * Constructeur pour injecter le dépôt des utilisateurs.
+     *
+     * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
+     */
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private EmailService emailService;
-
-    public String inscrireNouvelUtilisateur(Utilisateur user, HttpServletRequest request, Model model) {
-        if (!estEmailValide(user.getEmailUser())) {
-            return handleErreur(model, user, "L'adresse e-mail doit se terminer par @ut-capitole.fr");
-        }
-
-        if (utilisateurExiste(user.getEmailUser())) {
-            return handleErreur(model, user, "L'adresse e-mail est déjà utilisée");
-        }
-
-        preparerUtilisateurPourSauvegarde(user);
-        utilisateurRepository.save(user);
-        envoyerLienDeConfirmation(user, request);
-
-        return "accueil";
+    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
     }
 
-    private boolean estEmailValide(String email) {
-        return email != null && email.toLowerCase().endsWith("@ut-capitole.fr");
+    /**
+     * Récupère un utilisateur par son identifiant.
+     *
+     * @param id L'identifiant de l'utilisateur à récupérer.
+     * @return Un Optional contenant l'utilisateur s'il existe, ou vide sinon.
+     */
+    public Optional<Utilisateur> recupererUtilisateurParId(Long id) {
+        return utilisateurRepository.findById(id);
     }
 
-    private boolean utilisateurExiste(String email) {
-        return utilisateurRepository.findByEmailUser(email) != null;
+    /**
+     * Récupère un utilisateur par son identifiant.
+     * Retourne null si l'utilisateur n'existe pas.
+     *
+     * @param id L'identifiant de l'utilisateur à récupérer.
+     * @return L'utilisateur correspondant ou null s'il n'existe pas.
+     */
+    public Utilisateur getUtilisateurParId(long id) {
+        Optional<Utilisateur> utilisateur = utilisateurRepository.findById(id);
+        return utilisateur.orElse(null);
     }
 
-    private void preparerUtilisateurPourSauvegarde(Utilisateur user) {
-        user.setValiderInscription(false);
-        user.setMdpUser(passwordEncoder.encode(user.getMdpUser()));
-        user.setTokenInscription(UUID.randomUUID().toString());
+    /**
+     * Récupère la liste de tous les utilisateurs.
+     *
+     * @return Une liste contenant tous les utilisateurs.
+     */
+    public List<Utilisateur> recupererTousLesUtilisateurs() {
+        return utilisateurRepository.findAll();
+    }
+
+    /**
+     * Récupère l'utilisateur actuellement connecté.
+     *
+     * @return L'utilisateur connecté.
+     */
+    public Utilisateur getUtilisateurConnecte() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Utilisateur) authentication.getPrincipal();
+    }
+
+    /**
+     * Recherche les utilisateurs dont le pseudo commence par une chaîne donnée.
+     *
+     * @param pseudo Le début du pseudo à rechercher.
+     * @return Une liste d'utilisateurs correspondant au critère.
+     */
+    public List<Utilisateur> rechercherParPseudo(String pseudo) {
+        return utilisateurRepository.findByPseudoStartingWith(pseudo);
     }
 
     private void envoyerLienDeConfirmation(Utilisateur user, HttpServletRequest request) {
@@ -98,9 +118,5 @@ public class UtilisateurService {
         utilisateurRepository.save(receveur);
 
         return "Demande d’amitié envoyée avec succès.";
-    }
-
-    public Utilisateur getUtilisateurParId(long idUser) {
-        return utilisateurRepository.findById(idUser).orElse(null);
     }
 }

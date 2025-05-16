@@ -1,0 +1,88 @@
+package utcapitole.miage.bloop.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.service.RelationService;
+
+import java.util.List;
+
+/**
+ * Contrôleur REST pour gérer les relations entre utilisateurs.
+ */
+@RestController
+@RequestMapping("/relations")
+public class RelationController {
+
+    private RelationService relationService;
+
+    /**
+     * Constructeur pour injecter le service de gestion des relations.
+     *
+     * @param relationService Service utilisé pour gérer les relations entre utilisateurs.
+     */
+    @Autowired
+    public RelationController(RelationService relationService) {
+        this.relationService = relationService;
+    }
+
+    /**
+     * Gère les requêtes POST pour envoyer une demande d'amitié.
+     *
+     * @param idEnvoyeur L'identifiant de l'utilisateur qui envoie la demande.
+     * @param idReceveur L'identifiant de l'utilisateur qui reçoit la demande.
+     * @return Une réponse HTTP contenant un message de succès ou d'erreur.
+     */
+    @PostMapping("/demande")
+    public ResponseEntity<String> envoyerDemandeAmitie(@RequestParam Long idEnvoyeur, @RequestParam Long idReceveur) {
+
+        String resultat = relationService.envoyerDemandeAmitie(idEnvoyeur, idReceveur);
+
+        if (resultat.contains("succès")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
+    @PostMapping("/accepter")
+    public ResponseEntity<String> accepterDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
+        String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, true);
+        if (resultat.contains("acceptée")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
+    @PostMapping("/refuser")
+    public ResponseEntity<String> refuserDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
+        String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, false);
+        if (resultat.contains("refusée")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
+    @GetMapping("/amis")
+    public ResponseEntity<List<Utilisateur>> voirListeAmis(@RequestParam Long idUser) {
+        List<Utilisateur> amis = relationService.getListeAmis(idUser);
+        return ResponseEntity.ok(amis);
+    }
+//Supprimer un ami
+    @DeleteMapping("/supprimer")
+    public ResponseEntity<String> supprimerAmi(@RequestParam Long idUser, @RequestParam Long idAmi) {
+        String resultat = relationService.supprimerAmi(idUser, idAmi);
+        if (resultat.contains("succès")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
+
+
+
+}

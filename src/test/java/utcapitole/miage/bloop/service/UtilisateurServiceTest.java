@@ -1,84 +1,81 @@
 package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class UtilisateurServiceTest {
-// On crée un faux repository. Il va simuler les accès à la base de données
-    @Mock
-    private UtilisateurRepository utilisateurRepository;
-//Mockito va créer une instance réelle de UtilisateurService
-//et lui injecter automatiquement le utilisateurrepository mocke dans le champ correspondant
-    @InjectMocks
-    private UtilisateurService utilisateurService;
+/**
+ * Classe de test pour la classe UtilisateurService.
+ * Utilise Mockito pour simuler le comportement du repository.
+ */
+class UtilisateurServiceTest {
 
+    // Mock du repository UtilisateurRepository
+    private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
+
+    // Instance du service à tester
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository);
+
+    /**
+     * Teste la méthode recupererTousLesUtilisateurs.
+     * Vérifie que la méthode retourne tous les utilisateurs présents dans le repository.
+     */
     @Test
-    void testEnvoyerDemande_Succes() {
-        //d'abord on cree des utilisateur et une liste vide des demandes envoye et recue
+    void testRecupererTousLesUtilisateurs() {
+        // Préparation des données de test
         Utilisateur u1 = new Utilisateur();
-        u1.setIdUser(1L);
-        u1.setDemandesEnvoyees(new ArrayList<>());
+        when(utilisateurRepository.findAll()).thenReturn(List.of(u1));
 
-        Utilisateur u2 = new Utilisateur();
-        u2.setIdUser(2L);
-        u2.setDemandesRecues(new ArrayList<>());
-//on simule que le repository retrouve bien les deux utilisateures quand il les cherche par id
-        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
-        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
+        // Appel de la méthode à tester
+        List<Utilisateur> result = service.recupererTousLesUtilisateurs();
 
-        String resultat = utilisateurService.envoyerDemandeAmitie(1L, 2L);
-//vérifie que la réponse texte est correcte
-        assertEquals("Demande d’amitié envoyée avec succès.", resultat);
-        //vérifie que u2 a bien été ajouté dans la liste des demandes de u1
-        assertTrue(u1.getDemandesEnvoyees().contains(u2));
-
-        verify(utilisateurRepository).save(u1);
-        verify(utilisateurRepository).save(u2);
+        // Vérification des résultats
+        assertThat(result).hasSize(1);
     }
 
+    /**
+     * Teste la méthode recupererUtilisateurParId.
+     * Vérifie que la méthode retourne un utilisateur correspondant à l'ID donné.
+     */
     @Test
-    void testDemandeDejaEnvoyee() {
+    void testRecupererUtilisateurParId() {
+        // Préparation des données de test
         Utilisateur u1 = new Utilisateur();
-        Utilisateur u2 = new Utilisateur();
-        u1.setIdUser(1L);
-        u2.setIdUser(2L);
-
-        u1.setDemandesEnvoyees(new ArrayList<>());
-        //On simule que la demande a déjà été faite
-        u1.getDemandesEnvoyees().add(u2);
-
         when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
-        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
 
-        String resultat = utilisateurService.envoyerDemandeAmitie(1L, 2L);
-//on attend une réponse erreur et aucune sauvegarde ne doit etre appelee
-        assertEquals("Demande déjà envoyée.", resultat);
-        verify(utilisateurRepository, never()).save(any());
+        // Appel de la méthode à tester
+        Optional<Utilisateur> result = service.recupererUtilisateurParId(1L);
+
+        // Vérification des résultats
+        assertThat(result).contains(u1);
     }
 
+    /**
+     * Teste la méthode rechercherParPseudo.
+     * Vérifie que la méthode retourne une liste d'utilisateurs dont le pseudo commence par une chaîne donnée.
+     */
     @Test
-    void testDemandeASoiMeme() {
-        String resultat = utilisateurService.envoyerDemandeAmitie(1L, 1L);
-        assertEquals("Vous ne pouvez pas vous envoyer une demande à vous-même.", resultat);
-    }
+    void testRechercherParPseudo() {
+        // Préparation des données de test
+        Utilisateur u1 = new Utilisateur();
+        u1.setPseudoUser("testUser1");
+        Utilisateur u2 = new Utilisateur();
+        u2.setPseudoUser("testUser2");
 
-    @Test
-    void testUtilisateurInexistant() {
-        when(utilisateurRepository.findById(1L)).thenReturn(Optional.empty());
+        when(utilisateurRepository.findByPseudoStartingWith("test")).thenReturn(List.of(u1, u2));
 
-        String resultat = utilisateurService.envoyerDemandeAmitie(1L, 2L);
-        assertEquals("Utilisateur non trouvé.", resultat);
+        // Appel de la méthode à tester
+        List<Utilisateur> result = service.rechercherParPseudo("test");
+
+        // Vérification des résultats
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getPseudoUser()).isEqualTo("testUser1");
+        assertThat(result.get(1).getPseudoUser()).isEqualTo("testUser2");
     }
 }
