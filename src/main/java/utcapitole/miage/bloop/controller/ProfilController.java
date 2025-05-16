@@ -40,4 +40,5 @@ public class ProfilController {
         model.addAttribute("utilisateur", utilisateur);
         return "voirProfil";
     }
+
 }

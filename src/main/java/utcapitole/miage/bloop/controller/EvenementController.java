@@ -1,0 +1,41 @@
+package utcapitole.miage.bloop.controller;
+
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.model.entity.Evenement;
+import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.service.EvenementService;
+
+@Controller
+@RequestMapping("/evenement")
+public class EvenementController {
+
+    @Autowired
+    private EvenementService evenementService;
+
+    @GetMapping("/creer")
+    public String afficherFormulaire(Model model) {
+        model.addAttribute("evenement", new Evenement());
+        return "creerEvenement";
+    }
+
+    @PostMapping("/creer")
+    public String creerEvenement(@ModelAttribute Evenement evenement,
+                                 HttpSession session,
+                                 Model model) {
+        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
+
+        if (utilisateur == null) {
+            return "login";
+        }
+
+        evenement.setOrganisateur(utilisateur);
+        evenementService.creerEvenement(evenement);
+
+        model.addAttribute("message", "Événement créé avec succès !");
+        return "voirProfil";
+    }
+}

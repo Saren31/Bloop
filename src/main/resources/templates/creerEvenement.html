@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un événement</title>
+</head>
+<body>
+
+<h1>Créer un événement</h1>
+
+<form th:action="@{/evenement/creer}" th:object="${evenement}" method="post">
+    <label for="titre">Titre :</label><br>
+    <input type="text" th:field="*{titre}" required/><br>
+
+    <label for="description">Description :</label><br>
+    <textarea th:field="*{description}" rows="5" cols="50"></textarea><br>
+
+    <label for="dateEvenement">Date (format: yyyy-MM-ddTHH:mm):</label><br>
+    <input type="datetime-local" th:field="*{dateEvenement}" required/><br>
+
+    <label for="lieu">Lieu :</label><br>
+    <input type="text" th:field="*{lieu}" required/><br><br>
+
+    <button type="submit">Créer</button>
+</form>
+
+<br>
+<a href="/profil/voirProfil">Retour au profil</a>
+
+</body>
+</html>

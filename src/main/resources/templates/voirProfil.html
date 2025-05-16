@@ -14,6 +14,19 @@
 <p><strong>Téléphone:</strong> <span th:text="${utilisateur.telUser}"></span></p>
 <p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
 <br>
+
+
+
+<h2>Mes Événements</h2>
+<div th:each="evt : ${evenements}">
+    <p><strong>Titre:</strong> <span th:text="${evt.titre}"></span></p>
+    <p><strong>Description:</strong> <span th:text="${evt.description}"></span></p>
+    <p><strong>Date:</strong> <span th:text="${#dates.format(evt.dateEvenement, 'dd/MM/yyyy HH:mm')}"></span></p>
+    <p><strong>Lieu:</strong> <span th:text="${evt.lieu}"></span></p>
+    <br>
+</div>
+
+<br>
 <a href="/accueil">Retour à l'accueil</a>
 </body>
 </html>
