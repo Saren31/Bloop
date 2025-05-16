@@ -1,11 +1,19 @@
 package utcapitole.miage.bloop.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.service.EmailService;
+import utcapitole.miage.bloop.service.UtilisateurService;
 
 /**
  * Contrôleur pour gérer les requêtes liées au profil utilisateur.
@@ -14,18 +22,22 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 @RequestMapping("/profil")
 public class ProfilController {
 
-    /**
-     * Gère les requêtes GET pour afficher la page du profil de l'utilisateur connecté.
-     *
-     * @param model          Le modèle utilisé pour ajouter des attributs à la vue.
-     * @param authentication L'objet Authentication contenant les informations de l'utilisateur connecté.
-     * @return Le nom de la vue "profil" à afficher.
-     */
-    @GetMapping("/monProfil")
-    public String monProfil(Model model, Authentication authentication) {
-        Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
-        model.addAttribute("user", utilisateur);
-        return "profil";
+    private final UtilisateurService utilisateurService;
+
+    @Autowired
+    public ProfilController(UtilisateurService utilisateurService) {
+        this.utilisateurService = utilisateurService;
     }
 
+    @GetMapping("/voirProfil")
+    public String afficherMonProfil(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (utilisateur == null || utilisateurService.getUtilisateurParId(utilisateur.getIdUser()) == null) {
+            return "accueil";
+        }
+
+        model.addAttribute("utilisateur", utilisateur);
+        return "voirProfil";
+    }
 }

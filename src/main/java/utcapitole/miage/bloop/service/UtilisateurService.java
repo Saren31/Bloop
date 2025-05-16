@@ -38,6 +38,11 @@ public class UtilisateurService {
         return utilisateurRepository.findById(id);
     }
 
+    public Utilisateur getUtilisateurParId(long id) {
+        Optional<Utilisateur> utilisateur = utilisateurRepository.findById(id);
+        return utilisateur.orElse(null);
+    }
+
     /**
      * Récupère la liste de tous les utilisateurs.
      *
