@@ -1,8 +1,12 @@
 package utcapitole.miage.bloop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+
+import java.util.List;
 
 /**
  * Interface UtilisateurRepository
@@ -26,5 +30,14 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
      * @return L'utilisateur correspondant à l'adresse e-mail, ou null s'il n'existe pas.
      */
     Utilisateur findByEmailUser(String emailUser);
+
+    /**
+     * Recherche les utilisateurs dont le pseudo commence par une chaîne donnée.
+     *
+     * @param pseudo Le début du pseudo à rechercher.
+     * @return Une liste d'utilisateurs dont le pseudo commence par la chaîne donnée.
+     */
+    @Query("SELECT u FROM Utilisateur u WHERE u.pseudoUser LIKE :pseudo%")
+    List<Utilisateur> findByPseudoStartingWith(@Param("pseudo") String pseudo);
 
 }

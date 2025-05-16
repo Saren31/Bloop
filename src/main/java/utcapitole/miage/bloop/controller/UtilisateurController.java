@@ -49,4 +49,10 @@ public class UtilisateurController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/recherche_pseudo")
+    public ResponseEntity<List<Utilisateur>> rechercherParPseudo(@RequestParam String pseudo) {
+        List<Utilisateur> utilisateurs = utilisateurService.rechercherParPseudo(pseudo);
+        return ResponseEntity.ok(utilisateurs);
+    }
 }
