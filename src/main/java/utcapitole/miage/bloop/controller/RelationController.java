@@ -48,13 +48,24 @@ public class RelationController {
 
     @PostMapping("/accepter")
     public ResponseEntity<String> accepterDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
-        String resultat = relationService.accepterDemandeAmitie(idReceveur, idEnvoyeur);
+        String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, true);
         if (resultat.contains("acceptée")) {
             return ResponseEntity.ok(resultat);
         } else {
             return ResponseEntity.badRequest().body(resultat);
         }
     }
+
+    @PostMapping("/refuser")
+    public ResponseEntity<String> refuserDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
+        String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, false);
+        if (resultat.contains("refusée")) {
+            return ResponseEntity.ok(resultat);
+        } else {
+            return ResponseEntity.badRequest().body(resultat);
+        }
+    }
+
     @GetMapping("/amis")
     public ResponseEntity<List<Utilisateur>> voirListeAmis(@RequestParam Long idUser) {
         List<Utilisateur> amis = relationService.getListeAmis(idUser);
