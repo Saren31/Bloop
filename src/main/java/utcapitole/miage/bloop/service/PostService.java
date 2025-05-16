@@ -13,7 +13,7 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public Optional<Post> getPostParId(Long id) {
+    public static Optional<Post> getPostParId(Long id) {
         return postRepository.findById(id);
     }
 
