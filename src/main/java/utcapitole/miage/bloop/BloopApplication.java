@@ -22,8 +22,11 @@ public class BloopApplication {
 
 			Utilisateur u = new Utilisateur();
 			u.setNomUser("Dupont");
+			u.setPrenomUser("Jean");
 			u.setEmailUser("email");
 			u.setMdpUser("fdd");
+			u.setPseudoUser("jdupont");
+			u.setTelUser("0760870899");
 			u.setVisibiliteUser(true);
 			u.setValiderInscription(false);
 			utilisateurRepository.save(u);

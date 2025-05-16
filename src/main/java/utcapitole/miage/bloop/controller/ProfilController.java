@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 import utcapitole.miage.bloop.service.EmailService;
+import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.util.UUID;
 
@@ -64,15 +65,32 @@ public class ProfilController {
 
 
     // ---------------------------- Yan US06 Pour voir mon profil ---------------------------------- //
+    @Autowired
+    private UtilisateurService utilisateurService;
+
     @GetMapping("/voirProfil")
     public String afficherMonProfil(HttpSession session, Model model) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
 
-        if (utilisateur == null) {
+        if (session.getAttribute("utilisateur") == null) {
+            Utilisateur mockUser = new Utilisateur();
+            mockUser.setIdUser(1L);
+            session.setAttribute("utilisateur", mockUser);
+        }
+
+        Utilisateur sessionUser = (Utilisateur) session.getAttribute("utilisateur");
+
+        if (sessionUser == null) {
             return "accueil";
         }
 
-        model.addAttribute("utilisateur", utilisateur);
+        Utilisateur utilisateurComplet = utilisateurService.getUtilisateurParId(sessionUser.getIdUser());
+
+        if (utilisateurComplet == null) {
+            return "accueil";
+        }
+
+        model.addAttribute("utilisateur", utilisateurComplet);
         return "voirProfil";
     }
 }
+

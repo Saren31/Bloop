@@ -90,4 +90,5 @@ class UtilisateurTest {
         assertEquals(token, utilisateur.getTokenInscription());
     }
 
+
 }
