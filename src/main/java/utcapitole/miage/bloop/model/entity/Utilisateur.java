@@ -90,7 +90,7 @@ public class Utilisateur implements UserDetails {
     private List<Utilisateur> demandesRecues = new ArrayList<>();
 
     /**
-     * Gerer la Liste des amis
+     * Liste des amis de l'utilisateur.
      */
     @ManyToMany
     @JoinTable(
@@ -100,6 +100,9 @@ public class Utilisateur implements UserDetails {
     )
     private List<Utilisateur> amis = new ArrayList<>();
 
+    /**
+     * Liste des groupes auxquels l'utilisateur participe.
+     */
     @ManyToMany
     @JoinTable(
             name = "participer",
@@ -108,14 +111,20 @@ public class Utilisateur implements UserDetails {
     )
     private List<Groupe> groupes = new ArrayList<>();
 
-
-
-
-
+    /**
+     * Récupère la liste des groupes auxquels l'utilisateur participe.
+     *
+     * @return Liste des groupes.
+     */
     public List<Groupe> getGroupes() {
         return groupes;
     }
 
+    /**
+     * Définit la liste des groupes auxquels l'utilisateur participe.
+     *
+     * @param groupes Liste des groupes.
+     */
     public void setGroupes(List<Groupe> groupes) {
         this.groupes = groupes;
     }
@@ -206,278 +215,5 @@ public class Utilisateur implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    /**
-     * Récupère l'identifiant unique de l'utilisateur.
-     *
-     * @return L'identifiant.
-     */
-    public long getIdUser() {
-        return idUser;
-    }
-
-    /**
-     * Définit l'identifiant unique de l'utilisateur.
-     *
-     * @param idUser L'identifiant à définir.
-     */
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
-    }
-
-    /**
-     * Récupère le nom de l'utilisateur.
-     *
-     * @return Le nom.
-     */
-    public String getNomUser() {
-        return nomUser;
-    }
-
-    /**
-     * Définit le nom de l'utilisateur.
-     *
-     * @param nomUser Le nom à définir.
-     */
-    public void setNomUser(String nomUser) {
-        this.nomUser = nomUser;
-    }
-
-    /**
-     * Récupère le prénom de l'utilisateur.
-     *
-     * @return Le prénom.
-     */
-    public String getPrenomUser() {
-        return prenomUser;
-    }
-
-    /**
-     * Définit le prénom de l'utilisateur.
-     *
-     * @param prenomUser Le prénom à définir.
-     */
-    public void setPrenomUser(String prenomUser) {
-        this.prenomUser = prenomUser;
-    }
-
-    /**
-     * Récupère l'adresse e-mail de l'utilisateur.
-     *
-     * @return L'adresse e-mail.
-     */
-    public String getEmailUser() {
-        return emailUser;
-    }
-
-    /**
-     * Définit l'adresse e-mail de l'utilisateur.
-     *
-     * @param emailUser L'adresse e-mail à définir.
-     */
-    public void setEmailUser(String emailUser) {
-        this.emailUser = emailUser;
-    }
-
-    /**
-     * Récupère le mot de passe de l'utilisateur.
-     *
-     * @return Le mot de passe.
-     */
-    public String getMdpUser() {
-        return mdpUser;
-    }
-
-    /**
-     * Définit le mot de passe de l'utilisateur.
-     *
-     * @param mdpUser Le mot de passe à définir.
-     */
-    public void setMdpUser(String mdpUser) {
-        this.mdpUser = mdpUser;
-    }
-
-    /**
-     * Récupère le pseudonyme de l'utilisateur.
-     *
-     * @return Le pseudonyme.
-     */
-    public String getPseudoUser() {
-        return pseudoUser;
-    }
-
-    /**
-     * Définit le pseudonyme de l'utilisateur.
-     *
-     * @param pseudoUser Le pseudonyme à définir.
-     */
-    public void setPseudoUser(String pseudoUser) {
-        this.pseudoUser = pseudoUser;
-    }
-
-    /**
-     * Récupère l'avatar de l'utilisateur.
-     *
-     * @return L'avatar sous forme de tableau d'octets.
-     */
-    public byte[] getAvatarUser() {
-        return avatarUser;
-    }
-
-    /**
-     * Définit l'avatar de l'utilisateur.
-     *
-     * @param avatarUser L'avatar à définir.
-     */
-    public void setAvatarUser(byte[] avatarUser) {
-        this.avatarUser = avatarUser;
-    }
-
-    /**
-     * Récupère le numéro de téléphone de l'utilisateur.
-     *
-     * @return Le numéro de téléphone.
-     */
-    public String getTelUser() {
-        return telUser;
-    }
-
-    /**
-     * Définit le numéro de téléphone de l'utilisateur.
-     *
-     * @param telUser Le numéro de téléphone à définir.
-     */
-    public void setTelUser(String telUser) {
-        this.telUser = telUser;
-    }
-
-    /**
-     * Indique si l'utilisateur est visible.
-     *
-     * @return true si l'utilisateur est visible, false sinon.
-     */
-    public boolean isVisibiliteUser() {
-        return visibiliteUser;
-    }
-
-    /**
-     * Définit la visibilité de l'utilisateur.
-     *
-     * @param visibiliteUser true pour rendre l'utilisateur visible, false sinon.
-     */
-    public void setVisibiliteUser(boolean visibiliteUser) {
-        this.visibiliteUser = visibiliteUser;
-    }
-
-    /**
-     * Indique si l'inscription de l'utilisateur est validée.
-     *
-     * @return true si l'inscription est validée, false sinon.
-     */
-    public boolean isValiderInscription() {
-        return validerInscription;
-    }
-
-    /**
-     * Définit si l'inscription de l'utilisateur est validée.
-     *
-     * @param validerInscription true pour valider l'inscription, false sinon.
-     */
-    public void setValiderInscription(boolean validerInscription) {
-        this.validerInscription = validerInscription;
-    }
-
-    /**
-     * Récupère le token d'inscription de l'utilisateur.
-     *
-     * @return Le token d'inscription.
-     */
-    public String getTokenInscription() {
-        return tokenInscription;
-    }
-
-    /**
-     * Définit le token d'inscription de l'utilisateur.
-     *
-     * @param tokenInscription Le token à définir.
-     */
-    public void setTokenInscription(String tokenInscription) {
-        this.tokenInscription = tokenInscription;
-    }
-
-    /**
-     * Vérifie l'égalité entre deux objets Utilisateur.
-     *
-     * @param o L'objet à comparer.
-     * @return true si les objets sont égaux, false sinon.
-     */
-
-
-
-    /**
-     * Récupère la liste des demandes d'amitié envoyées.
-     *
-     * @return La liste des utilisateurs ayant reçu une demande.
-     */
-    public List<Utilisateur> getDemandesEnvoyees() {
-        return demandesEnvoyees;
-    }
-
-    /**
-     * Définit la liste des demandes d'amitié envoyées.
-     *
-     * @param demandesEnvoyees La liste des utilisateurs à définir.
-     */
-    public void setDemandesEnvoyees(List<Utilisateur> demandesEnvoyees) {
-        this.demandesEnvoyees = demandesEnvoyees;
-    }
-
-
-
-
-    public List<Utilisateur> getAmis() {
-        return amis;
-    }
-
-    public void setAmis(List<Utilisateur> amis) {
-        this.amis = amis;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Utilisateur that = (Utilisateur) o;
-        return getIdUser() == that.getIdUser() && isVisibiliteUser() == that.isVisibiliteUser() && Objects.equals(getNomUser(), that.getNomUser()) && Objects.equals(getPrenomUser(), that.getPrenomUser()) && Objects.equals(getEmailUser(), that.getEmailUser()) && Objects.equals(getMdpUser(), that.getMdpUser()) && Objects.equals(getPseudoUser(), that.getPseudoUser()) && Objects.deepEquals(getAvatarUser(), that.getAvatarUser()) && Objects.equals(getTelUser(), that.getTelUser());
-    }
-
-    /**
-     * Génère un hash code pour l'objet Utilisateur.
-     *
-     * @return Le hash code.
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIdUser(), getNomUser(), getPrenomUser(), getEmailUser(), getMdpUser(), getPseudoUser(), Arrays.hashCode(getAvatarUser()), getTelUser(), isVisibiliteUser());
-    }
-
-    /**
-     * Génère une représentation sous forme de chaîne de l'objet Utilisateur.
-     *
-     * @return La chaîne représentant l'objet.
-     */
-    @Override
-    public String toString() {
-        return "Utilisateur{" +
-                "idUser=" + idUser +
-                ", nomUser='" + nomUser + '\'' +
-                ", prenomUser='" + prenomUser + '\'' +
-                ", emailUser='" + emailUser + '\'' +
-                ", mdpUser='" + mdpUser + '\'' +
-                ", pseudoUser='" + pseudoUser + '\'' +
-                ", avatarUser=" + Arrays.toString(avatarUser) +
-                ", telUser='" + telUser + '\'' +
-                ", visibiliteUser=" + visibiliteUser +
-                '}';
     }
 }
