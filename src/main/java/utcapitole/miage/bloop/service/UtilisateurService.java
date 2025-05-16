@@ -17,6 +17,7 @@ import java.util.Optional;
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
+    private final EmailService emailService;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -24,8 +25,9 @@ public class UtilisateurService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, EmailService emailService) {
         this.utilisateurRepository = utilisateurRepository;
+        this.emailService = emailService;
     }
 
     /**

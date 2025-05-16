@@ -19,8 +19,12 @@ class UtilisateurServiceTest {
     // Mock du repository UtilisateurRepository
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
 
+    // Mock du service EmailService
+    private final EmailService emailService = mock(EmailService.class);
+
     // Instance du service à tester
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, emailService);
+
 
     /**
      * Teste la méthode recupererTousLesUtilisateurs.
