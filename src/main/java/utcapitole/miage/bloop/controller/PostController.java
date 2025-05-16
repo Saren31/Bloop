@@ -2,22 +2,18 @@ package utcapitole.miage.bloop.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.UtilisateurRepository;
 import utcapitole.miage.bloop.service.PostService;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/post")
@@ -25,6 +21,18 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
+
+    @GetMapping("/mockLogin")
+    public String mockLogin(HttpSession session) {
+        Utilisateur utilisateur = utilisateurRepository.findById(1L).orElse(null);
+        session.setAttribute("utilisateur", utilisateur);
+        return "creerPost";
+    }
+
 
     @GetMapping("/creer")
     public String afficherFormulaire(Model model) {
@@ -38,7 +46,7 @@ public class PostController {
                             HttpSession session, Model model) throws IOException {
         Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
         if (utilisateur == null) {
-            return "login";
+            return "login"; // rediriger vers login si pas connecté
         }
 
         post.setUtilisateur(utilisateur);
@@ -50,19 +58,20 @@ public class PostController {
 
         postService.creerPost(post);
         model.addAttribute("message", "Post créé avec succès !");
-        return "monProfil";
+
+        // Récupérer les posts de l'utilisateur pour afficher sur profil
+        List<Post> posts = postService.getPostsByUtilisateurId(utilisateur.getIdUser());
+        model.addAttribute("posts", posts);
+        model.addAttribute("utilisateur", utilisateur);
+
+        return "voirProfil";
     }
 
+    // Pour afficher l'image d’un post
     @GetMapping("/image/{id}")
     @ResponseBody
-    public ResponseEntity<byte[]> getImage(@PathVariable Long id) {
-        Optional<Post> postOpt = PostService.getPostParId(id);
-        if (postOpt.isPresent() && postOpt.get().getImagePost() != null) {
-            byte[] image = postOpt.get().getImagePost();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
-            return new ResponseEntity<>(image, headers, HttpStatus.OK);
-        }
-        return ResponseEntity.notFound().build();
+    public byte[] afficherImage(@PathVariable Long id) {
+        Post post = postService.getPostParId(id);
+        return post != null ? post.getImagePost() : null;
     }
 }

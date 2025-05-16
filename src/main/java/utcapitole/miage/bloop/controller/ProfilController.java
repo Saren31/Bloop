@@ -16,6 +16,7 @@ import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.PostRepository;
 import utcapitole.miage.bloop.service.EmailService;
+import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.util.List;
@@ -41,29 +42,22 @@ public class ProfilController {
 
     // ----- Yan US31 Pour créer un post et partarger sur mon profil -----//
     @Autowired
-    private PostRepository postRepository;
+    private PostService postService;
 
     @GetMapping("/voirProfil")
     public String afficherMonProfil(HttpSession session, Model model) {
-        Utilisateur sessionUser = (Utilisateur) session.getAttribute("utilisateur");
+        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
 
-        if (sessionUser == null) {
-            return "redirect:/connexion"; // 更安全
+        if (utilisateur == null) {
+            return "accueil";
         }
 
-        Utilisateur utilisateurComplet = utilisateurService.getUtilisateurParId(sessionUser.getIdUser());
+        List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
 
-        if (utilisateurComplet == null) {
-            return "login";
-        }
-
-        model.addAttribute("utilisateur", utilisateurComplet);
-
-        List<Post> posts = postRepository.findByUtilisateur_IdUser(utilisateurComplet.getIdUser());
+        model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
 
         return "voirProfil";
     }
-
 }
 

@@ -6,19 +6,28 @@ import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.repository.PostRepository;
 
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class PostService {
+
     @Autowired
     private PostRepository postRepository;
 
-    public static Optional<Post> getPostParId(Long id) {
-        return postRepository.findById(id);
+    public List<Post> getPostsByUtilisateur(long idUser) {
+        return postRepository.findByUtilisateur_IdUser(idUser);
     }
 
     public void creerPost(Post post) {
         post.setDatePost(new Date());
         postRepository.save(post);
     }
+
+    public Post getPostParId(Long id) {
+        return postRepository.findById(id).orElse(null);
+    }
+    public List<Post> getPostsByUtilisateurId(Long idUser) {
+        return postRepository.findByUtilisateur_IdUser(idUser);
+    }
+
 }
