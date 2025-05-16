@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(GroupeController.class)
 @ActiveProfiles("test")
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 class GroupeControllerTest {
 
     @Autowired
@@ -34,13 +36,13 @@ class GroupeControllerTest {
     private UtilisateurService utilisateurService;
 
     @Test
+    @WithMockUser(username = "testuser", roles = "USER")
     void testValiderGroupe_Succes() throws Exception {
-        // Mock des services
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(new Utilisateur());
         when(groupeService.enregistrerGroupe(any(Groupe.class))).thenReturn("accueil");
 
-        // Envoi de la requête
         mockMvc.perform(post("/groupes/valider")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()) // Ajout du jeton CSRF
                         .param("nomGroupe", "Test Groupe")
                         .param("themeGroupe", "Test Thème")
                         .param("descriptionGroupe", "Description de test"))
@@ -49,22 +51,22 @@ class GroupeControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = "USER")
     void testRejoindreGroupe_Succes() throws Exception {
-        // Mock des services
         Groupe groupe = new Groupe();
         groupe.setIdGroupe(1L);
         when(groupeService.trouverGroupeParId(1L)).thenReturn(groupe);
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(new Utilisateur());
 
-        // Envoi de la requête
-        mockMvc.perform(post("/groupes/rejoindre/1"))
+        mockMvc.perform(post("/groupes/rejoindre/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())) // Ajout du jeton CSRF
                 .andExpect(status().isOk())
                 .andExpect(view().name("accueil"));
     }
 
     @Test
+    @WithMockUser(username = "testuser", roles = "USER")
     void testRejoindreGroupe_UtilisateurDejaMembre() throws Exception {
-        // Mock des services
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setIdUser(1L);
 
@@ -75,12 +77,11 @@ class GroupeControllerTest {
         when(groupeService.trouverGroupeParId(1L)).thenReturn(groupe);
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
 
-        // Envoi de la requête
-        mockMvc.perform(post("/groupes/rejoindre/1"))
+        mockMvc.perform(post("/groupes/rejoindre/1")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())) // Ajout du jeton CSRF
                 .andExpect(status().isOk())
                 .andExpect(view().name("accueil"));
 
-        // Vérification que l'utilisateur n'est pas ajouté une deuxième fois
         assertThat(groupe.getMembres().size()).isEqualTo(1);
     }
 }
