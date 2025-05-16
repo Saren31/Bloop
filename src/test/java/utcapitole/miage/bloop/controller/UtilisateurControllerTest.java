@@ -60,4 +60,22 @@ class UtilisateurControllerTest {
         mockMvc.perform(get("/utilisateurs/1"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testRechercherParPseudo() throws Exception {
+        Utilisateur u1 = new Utilisateur();
+        u1.setPseudoUser("testUser1");
+        Utilisateur u2 = new Utilisateur();
+        u2.setPseudoUser("testUser2");
+
+        when(utilisateurService.rechercherParPseudo("test")).thenReturn(Arrays.asList(u1, u2));
+
+        mockMvc.perform(get("/utilisateurs/recherche_pseudo")
+                        .param("pseudo", "test"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].pseudoUser").value("testUser1"))
+                .andExpect(jsonPath("$[1].pseudoUser").value("testUser2"));
+    }
+
+
 }

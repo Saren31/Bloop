@@ -38,6 +38,13 @@ public class UtilisateurService {
         return utilisateurRepository.findById(id);
     }
 
+    /**
+     * Récupère un utilisateur par son identifiant.
+     * Retourne null si l'utilisateur n'existe pas.
+     *
+     * @param id L'identifiant de l'utilisateur à récupérer.
+     * @return L'utilisateur correspondant ou null s'il n'existe pas.
+     */
     public Utilisateur getUtilisateurParId(long id) {
         Optional<Utilisateur> utilisateur = utilisateurRepository.findById(id);
         return utilisateur.orElse(null);
@@ -52,8 +59,24 @@ public class UtilisateurService {
         return utilisateurRepository.findAll();
     }
 
+    /**
+     * Récupère l'utilisateur actuellement connecté.
+     *
+     * @return L'utilisateur connecté.
+     */
     public Utilisateur getUtilisateurConnecte() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (Utilisateur) authentication.getPrincipal();
     }
+
+    /**
+     * Recherche les utilisateurs dont le pseudo commence par une chaîne donnée.
+     *
+     * @param pseudo Le début du pseudo à rechercher.
+     * @return Une liste d'utilisateurs correspondant au critère.
+     */
+    public List<Utilisateur> rechercherParPseudo(String pseudo) {
+        return utilisateurRepository.findByPseudoStartingWith(pseudo);
+    }
+
 }
