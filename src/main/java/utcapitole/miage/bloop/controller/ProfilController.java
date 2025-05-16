@@ -1,11 +1,11 @@
 package utcapitole.miage.bloop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import utcapitole.miage.bloop.model.entity.Post;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
