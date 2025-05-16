@@ -109,4 +109,30 @@ public class RelationService {
         return optUser.get().getAmis();
     }
 
+    //SUPPRIMER UN AMI
+    public String supprimerAmi(Long idUser, Long idAmi) {
+        Optional<Utilisateur> optUser = utilisateurRepository.findById(idUser);
+        Optional<Utilisateur> optAmi = utilisateurRepository.findById(idAmi);
+
+        if (optUser.isEmpty() || optAmi.isEmpty()) {
+            return "Utilisateur non trouvé.";
+        }
+
+        Utilisateur user = optUser.get();
+        Utilisateur ami = optAmi.get();
+
+        if (!user.getAmis().contains(ami)) {
+            return "Cet utilisateur n’est pas dans votre liste d’amis.";
+        }
+
+        user.getAmis().remove(ami);
+        ami.getAmis().remove(user);
+
+        utilisateurRepository.save(user);
+        utilisateurRepository.save(ami);
+
+        return "Ami supprimé avec succès.";
+    }
+
+
 }
