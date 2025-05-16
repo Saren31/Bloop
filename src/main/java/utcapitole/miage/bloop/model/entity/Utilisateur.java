@@ -82,31 +82,43 @@ public class Utilisateur implements UserDetails {
     )
     private List<Utilisateur> demandesEnvoyees = new ArrayList<>();
 
-
-    /**
-     * Récupère la liste des demandes d'amitié envoyées.
-     *
-     * @return La liste des utilisateurs ayant reçu une demande.
-     */
-    public List<Utilisateur> getDemandesEnvoyees() {
-        return demandesEnvoyees;
-    }
-
-    /**
-     * Définit la liste des demandes d'amitié envoyées.
-     *
-     * @param demandesEnvoyees La liste des utilisateurs à définir.
-     */
-    public void setDemandesEnvoyees(List<Utilisateur> demandesEnvoyees) {
-        this.demandesEnvoyees = demandesEnvoyees;
-    }
-
     /**
      * Liste des demandes d'amitié reçues par l'utilisateur.
      * Mappée depuis l'autre côté de la relation.
      */
     @ManyToMany(mappedBy = "demandesEnvoyees")
     private List<Utilisateur> demandesRecues = new ArrayList<>();
+
+    /**
+     * Gerer la Liste des amis
+     */
+    @ManyToMany
+    @JoinTable(
+            name = "amis",
+            joinColumns = @JoinColumn(name = "utilisateur_id"),
+            inverseJoinColumns = @JoinColumn(name = "ami_id")
+    )
+    private List<Utilisateur> amis = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "participer",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_groupe")
+    )
+    private List<Groupe> groupes = new ArrayList<>();
+
+
+
+
+
+    public List<Groupe> getGroupes() {
+        return groupes;
+    }
+
+    public void setGroupes(List<Groupe> groupes) {
+        this.groupes = groupes;
+    }
 
     /**
      * Récupère la liste des demandes d'amitié reçues.
@@ -401,16 +413,28 @@ public class Utilisateur implements UserDetails {
      * @return true si les objets sont égaux, false sinon.
      */
 
+
+
     /**
-     * Gerer la Liste des amis
+     * Récupère la liste des demandes d'amitié envoyées.
+     *
+     * @return La liste des utilisateurs ayant reçu une demande.
      */
-    @ManyToMany
-    @JoinTable(
-            name = "amis",
-            joinColumns = @JoinColumn(name = "utilisateur_id"),
-            inverseJoinColumns = @JoinColumn(name = "ami_id")
-    )
-    private List<Utilisateur> amis = new ArrayList<>();
+    public List<Utilisateur> getDemandesEnvoyees() {
+        return demandesEnvoyees;
+    }
+
+    /**
+     * Définit la liste des demandes d'amitié envoyées.
+     *
+     * @param demandesEnvoyees La liste des utilisateurs à définir.
+     */
+    public void setDemandesEnvoyees(List<Utilisateur> demandesEnvoyees) {
+        this.demandesEnvoyees = demandesEnvoyees;
+    }
+
+
+
 
     public List<Utilisateur> getAmis() {
         return amis;
