@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon profil</title>
+</head>
+<body>
+<h2>Bienvenue sur votre profil</h2>
+<p th:text="'Nom : ' + ${utilisateur.nomUser}"></p>
+<p th:text="'Email : ' + ${utilisateur.emailUser}"></p>
+<form th:action="/profil/seDeconnecter" method="post">
+    <button type="submit">Se déconnecter</button>
+</form>
+</body>
+</html>

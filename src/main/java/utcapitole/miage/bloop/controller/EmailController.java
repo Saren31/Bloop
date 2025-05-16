@@ -8,23 +8,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
+/**
+ * Contrôleur pour gérer les requêtes liées à la confirmation par e-mail.
+ */
 @Controller
 public class EmailController {
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
+    /**
+     * Constructeur pour injecter le dépôt des utilisateurs.
+     *
+     * @param utilisateurRepository Le dépôt utilisé pour accéder aux données des utilisateurs.
+     */
+    @Autowired
+    public EmailController(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
+    }
+
+    /**
+     * Gère les requêtes GET pour confirmer l'inscription d'un utilisateur.
+     *
+     * @param token Le jeton d'inscription utilisé pour valider l'utilisateur.
+     * @param model Le modèle utilisé pour ajouter des attributs à la vue.
+     * @return Le nom de la vue "confirmer_inscription" à afficher.
+     */
     @GetMapping("/confirm")
     public String confirmUser(@RequestParam("token") String token, Model model) {
         Utilisateur user = utilisateurRepository.findByTokenInscription(token);
         if (user != null) {
-            user.setValiderInscription(true);
-            user.setTokenInscription(null);
-            utilisateurRepository.save(user);
-            model.addAttribute("success", true);
+            user.setValiderInscription(true); // Marque l'inscription comme validée.
+            user.setTokenInscription(null);  // Supprime le jeton d'inscription.
+            utilisateurRepository.save(user); // Sauvegarde les modifications de l'utilisateur.
+            model.addAttribute("success", true); // Ajoute un attribut indiquant le succès.
         } else {
-            model.addAttribute("success", false);
+            model.addAttribute("success", false); // Ajoute un attribut indiquant l'échec.
         }
-        return "confirmer_profil";
+        return "confirmer_inscription";
     }
 }
