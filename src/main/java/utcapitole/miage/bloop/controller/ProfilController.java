@@ -1,6 +1,7 @@
 package utcapitole.miage.bloop.controller;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 import utcapitole.miage.bloop.service.EmailService;
+import utcapitole.miage.bloop.service.UtilisateurService;
 
 /**
  * Contrôleur pour gérer les requêtes liées au profil utilisateur.
@@ -20,27 +22,22 @@ import utcapitole.miage.bloop.service.EmailService;
 @RequestMapping("/profil")
 public class ProfilController {
 
+    private final UtilisateurService utilisateurService;
+
+    @Autowired
+    public ProfilController(UtilisateurService utilisateurService) {
+        this.utilisateurService = utilisateurService;
+    }
+
     @GetMapping("/voirProfil")
-    public String afficherMonProfil(HttpSession session, Model model) {
+    public String afficherMonProfil(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
-        if (session.getAttribute("utilisateur") == null) {
-            Utilisateur mockUser = new Utilisateur();
-            mockUser.setIdUser(1L);
-            session.setAttribute("utilisateur", mockUser);
-        }
-
-        Utilisateur sessionUser = (Utilisateur) session.getAttribute("utilisateur");
-
-        if (sessionUser == null) {
+        if (utilisateur == null || utilisateurService.getUtilisateurParId(utilisateur.getIdUser()) == null) {
             return "accueil";
         }
 
-        Utilisateur utilisateurComplet = utilisateurService.getUtilisateurParId(sessionUser.getIdUser());
-
-        if (utilisateurComplet == null) {
-            return "accueil";
-        }
-
-        model.addAttribute("utilisateur", utilisateurComplet);
+        model.addAttribute("utilisateur", utilisateur);
         return "voirProfil";
     }
+}
