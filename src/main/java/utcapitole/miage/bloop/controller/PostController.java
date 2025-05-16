@@ -45,7 +45,8 @@ public class PostController {
 
             MultipartFile imageFile = postDTO.getImageFile();
             if (imageFile != null && !imageFile.isEmpty()) {
-                if (!imageFile.getContentType().startsWith("image/")) {
+                String contentType = imageFile.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
                     model.addAttribute("error", "Le fichier doit être une image.");
                     model.addAttribute("post", postDTO);
                     return "creerPost";
@@ -65,7 +66,7 @@ public class PostController {
         return "creerPost";
     }
 
-
+    //a bouger dans un service
     private Utilisateur getUtilisateurConnecte() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (Utilisateur) authentication.getPrincipal();

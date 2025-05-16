@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 import utcapitole.miage.bloop.service.PostService;
+import utcapitole.miage.bloop.service.UtilisateurService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -33,6 +34,9 @@ class PostControllerTest {
 
     @MockitoBean
     private UtilisateurRepository utilisateurRepository;
+
+    @MockitoBean
+    private UtilisateurService utilisateurService;
 
     // Crée un Utilisateur simulé pour simuler l'utilisateur connecté
     private Utilisateur creerUtilisateurSimule() {
