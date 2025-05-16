@@ -2,7 +2,6 @@ package utcapitole.miage.bloop.model.entity;
 
 
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "post")
-public class Post implements Serializable {
+public class Post  {
 
     /**
      * Identifiant unique du post

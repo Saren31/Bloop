@@ -1,5 +1,6 @@
 package utcapitole.miage.bloop;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,4 +30,21 @@ public class BloopApplication {
 			utilisateurRepository.save(u);
 		};
 	}
+
+	@Bean
+	CommandLineRunner testUtilisateurSession(HttpServletRequest request, UtilisateurRepository utilisateurRepository) {
+		return args -> {
+			Utilisateur testUser = new Utilisateur();
+			testUser.setNomUser("Test");
+			testUser.setPrenomUser("User");
+			testUser.setEmailUser("test@ut-capitole.fr");
+			testUser.setMdpUser("123");
+			testUser.setPseudoUser("testeur");
+			testUser.setVisibiliteUser(true);
+			testUser.setValiderInscription(true);
+
+			utilisateurRepository.save(testUser);
+		};
+	}
+
 }

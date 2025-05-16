@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-    <title>Créer un Post</title>
+    <meta charset="UTF-8">
+    <title>Créer un post</title>
 </head>
 <body>
-<h2>Créer un nouveau post</h2>
+<h1>Créer un nouveau post</h1>
 
-<form action="/post/creer" method="post" enctype="multipart/form-data">
-    <label for="textePost">Texte :</label><br>
-    <textarea id="textePost" name="textePost" rows="4" cols="50"></textarea><br><br>
+<form action="/post/creer" th:object="${post}" method="post" enctype="multipart/form-data">
+    <label>Texte :</label><br>
+    <textarea th:field="*{textePost}" rows="4" cols="50"></textarea><br>
 
-    <label for="image">Image (optionnelle) :</label>
-    <input type="file" id="image" name="image"><br><br>
+    <label>Image :</label><br>
+    <input type="file" name="imageFile"/><br>
 
     <button type="submit">Publier</button>
 </form>
+
+<a href="/profil/monProfil">Retour au profil</a>
 </body>
 </html>
