@@ -66,8 +66,8 @@ public class RelationService {
 
         return "Demande d’amitié envoyée avec succès.";
     }
-//accepter une demande
-    public String accepterDemandeAmitie(Long idReceveur, Long idEnvoyeur) {
+
+    public String gererDemandeAmitie(Long idReceveur, Long idEnvoyeur, boolean accepter) {
         Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
         Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
 
@@ -79,23 +79,31 @@ public class RelationService {
         Utilisateur envoyeur = optEnvoyeur.get();
 
         if (!receveur.getDemandesRecues().contains(envoyeur)) {
-            return "Aucune demande à accepter de cet utilisateur.";
+            return "Aucune demande à traiter de cet utilisateur.";
         }
 
-        // Retirer la demande
-        receveur.getDemandesRecues().remove(envoyeur);
-        envoyeur.getDemandesEnvoyees().remove(receveur);
+        // Si la demande est acceptée
+        if (accepter) {
+            receveur.getDemandesRecues().remove(envoyeur);
+            envoyeur.getDemandesEnvoyees().remove(receveur);
 
+            receveur.getAmis().add(envoyeur);
+            envoyeur.getAmis().add(receveur);
 
-        // ajouter chacun dans la liste d’amis de l’autre
-        receveur.getAmis().add(envoyeur);
-        envoyeur.getAmis().add(receveur);
+            utilisateurRepository.save(envoyeur);
+            utilisateurRepository.save(receveur);
 
-        // Sauvegarde des modifications
-        utilisateurRepository.save(envoyeur);
-        utilisateurRepository.save(receveur);
+            return "Demande d'amitié acceptée.";
+        } else {
+            // Si la demande est refusée
+            receveur.getDemandesRecues().remove(envoyeur);
+            envoyeur.getDemandesEnvoyees().remove(receveur);
 
-        return "Demande d'amitié acceptée.";
+            utilisateurRepository.save(envoyeur);
+            utilisateurRepository.save(receveur);
+
+            return "Demande d'amitié refusée.";
+        }
     }
 
     //consulter ma liste d'amis

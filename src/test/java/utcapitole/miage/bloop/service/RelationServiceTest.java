@@ -56,5 +56,81 @@ class RelationServiceTest {
         String result = relationService.envoyerDemandeAmitie(1L, 2L);
         assertThat(result).contains("déjà envoyé");
     }
-}
 
+    @Test
+    void testAccepterDemandeAmitie() {
+        Utilisateur u1 = new Utilisateur(); u1.setIdUser(1L);
+        Utilisateur u2 = new Utilisateur(); u2.setIdUser(2L);
+
+        u1.getDemandesRecues().add(u2);
+        u2.getDemandesEnvoyees().add(u1);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
+
+        String result = relationService.gererDemandeAmitie(1L, 2L, true);
+
+        assertThat(result).contains("acceptée");
+        assertThat(u1.getAmis()).contains(u2);
+        assertThat(u2.getAmis()).contains(u1);
+        verify(utilisateurRepository, times(2)).save(any(Utilisateur.class));
+    }
+
+    @Test
+    void testRefuserDemandeAmitie() {
+        Utilisateur u1 = new Utilisateur(); u1.setIdUser(1L);
+        Utilisateur u2 = new Utilisateur(); u2.setIdUser(2L);
+
+        u1.getDemandesRecues().add(u2);
+        u2.getDemandesEnvoyees().add(u1);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
+
+        String result = relationService.gererDemandeAmitie(1L, 2L, false);
+
+        assertThat(result).contains("refusée");
+        assertThat(u1.getAmis()).doesNotContain(u2);
+        assertThat(u2.getAmis()).doesNotContain(u1);
+        verify(utilisateurRepository, times(2)).save(any(Utilisateur.class));
+    }
+
+    @Test
+    void testSupprimerAmiSucces() {
+        Utilisateur u1 = new Utilisateur(); u1.setIdUser(1L);
+        Utilisateur u2 = new Utilisateur(); u2.setIdUser(2L);
+
+        u1.getAmis().add(u2);
+        u2.getAmis().add(u1);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
+
+        String result = relationService.supprimerAmi(1L, 2L);
+
+        assertThat(result).contains("succès");
+        assertThat(u1.getAmis()).doesNotContain(u2);
+        assertThat(u2.getAmis()).doesNotContain(u1);
+        verify(utilisateurRepository, times(2)).save(any(Utilisateur.class));
+    }
+
+    @Test
+    void testSupprimerAmiNonExistant() {
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.empty());
+
+        String result = relationService.supprimerAmi(1L, 2L);
+        assertThat(result).contains("Utilisateur non trouvé");
+    }
+
+    @Test
+    void testSupprimerAmiPasDansListe() {
+        Utilisateur u1 = new Utilisateur(); u1.setIdUser(1L);
+        Utilisateur u2 = new Utilisateur(); u2.setIdUser(2L);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(u2));
+
+        String result = relationService.supprimerAmi(1L, 2L);
+        assertThat(result).contains("n’est pas dans votre liste");
+    }
+}

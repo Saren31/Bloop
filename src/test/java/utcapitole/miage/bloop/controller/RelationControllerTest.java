@@ -45,4 +45,48 @@ class RelationControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Erreur"));
     }
+
+    @Test
+    void testAccepterDemandeAmitie_Succes() throws Exception {
+        when(relationService.gererDemandeAmitie(2L, 1L, true)).thenReturn("Demande d'amitié acceptée.");
+
+        mockMvc.perform(post("/relations/accepter")
+                        .param("idReceveur", "2")
+                        .param("idEnvoyeur", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Demande d'amitié acceptée."));
+    }
+
+    @Test
+    void testAccepterDemandeAmitie_Echec() throws Exception {
+        when(relationService.gererDemandeAmitie(2L, 1L, true)).thenReturn("Erreur");
+
+        mockMvc.perform(post("/relations/accepter")
+                        .param("idReceveur", "2")
+                        .param("idEnvoyeur", "1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Erreur"));
+    }
+
+    @Test
+    void testRefuserDemandeAmitie_Succes() throws Exception {
+        when(relationService.gererDemandeAmitie(2L, 1L, false)).thenReturn("Demande d'amitié refusée.");
+
+        mockMvc.perform(post("/relations/refuser")
+                        .param("idReceveur", "2")
+                        .param("idEnvoyeur", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Demande d'amitié refusée."));
+    }
+
+    @Test
+    void testRefuserDemandeAmitie_Echec() throws Exception {
+        when(relationService.gererDemandeAmitie(2L, 1L, false)).thenReturn("Erreur");
+
+        mockMvc.perform(post("/relations/refuser")
+                        .param("idReceveur", "2")
+                        .param("idEnvoyeur", "1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Erreur"));
+    }
 }
