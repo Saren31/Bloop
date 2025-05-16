@@ -40,6 +40,11 @@ public class AuthController {
         return "login";
     }
 
+    /**@GetMapping("/logout")
+    public String logout() {
+        return "accueil";
+    }*/
+
     /**
      * Gère les requêtes GET pour afficher la page d'inscription.
      *
