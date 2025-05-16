@@ -61,8 +61,8 @@ public class SecurityConfig {
                         .permitAll()                    // Autorise l'accès à la page de connexion.
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")           // URL de déconnexion.
-                        .logoutSuccessUrl("/login?logout") // Redirection après déconnexion.
+                        .logoutUrl("/auth/logout")           // URL de déconnexion.
+                        .logoutSuccessUrl("/auth/login?logout") // Redirection après déconnexion.
                         .permitAll()                    // Autorise l'accès à la déconnexion.
                 );
 

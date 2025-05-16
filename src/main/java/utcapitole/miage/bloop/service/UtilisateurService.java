@@ -1,6 +1,8 @@
 package utcapitole.miage.bloop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
@@ -14,7 +16,7 @@ import java.util.Optional;
 @Service
 public class UtilisateurService {
 
-    private UtilisateurRepository utilisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -43,5 +45,10 @@ public class UtilisateurService {
      */
     public List<Utilisateur> recupererTousLesUtilisateurs() {
         return utilisateurRepository.findAll();
+    }
+
+    public Utilisateur getUtilisateurConnecte() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Utilisateur) authentication.getPrincipal();
     }
 }

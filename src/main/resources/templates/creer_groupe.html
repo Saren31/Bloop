@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Groupe</title>
+</head>
+<body>
+<h1>Créer un Nouveau Groupe</h1>
+
+<form th:action="@{/groupes/valider}" method="post" enctype="multipart/form-data">
+    <!-- CSRF token nécessaire pour POST -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <div>
+        <label for="nomGroupe">Nom du Groupe :</label>
+        <input type="text" id="nomGroupe" name="nomGroupe" required>
+    </div>
+
+    <div>
+        <label for="themeGroupe">Thème du Groupe :</label>
+        <input type="text" id="themeGroupe" name="themeGroupe" required>
+    </div>
+
+    <div>
+        <label for="descriptionGroupe">Description :</label>
+        <textarea id="descriptionGroupe" name="descriptionGroupe" rows="4" required></textarea>
+    </div>
+
+    <div>
+        <label for="logoGroupe">Logo du Groupe :</label>
+        <input type="file" id="logoGroupe" name="logoGroupe" accept="image/*">
+    </div>
+
+    <div>
+        <button type="submit">Créer le Groupe</button>
+    </div>
+</form>
+
+</body>
+</html>
