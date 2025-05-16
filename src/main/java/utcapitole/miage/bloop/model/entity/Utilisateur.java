@@ -82,6 +82,7 @@ public class Utilisateur implements UserDetails {
     )
     private List<Utilisateur> demandesEnvoyees = new ArrayList<>();
 
+
     /**
      * Récupère la liste des demandes d'amitié envoyées.
      *
@@ -399,6 +400,26 @@ public class Utilisateur implements UserDetails {
      * @param o L'objet à comparer.
      * @return true si les objets sont égaux, false sinon.
      */
+
+    /**
+     * Gerer la Liste des amis
+     */
+    @ManyToMany
+    @JoinTable(
+            name = "amis",
+            joinColumns = @JoinColumn(name = "utilisateur_id"),
+            inverseJoinColumns = @JoinColumn(name = "ami_id")
+    )
+    private List<Utilisateur> amis = new ArrayList<>();
+
+    public List<Utilisateur> getAmis() {
+        return amis;
+    }
+
+    public void setAmis(List<Utilisateur> amis) {
+        this.amis = amis;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

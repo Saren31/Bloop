@@ -50,7 +50,8 @@ public class SecurityConfig {
                                 "/auth/login",            // Page de connexion personnalisée.
                                 "/auth/register",         // Formulaire d'inscription.
                                 "/auth/register_user",    // Soumission du formulaire d'inscription.
-                                "/confirm**",             // Confirmation par e-mail.
+                                "/confirm**",// Confirmation par e-mail.
+                                "/relations/**",
                                 "/css/**", "/js/**", "/images/**" // Ressources statiques.
                         ).permitAll()                   // Autorise l'accès sans authentification.
                         .anyRequest().authenticated()   // Requiert une authentification pour toutes les autres requêtes.
