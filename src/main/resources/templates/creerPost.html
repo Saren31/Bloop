@@ -7,16 +7,23 @@
 <body>
 <h1>Créer un nouveau post</h1>
 
-<form action="/post/creer" th:object="${post}" method="post" enctype="multipart/form-data">
+<form th:action="@{/post/creer}" th:object="${post}" method="post" enctype="multipart/form-data">
     <label>Texte :</label><br>
     <textarea th:field="*{textePost}" rows="4" cols="50"></textarea><br>
 
     <label>Image :</label><br>
-    <input type="file" name="imageFile"/><br>
+    <input type="file" th:field="*{imageFile}"/><br>
 
     <button type="submit">Publier</button>
 </form>
 
-<a href="/profil/voirProfil">Retour au profil</a>
+<a th:href="@{/profil/voirProfil}">Retour au profil</a>
+
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+<div th:if="${message}" style="color: green;">
+    <p th:text="${message}"></p>
+</div>
 </body>
 </html>

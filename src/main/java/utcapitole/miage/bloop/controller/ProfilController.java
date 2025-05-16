@@ -1,29 +1,25 @@
 package utcapitole.miage.bloop.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jdk.jshell.execution.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.service.EmailService;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
-import java.util.UUID;
+import java.util.List;
 
 @Controller
 @RequestMapping("/profil")
 public class ProfilController {
 
     private final UtilisateurService utilisateurService;
-    private PostService postService;
+    private final PostService postService;
 
     @Autowired
     public ProfilController(UtilisateurService utilisateurService, PostService postService) {
@@ -31,14 +27,12 @@ public class ProfilController {
         this.postService = postService;
     }
 
-    @Autowired
-
     @GetMapping("/voirProfil")
-    public String afficherMonProfil(HttpSession session, Model model) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
+    public String afficherMonProfil(Model model) {
+        Utilisateur utilisateur = getUtilisateurConnecte();
 
         if (utilisateur == null) {
-            return "accueil";
+            return "accueil"; // Redirige vers l'accueil si l'utilisateur n'est pas connecté
         }
 
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
@@ -48,5 +42,9 @@ public class ProfilController {
 
         return "voirProfil";
     }
-}
 
+    private Utilisateur getUtilisateurConnecte() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (Utilisateur) authentication.getPrincipal();
+    }
+}
