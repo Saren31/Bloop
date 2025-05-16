@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -95,4 +97,16 @@ public class RelationService {
 
         return "Demande d'amitié acceptée.";
     }
+
+    //consulter ma liste d'amis
+    public List<Utilisateur> getListeAmis(Long idUser) {
+        Optional<Utilisateur> optUser = utilisateurRepository.findById(idUser);
+
+        if (optUser.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return optUser.get().getAmis();
+    }
+
 }

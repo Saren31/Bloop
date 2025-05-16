@@ -3,7 +3,10 @@ package utcapitole.miage.bloop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.RelationService;
+
+import java.util.List;
 
 /**
  * Contrôleur REST pour gérer les relations entre utilisateurs.
@@ -52,4 +55,12 @@ public class RelationController {
             return ResponseEntity.badRequest().body(resultat);
         }
     }
+    @GetMapping("/amis")
+    public ResponseEntity<List<Utilisateur>> voirListeAmis(@RequestParam Long idUser) {
+        List<Utilisateur> amis = relationService.getListeAmis(idUser);
+        return ResponseEntity.ok(amis);
+    }
+
+
+
 }
