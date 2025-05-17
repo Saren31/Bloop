@@ -13,10 +13,13 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.CommentaireService;
 
-
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * Contrôleur pour gérer les opérations liées aux posts.
+ * Fournit des endpoints pour créer des posts, afficher des posts et ajouter des commentaires.
+ */
 @Controller
 @RequestMapping("/post")
 public class PostController {
@@ -25,21 +28,39 @@ public class PostController {
     private static final String ERROR_ATTRIBUTE = "error";
 
     private final PostService postService;
-
     private final CommentaireService commentaireService;
 
+    /**
+     * Constructeur pour injecter les services nécessaires.
+     *
+     * @param postService Service pour gérer les posts.
+     * @param commentaireService Service pour gérer les commentaires.
+     */
     @Autowired
     public PostController(PostService postService, CommentaireService commentaireService) {
         this.postService = postService;
         this.commentaireService = commentaireService;
     }
 
+    /**
+     * Affiche le formulaire pour créer un nouveau post.
+     *
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Le nom de la vue pour créer un post.
+     */
     @GetMapping("/creer")
     public String afficherFormulaire(Model model) {
         model.addAttribute("post", new PostDTO());
         return CREER_POST_VIEW;
     }
 
+    /**
+     * Traite la création d'un nouveau post.
+     *
+     * @param postDTO Les données du post à créer.
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Le nom de la vue de confirmation ou de création en cas d'erreur.
+     */
     @PostMapping("/creer")
     public String creerPost(@ModelAttribute PostDTO postDTO, Model model) {
         try {
@@ -74,12 +95,24 @@ public class PostController {
         return CREER_POST_VIEW;
     }
 
-    //a bouger dans un service
+    /**
+     * Récupère l'utilisateur actuellement connecté.
+     *
+     * @return L'utilisateur connecté ou null s'il n'est pas authentifié.
+     */
     private Utilisateur getUtilisateurConnecte() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (Utilisateur) authentication.getPrincipal();
     }
 
+    /**
+     * Ajoute un commentaire à un post.
+     *
+     * @param postId L'identifiant du post à commenter.
+     * @param texte Le texte du commentaire.
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Une redirection vers la page du post.
+     */
     @PostMapping("/{postId}/commenter")
     public String commenterPost(@PathVariable Long postId, @RequestParam String texte, Model model) {
         Utilisateur utilisateur = getUtilisateurConnecte();
@@ -88,6 +121,13 @@ public class PostController {
         return "redirect:/post/" + postId;
     }
 
+    /**
+     * Affiche les détails d'un post, y compris ses commentaires.
+     *
+     * @param postId L'identifiant du post à afficher.
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Le nom de la vue pour afficher le post.
+     */
     @GetMapping("/{postId}")
     public String afficherPost(@PathVariable Long postId, Model model) {
         Post post = postService.getPostParId(postId);
@@ -95,5 +135,4 @@ public class PostController {
         model.addAttribute("commentaires", commentaireService.getCommentairesParPost(postId));
         return "afficherPost";
     }
-
 }

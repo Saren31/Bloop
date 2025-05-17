@@ -50,6 +50,12 @@ public class UtilisateurController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Gère les requêtes GET pour rechercher des utilisateurs par leur pseudo.
+     *
+     * @param pseudo Le pseudo à rechercher.
+     * @return Une réponse HTTP contenant la liste des utilisateurs correspondant au pseudo.
+     */
     @GetMapping("/recherche_pseudo")
     public ResponseEntity<List<Utilisateur>> rechercherParPseudo(@RequestParam String pseudo) {
         List<Utilisateur> utilisateurs = utilisateurService.rechercherParPseudo(pseudo);
