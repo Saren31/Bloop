@@ -1,7 +1,9 @@
 package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.Authentication;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.PostRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.List;
@@ -22,8 +24,11 @@ class UtilisateurServiceTest {
     // Mock du service EmailService
     private final EmailService emailService = mock(EmailService.class);
 
+    private final PostRepository postRepository = mock(PostRepository.class);
+
+
     // Instance du service à tester
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, emailService);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, emailService, postRepository);
 
 
     /**
@@ -81,5 +86,56 @@ class UtilisateurServiceTest {
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getPseudoUser()).isEqualTo("testUser1");
         assertThat(result.get(1).getPseudoUser()).isEqualTo("testUser2");
+    }
+
+    @Test
+    void testGetUtilisateurParId_found() {
+        Utilisateur u1 = new Utilisateur();
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
+
+        Utilisateur result = service.getUtilisateurParId(1L);
+
+        assertThat(result).isEqualTo(u1);
+    }
+
+    @Test
+    void testGetUtilisateurParId_notFound() {
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.empty());
+
+        Utilisateur result = service.getUtilisateurParId(2L);
+
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void testGetUtilisateurConnecte() {
+        Utilisateur utilisateur = new Utilisateur();
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(utilisateur);
+
+        // Mock SecurityContextHolder
+        var context = mock(org.springframework.security.core.context.SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(authentication);
+        org.springframework.security.core.context.SecurityContextHolder.setContext(context);
+
+        Utilisateur result = service.getUtilisateurConnecte();
+
+        assertThat(result).isEqualTo(utilisateur);
+    }
+
+    @Test
+    void testSupprimerUtilisateurEtRelations() {
+        Utilisateur utilisateur = mock(Utilisateur.class);
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(utilisateur));
+        // Mocks pour les relations
+        when(utilisateur.getGroupes()).thenReturn(new java.util.ArrayList<>());
+        when(utilisateur.getAmis()).thenReturn(new java.util.ArrayList<>());
+        when(utilisateur.getDemandesEnvoyees()).thenReturn(new java.util.ArrayList<>());
+        when(utilisateur.getDemandesRecues()).thenReturn(new java.util.ArrayList<>());
+
+        service.supprimerUtilisateurEtRelations(1L);
+
+        verify(postRepository).deleteAllByUtilisateur(utilisateur);
+        verify(utilisateurRepository).delete(utilisateur);
     }
 }

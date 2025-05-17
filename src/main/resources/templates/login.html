@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head><title>Connexion</title></head>
 <body>
 <h2>Connexion</h2>
@@ -12,7 +12,9 @@
     <br>
     <button type="submit">Se connecter</button>
 </form>
+<a th:href="@{/auth/register}">S'inscrire</a>
 <p th:if="${param.error}">Identifiants invalides</p>
 <p th:if="${param.logout}">Déconnecté</p>
+<p th:if="${param.deleted}">Compte supprimé !</p>
 </body>
 </html>

@@ -1,10 +1,13 @@
 package utcapitole.miage.bloop.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.PostRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.List;
@@ -18,6 +21,7 @@ public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final EmailService emailService;
+    private final PostRepository postRepository;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -25,9 +29,10 @@ public class UtilisateurService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, EmailService emailService) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, EmailService emailService, PostRepository postRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.emailService = emailService;
+        this.postRepository = postRepository;
     }
 
     /**
@@ -79,6 +84,38 @@ public class UtilisateurService {
      */
     public List<Utilisateur> rechercherParPseudo(String pseudo) {
         return utilisateurRepository.findByPseudoStartingWith(pseudo);
+    }
+
+    @Transactional
+    public void supprimerUtilisateurEtRelations(long idUser) {
+        Utilisateur utilisateur = utilisateurRepository.findById(idUser).orElseThrow();
+        // Supprimer les posts
+        postRepository.deleteAllByUtilisateur(utilisateur);
+
+        // Retirer des groupes
+        for (Groupe groupe : utilisateur.getGroupes()) {
+            groupe.getMembres().remove(utilisateur);
+        }
+        utilisateur.getGroupes().clear();
+
+        // Retirer des amis
+        for (Utilisateur ami : utilisateur.getAmis()) {
+            ami.getAmis().remove(utilisateur);
+        }
+        utilisateur.getAmis().clear();
+
+        // Retirer des demandes envoyées/reçues
+        for (Utilisateur u : utilisateur.getDemandesEnvoyees()) {
+            u.getDemandesRecues().remove(utilisateur);
+        }
+        utilisateur.getDemandesEnvoyees().clear();
+
+        for (Utilisateur u : utilisateur.getDemandesRecues()) {
+            u.getDemandesEnvoyees().remove(utilisateur);
+        }
+        utilisateur.getDemandesRecues().clear();
+
+        utilisateurRepository.delete(utilisateur);
     }
 
 }

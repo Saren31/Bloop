@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import utcapitole.miage.bloop.service.CustomUserDetailsService;
 
 /**
@@ -19,7 +20,7 @@ import utcapitole.miage.bloop.service.CustomUserDetailsService;
 @Configuration
 public class SecurityConfig {
 
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     /**
      * Constructeur pour injecter le service de gestion des utilisateurs personnalisés.
@@ -99,6 +100,11 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder());    // Configure l'encodeur de mot de passe.
 
         return authBuilder.build();
+    }
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
     }
 
 }
