@@ -42,9 +42,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/relations/**")  // Désactive la protection CSRF pour certaines URL.
-                )
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
                                 "/",                       // Page racine.
