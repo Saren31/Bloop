@@ -7,16 +7,15 @@
 <body>
 <h2>Messagerie simple (test)</h2>
 
-<label>Destinataire ID : <input type="number" id="destId"></label>
+<label>Destinataire ID : <input type="number" id="destId"></label>
 <button onclick="chargerHistorique()">Charger</button>
 
 <div id="historique" style="border:1px solid #ccc; height:200px; overflow:auto; margin:10px 0;"></div>
 
-<form onsubmit="envoyer(); return false;">
+<form onsubmit="envoyerViaWS(); return false;">
     <input type="text" id="contenu" placeholder="Votre message..." required>
-    <button type="submit">Envoyer</button>
+    <button type="submit">Envoyer via WebSocket</button>
 </form>
-<button type="button" onclick="envoyerViaWS()">Envoyer via WebSocket</button>
 
 <!-- WebSocket -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
@@ -38,19 +37,6 @@
                 });
             });
         connecterWebSocket();
-    }
-
-    function envoyer() {
-        if (!destId) return alert("Charge une conversation d’abord !");
-        let contenu = document.getElementById('contenu').value;
-        fetch('/api/messages/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `destId=${destId}&contenu=${encodeURIComponent(contenu)}`
-        }).then(r => r.json()).then(msg => {
-            document.getElementById('contenu').value = '';
-            afficherMessage(msg);
-        });
     }
 
     function envoyerViaWS() {
