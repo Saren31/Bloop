@@ -120,4 +120,8 @@ public class UtilisateurService {
         utilisateurRepository.save(utilisateur);
     }
 
+    public Utilisateur findByEmail(String email) {
+        return utilisateurRepository.findByEmailUser(email);
+    }
+
 }
