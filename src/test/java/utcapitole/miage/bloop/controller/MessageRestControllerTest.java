@@ -42,7 +42,7 @@ class MessageRestControllerTest {
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
         when(messageService.historique(1L, 2L)).thenReturn(List.of());
 
-        mockMvc.perform(get("/api/messages/history/2"))
+        mockMvc.perform(get("/messages/history/2"))
                 .andExpect(status().isOk());
     }
 
@@ -53,7 +53,7 @@ class MessageRestControllerTest {
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
         when(messageService.envoyerMessage(1L, 2L, "coucou")).thenReturn(new MessageDTO());
 
-        mockMvc.perform(post("/api/messages/send")
+        mockMvc.perform(post("/messages/send")
                         .param("destId", "2")
                         .param("contenu", "coucou"))
                 .andExpect(status().isOk());

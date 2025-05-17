@@ -34,7 +34,7 @@
     function chargerHistorique() {
         destId = document.getElementById('destId').value;
         if (!destId) return alert("Saisis un ID destinataire !");
-        fetch(`/api/messages/history/${destId}`)
+        fetch(`/messages/history/${destId}`)
             .then(r => r.json())
             .then(msgs => {
                 let h = document.getElementById('historique');

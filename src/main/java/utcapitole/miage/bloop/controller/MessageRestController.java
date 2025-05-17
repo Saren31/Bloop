@@ -17,7 +17,7 @@ import java.util.List;
  * et envoyer de nouveaux messages.
  */
 @RestController
-@RequestMapping("/api/messages")
+@RequestMapping("/messages")
 public class MessageRestController {
 
     private final MessageService messageService;
