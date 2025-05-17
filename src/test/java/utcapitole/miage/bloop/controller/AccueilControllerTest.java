@@ -27,4 +27,12 @@ class AccueilControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("accueil"));
     }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void shouldShowIndexPage() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("accueil"));
+    }
 }
