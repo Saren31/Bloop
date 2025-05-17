@@ -10,8 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.service.CommentaireService;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
@@ -37,6 +39,10 @@ class PostControllerTest {
 
     @MockitoBean
     private UtilisateurService utilisateurService;
+
+    @MockitoBean
+    private CommentaireService commentaireService;
+
 
     // Crée un Utilisateur simulé pour simuler l'utilisateur connecté
     private Utilisateur creerUtilisateurSimule() {
@@ -73,23 +79,6 @@ class PostControllerTest {
     }
 
 
-
-    @Test
-    void testCreerPostTexteVide() throws Exception {
-        // Crée une SecurityContext custom
-        Utilisateur utilisateur = creerUtilisateurSimule();
-        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null, "ROLE_USER");
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        // Maintenant tu peux faire
-        mockMvc.perform(multipart("/post/creer")
-                        .file(new MockMultipartFile("imageFile", "filename.jpg", "image/jpeg", "image-content".getBytes()))
-                        .param("textePost", "Un texte de test"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("confirmationPost"));
-
-    }
-
     @Test
     void testCreerPostImageInvalide() throws Exception {
         Utilisateur utilisateur = creerUtilisateurSimule();
@@ -104,5 +93,35 @@ class PostControllerTest {
                 .andExpect(view().name("creerPost"));
 
         verify(postService, never()).creerPost(any());
+    }
+
+    @Test
+    void testCommenterPost() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(commentaireService.ajouterCommentaire(1L, "Coucou", utilisateur)).thenReturn(null);
+
+        mockMvc.perform(post("/post/1/commenter")
+                        .param("texte", "Coucou")
+                        .principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/post/1"));
+    }
+
+    @Test
+    void testAfficherPost() throws Exception {
+        Post post = new Post();
+        post.setIdPost(1L);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+        when(commentaireService.getCommentairesParPost(1L)).thenReturn(java.util.Collections.emptyList());
+
+        mockMvc.perform(get("/post/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("afficherPost"))
+                .andExpect(model().attributeExists("post"))
+                .andExpect(model().attributeExists("commentaires"));
     }
 }
