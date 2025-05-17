@@ -28,5 +28,15 @@
 <a th:href="@{/post/creer}">Créer un nouveau post</a>
 <br/>
 <a th:href="@{/accueil}">Retour à l'accueil</a>
+
+<form th:action="@{/auth/logout}" method="post">
+  <button type="submit">Se déconnecter</button>
+</form>
+
+<form th:action="@{/profil/me}" method="post"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+  <input type="hidden" name="_method" value="delete"/>
+  <button type="submit">Supprimer mon compte</button>
+</form>
 </body>
 </html>

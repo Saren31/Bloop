@@ -40,11 +40,6 @@ public class AuthController {
         return "login";
     }
 
-    /**@GetMapping("/logout")
-    public String logout() {
-        return "accueil";
-    }*/
-
     /**
      * Gère les requêtes GET pour afficher la page d'inscription.
      *
@@ -69,5 +64,9 @@ public class AuthController {
     public String registerUser(@ModelAttribute Utilisateur user, HttpServletRequest request, Model model) {
         return authService.enregistrerUtilisateur(user, request, model);
     }
+
+
+
+
 
 }

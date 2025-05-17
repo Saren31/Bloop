@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/utilisateurs")
 public class UtilisateurController {
 
-    private UtilisateurService utilisateurService;
+    private final UtilisateurService utilisateurService;
 
     /**
      * Constructeur pour injecter le service des utilisateurs.

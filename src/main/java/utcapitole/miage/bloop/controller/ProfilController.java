@@ -1,7 +1,10 @@
 package utcapitole.miage.bloop.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import utcapitole.miage.bloop.model.entity.Post;
@@ -55,6 +58,22 @@ public class ProfilController {
 
         model.addAttribute("utilisateur", autre);
         return "VoirAutreProfil";
+    }
+
+    @DeleteMapping("/me")
+    public String supprimerProfilConnecte(HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Utilisateur utilisateur) {
+            utilisateurService.supprimerUtilisateurEtRelations(utilisateur.getIdUser());
+            SecurityContextHolder.clearContext();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
+            return "redirect:/auth/login?deleted";
+        }
+        return "redirect:/auth/login?error";
     }
 
 
