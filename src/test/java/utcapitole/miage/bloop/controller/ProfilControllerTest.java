@@ -18,8 +18,7 @@ import utcapitole.miage.bloop.service.UtilisateurService;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProfilController.class)
@@ -142,5 +141,71 @@ class ProfilControllerTest {
                 .andExpect(redirectedUrl("/auth/login?error"));
 
         verify(utilisateurService, never()).supprimerUtilisateurEtRelations(anyLong());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testAfficherFormulaireModification() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
+
+        mockMvc.perform(get("/profil/modifier"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("utilisateur"))
+                .andExpect(view().name("modifierProfil"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testAfficherFormulaireModification_NonConnecte() throws Exception {
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(null);
+
+        mockMvc.perform(get("/profil/modifier"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/auth/login"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testModifierProfil_Succes() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setNomUser("AncienNom");
+        utilisateur.setPrenomUser("AncienPrenom");
+        utilisateur.setPseudoUser("AncienPseudo");
+        utilisateur.setTelUser("0000");
+        utilisateur.setVisibiliteUser(false);
+
+        Utilisateur modifie = new Utilisateur();
+        modifie.setNomUser("NouveauNom");
+        modifie.setPrenomUser("NouveauPrenom");
+        modifie.setPseudoUser("NouveauPseudo");
+        modifie.setTelUser("1234");
+        modifie.setVisibiliteUser(true);
+
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
+
+        mockMvc.perform(post("/profil/modifier")
+                        .param("nomUser", "NouveauNom")
+                        .param("prenomUser", "NouveauPrenom")
+                        .param("pseudoUser", "NouveauPseudo")
+                        .param("telUser", "1234")
+                        .param("visibiliteUser", "true")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+
+        verify(utilisateurService).save(any(Utilisateur.class));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testModifierProfil_NonConnecte() throws Exception {
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(null);
+
+        mockMvc.perform(post("/profil/modifier")
+                        .param("nomUser", "NouveauNom")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/auth/login"));
     }
 }

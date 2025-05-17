@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier mon profil</title>
+</head>
+<body>
+<h1>Modifier mon profil</h1>
+<form th:action="@{/profil/modifier}" th:object="${utilisateur}" method="post">
+    <label>Nom: <input type="text" th:field="*{nomUser}" /></label><br>
+    <label>Prénom: <input type="text" th:field="*{prenomUser}" /></label><br>
+    <label>Pseudo: <input type="text" th:field="*{pseudoUser}" /></label><br>
+    <label>Téléphone: <input type="text" th:field="*{telUser}" /></label><br>
+    <label>Visibilité:
+        <select th:field="*{visibiliteUser}">
+            <option th:value="true" th:text="'Publique'"></option>
+            <option th:value="false" th:text="'Privée'"></option>
+        </select>
+    </label><br>
+    <button type="submit">Enregistrer</button>
+</form>
+<a th:href="@{/profil/voirProfil}">Annuler</a>
+</body>
+</html>

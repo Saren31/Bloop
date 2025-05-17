@@ -76,5 +76,32 @@ public class ProfilController {
         return "redirect:/auth/login?error";
     }
 
+    // Ajoutez dans ProfilController
+
+    @GetMapping("/modifier")
+    public String afficherFormulaireModification(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) {
+            return "redirect:/auth/login";
+        }
+        model.addAttribute("utilisateur", utilisateur);
+        return "modifierProfil";
+    }
+
+    @PostMapping("/modifier")
+    public String modifierProfil(@ModelAttribute("utilisateur") Utilisateur utilisateurModifie) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) {
+            return "redirect:/auth/login";
+        }
+        utilisateur.setNomUser(utilisateurModifie.getNomUser());
+        utilisateur.setPrenomUser(utilisateurModifie.getPrenomUser());
+        utilisateur.setPseudoUser(utilisateurModifie.getPseudoUser());
+        utilisateur.setTelUser(utilisateurModifie.getTelUser());
+        utilisateur.setVisibiliteUser(utilisateurModifie.isVisibiliteUser());
+        utilisateurService.save(utilisateur);
+        return "redirect:/profil/voirProfil";
+    }
+
 
 }

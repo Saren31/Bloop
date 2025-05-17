@@ -20,7 +20,6 @@ import java.util.Optional;
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
-    private final EmailService emailService;
     private final PostRepository postRepository;
 
     /**
@@ -29,9 +28,8 @@ public class UtilisateurService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, EmailService emailService, PostRepository postRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository) {
         this.utilisateurRepository = utilisateurRepository;
-        this.emailService = emailService;
         this.postRepository = postRepository;
     }
 
@@ -116,6 +114,10 @@ public class UtilisateurService {
         utilisateur.getDemandesRecues().clear();
 
         utilisateurRepository.delete(utilisateur);
+    }
+
+    public void save(Utilisateur utilisateur) {
+        utilisateurRepository.save(utilisateur);
     }
 
 }
