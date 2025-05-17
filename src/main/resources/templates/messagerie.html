@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Messagerie Simple</title>
@@ -11,6 +11,13 @@
 <button onclick="chargerHistorique()">Charger</button>
 
 <div id="historique" style="border:1px solid #ccc; height:200px; overflow:auto; margin:10px 0;"></div>
+
+<!-- Champ CSRF caché (Thymeleaf) -->
+<input type="hidden"
+       id="csrfToken"
+       th:name="${_csrf.parameterName}"
+       th:value="${_csrf.token}"
+       th:data-header="${_csrf.headerName}" />
 
 <form onsubmit="envoyerViaWS(); return false;">
     <input type="text" id="contenu" placeholder="Votre message..." required>
@@ -39,14 +46,27 @@
         connecterWebSocket();
     }
 
+    function getCsrfHeader() {
+        // Permet de récupérer le header CSRF à envoyer si jamais tu fais des fetch (ici pour REST, pas WebSocket)
+        const csrfInput = document.getElementById('csrfToken');
+        return {
+            header: csrfInput.getAttribute('data-header') || 'X-CSRF-TOKEN',
+            token: csrfInput.value
+        };
+    }
+
     function envoyerViaWS() {
         if (!destId) return alert("Charge une conversation d’abord !");
         let contenu = document.getElementById('contenu').value;
-        stompClient.send("/app/chat", {}, JSON.stringify({
-            destinataireId: Number(destId),
-            contenu: contenu
-        }));
-        document.getElementById('contenu').value = '';
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/chat", {}, JSON.stringify({
+                destinataireId: Number(destId),
+                contenu: contenu
+            }));
+            document.getElementById('contenu').value = '';
+        } else {
+            alert("WebSocket non connecté !");
+        }
     }
 
     function afficherMessage(msg) {
