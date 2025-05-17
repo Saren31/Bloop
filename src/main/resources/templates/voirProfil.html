@@ -33,6 +33,10 @@
   <button type="submit">Se déconnecter</button>
 </form>
 
+<form th:action="@{/profil/modifier}" method="get">
+  <button type="submit">Modifier mon profil</button>
+</form>
+
 <form th:action="@{/profil/me}" method="post"
       onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
   <input type="hidden" name="_method" value="delete"/>
