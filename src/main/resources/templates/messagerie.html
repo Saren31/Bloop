@@ -76,6 +76,7 @@
         stompClient.connect({}, function() {
             stompClient.subscribe("/user/queue/messages", function(message) {
                 let msg = JSON.parse(message.body);
+                console.log("Message reçu via WebSocket :", msg);
                 afficherMessage(msg);
             });
         });

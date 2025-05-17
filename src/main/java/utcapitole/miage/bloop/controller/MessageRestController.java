@@ -14,23 +14,27 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/messages")
 public class MessageRestController {
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private UtilisateurService utilisateurService;
 
-    @GetMapping("/history/{destId}")
-    public List<Message> getHistorique(@PathVariable Long destId, Principal principal) {
-        Long expId = utilisateurService.findByEmail(principal.getName()).getIdUser();
-        return messageService.getHistorique(expId, destId);
+    private final MessageService messageService;
+    private final UtilisateurService utilisateurService;
+
+    public MessageRestController(MessageService ms, UtilisateurService us) {
+        this.messageService = ms;
+        this.utilisateurService = us;
     }
 
+    // Récupère l’historique
+    @GetMapping("/history/{destId}")
+    public List<MessageDTO> getHistorique(@PathVariable Long destId, Principal principal) {
+        Utilisateur expediteur = utilisateurService.getUtilisateurConnecte();
+        return messageService.historique(expediteur.getIdUser(), destId);
+    }
+
+    // Envoie un message
     @PostMapping("/send")
     public MessageDTO sendMessage(@RequestParam Long destId, @RequestParam String contenu, Principal principal) {
-        // Récupère l'utilisateur courant (expéditeur)
         Utilisateur expediteur = utilisateurService.getUtilisateurConnecte();
-        Message m = messageService.envoyerMessage(expediteur.getIdUser(), destId, contenu);
-        return messageService.toDTO(m); // <- assure que tu retournes un MessageDTO et pas un Message (sinon le frontend ne reçoit pas le bon objet)
+        return messageService.envoyerMessage(expediteur.getIdUser(), destId, contenu);
     }
-
 }
+

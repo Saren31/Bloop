@@ -12,44 +12,39 @@ import java.util.List;
 
 @Service
 public class MessageService {
-    @Autowired
-    private MessageRepository messageRepository;
+    private final MessageRepository repo;
+    private final UtilisateurRepository userRepo;
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
-
-    // Sauvegarder un message
-    public Message envoyerMessage(Long expId, Long destId, String contenu) {
-        Message m = new Message();
-        m.setExpediteur(utilisateurRepository.findById(expId).orElseThrow());
-        m.setDestinataire(utilisateurRepository.findById(destId).orElseThrow());
-        m.setContenu(contenu);
-        m.setDateEnvoi(LocalDateTime.now());
-        return messageRepository.save(m);
+    public MessageService(MessageRepository repo, UtilisateurRepository userRepo) {
+        this.repo = repo; this.userRepo = userRepo;
     }
 
-    // Cette méthode convertit Message → MessageDTO (exemple simple)
+    public MessageDTO envoyerMessage(Long expId, Long destId, String contenu) {
+        Message m = new Message();
+        m.setExpediteur(userRepo.findById(expId).orElseThrow());
+        m.setDestinataire(userRepo.findById(destId).orElseThrow());
+        m.setContenu(contenu);
+        m.setDateEnvoi(LocalDateTime.now());
+        repo.save(m);
+        return toDTO(m);
+    }
+
+    public List<MessageDTO> historique(Long expId, Long destId) {
+        return repo.historique(expId, destId).stream().map(this::toDTO).toList();
+    }
+
     public MessageDTO toDTO(Message m) {
         MessageDTO dto = new MessageDTO();
         dto.setId(m.getId());
         dto.setContenu(m.getContenu());
         dto.setDateEnvoi(m.getDateEnvoi());
-        // Pour l’affichage simple côté JS :
-        MessageDTO.UtilisateurSummary exp = new MessageDTO.UtilisateurSummary();
-        exp.setIdUser(m.getExpediteur().getIdUser());
-        exp.setNomUser(m.getExpediteur().getNomUser());
-        dto.setExpediteur(exp);
-        // Pour le JS ou d’autres traitements
-        dto.setExpediteurId(m.getExpediteur().getIdUser());
+        // Résumé expéditeur
+        MessageDTO.UtilisateurSummary u = new MessageDTO.UtilisateurSummary();
+        u.setIdUser(m.getExpediteur().getIdUser());
+        u.setNomUser(m.getExpediteur().getNomUser());
+        dto.setExpediteur(u);
         dto.setDestinataireId(m.getDestinataire().getIdUser());
         return dto;
     }
-
-
-    // Récupérer l'historique
-    public List<Message> getHistorique(Long expId, Long destId) {
-        return messageRepository.findByExpediteur_IdUserAndDestinataire_IdUserOrExpediteur_IdUserAndDestinataire_IdUserOrderByDateEnvoiAsc(
-                expId, destId, destId, expId
-        );
-    }
 }
+

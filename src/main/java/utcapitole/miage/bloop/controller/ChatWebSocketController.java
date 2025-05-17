@@ -1,11 +1,9 @@
 package utcapitole.miage.bloop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import utcapitole.miage.bloop.dto.MessageDTO;
-import utcapitole.miage.bloop.model.entity.Message;
 import utcapitole.miage.bloop.service.MessageService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
@@ -13,23 +11,46 @@ import java.security.Principal;
 
 @Controller
 public class ChatWebSocketController {
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private UtilisateurService utilisateurService;
-    @Autowired
-    private MessageService messageService;
+
+    private final MessageService messageService;
+    private final UtilisateurService utilisateurService;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public ChatWebSocketController(MessageService messageService,
+                                   UtilisateurService utilisateurService,
+                                   SimpMessagingTemplate messagingTemplate) {
+        this.messageService = messageService;
+        this.utilisateurService = utilisateurService;
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @MessageMapping("/chat")
     public void envoyerViaWS(MessageDTO message, Principal principal) {
-        Long expId = utilisateurService.findByEmail(principal.getName()).getIdUser();
-        // Sauvegarde le message
-        Message saved = messageService.envoyerMessage(expId, message.getDestinataireId(), message.getContenu());
-        // Notifie le destinataire en temps réel
+        long expId = utilisateurService.findByEmail(principal.getName()).getIdUser();
+        MessageDTO saved = messageService.envoyerMessage(expId, message.getDestinataireId(), message.getContenu());
+
+        String destinataireUsername = utilisateurService
+                .getUtilisateurParId(message.getDestinataireId())
+                .getEmailUser(); // ou .getUsername() selon ton modèle
+
+        String envoyeurUsername = utilisateurService
+                .getUtilisateurParId(expId)
+                .getEmailUser(); //
+
+
+
         messagingTemplate.convertAndSendToUser(
-                String.valueOf(message.getDestinataireId()), // <- par défaut c’est le nom, à adapter !
+                destinataireUsername,
+                "/queue/messages",
+                saved
+        );
+
+        messagingTemplate.convertAndSendToUser(
+                envoyeurUsername,
                 "/queue/messages",
                 saved
         );
     }
+
 }
+
