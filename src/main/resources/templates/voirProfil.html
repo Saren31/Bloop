@@ -17,11 +17,13 @@
 <h2>Mes publications</h2>
 <div th:if="${posts != null}">
   <div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+  <a th:href="@{'/post/' + ${post.idPost}}">
     <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
     <div th:if="${post.imagePost != null}">
       <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
     </div>
     <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
+  </a>
   </div>
 </div>
 
@@ -29,7 +31,7 @@
 <br/>
 <a th:href="@{/accueil}">Retour à l'accueil</a>
 <br/>
-<a href="/messagerie">Messagerie test</a>
+<a th:href="@{/messagerie}">Messagerie test</a>
 
 
 <form th:action="@{/auth/logout}" method="post">

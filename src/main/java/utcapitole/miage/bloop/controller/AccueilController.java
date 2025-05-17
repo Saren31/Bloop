@@ -19,4 +19,9 @@ public class AccueilController {
         return "accueil";
     }
 
+    @GetMapping("/")
+    public String index() {
+        return "accueil";
+    }
+
 }
