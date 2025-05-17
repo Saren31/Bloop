@@ -52,6 +52,7 @@ public class SecurityConfig {
                                 "/auth/register_user",    // Soumission du formulaire d'inscription.
                                 "/confirm**",// Confirmation par e-mail.
                                 "/relations/**",
+                                "/evenement/**",
                                 "/css/**", "/js/**", "/images/**" // Ressources statiques.
                         ).permitAll()                   // Autorise l'accès sans authentification.
                         .anyRequest().authenticated()   // Requiert une authentification pour toutes les autres requêtes.

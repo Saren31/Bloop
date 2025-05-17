@@ -1,21 +1,28 @@
 package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
+
 @Entity
-@Table(name = "evenement")
 public class Evenement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEvenement;
+    private Long id;
 
     private String titre;
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dateEvenement;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date dateDebut;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private Date dateFin;
 
     private String lieu;
 
@@ -23,52 +30,31 @@ public class Evenement {
     @JoinColumn(name = "organisateur_id")
     private Utilisateur organisateur;
 
+    public Long getId() { return id; }
 
-    public Long getIdEvenement() {
-        return idEvenement;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public void setIdEvenement(Long idEvenement) {
-        this.idEvenement = idEvenement;
-    }
+    public String getTitre() { return titre; }
 
-    public String getTitre() {
-        return titre;
-    }
+    public void setTitre(String titre) { this.titre = titre; }
 
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
+    public String getDescription() { return description; }
 
-    public String getDescription() {
-        return description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Date getDateDebut() { return dateDebut; }
 
-    public Date getDateEvenement() {
-        return dateEvenement;
-    }
+    public void setDateDebut(Date dateDebut) { this.dateDebut = dateDebut; }
 
-    public void setDateEvenement(Date dateEvenement) {
-        this.dateEvenement = dateEvenement;
-    }
+    public Date getDateFin() { return dateFin; }
 
-    public String getLieu() {
-        return lieu;
-    }
+    public void setDateFin(Date dateFin) { this.dateFin = dateFin; }
 
-    public void setLieu(String lieu) {
-        this.lieu = lieu;
-    }
+    public String getLieu() { return lieu; }
 
-    public Utilisateur getOrganisateur() {
-        return organisateur;
-    }
+    public void setLieu(String lieu) { this.lieu = lieu; }
 
-    public void setOrganisateur(Utilisateur organisateur) {
-        this.organisateur = organisateur;
-    }
+    public Utilisateur getOrganisateur() { return organisateur; }
+
+    public void setOrganisateur(Utilisateur organisateur) { this.organisateur = organisateur; }
 }

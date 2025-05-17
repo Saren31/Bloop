@@ -2,6 +2,7 @@ package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.EvenementRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.List;
@@ -13,7 +14,9 @@ import static org.mockito.Mockito.*;
 class UtilisateurServiceTest {
 
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository);
+    private final EvenementRepository evenementRepository = mock(EvenementRepository.class);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, evenementRepository);
+
 
     @Test
     void testRecupererTousLesUtilisateurs() {

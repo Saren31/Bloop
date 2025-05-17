@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Créer un événement</title>
+    <title>Créer un Événement</title>
 </head>
 <body>
-
 <h1>Créer un événement</h1>
 
 <form th:action="@{/evenement/creer}" th:object="${evenement}" method="post">
-    <label for="titre">Titre :</label><br>
+    <label>Titre:</label>
     <input type="text" th:field="*{titre}" required/><br>
 
-    <label for="description">Description :</label><br>
-    <textarea th:field="*{description}" rows="5" cols="50"></textarea><br>
+    <label>Description:</label>
+    <textarea th:field="*{description}" rows="4" cols="50"></textarea><br>
 
-    <label for="dateEvenement">Date (format: yyyy-MM-ddTHH:mm):</label><br>
-    <input type="datetime-local" th:field="*{dateEvenement}" required/><br>
+    <label>Date Début:</label>
+    <input type="datetime-local" th:field="*{dateDebut}" required/><br>
 
-    <label for="lieu">Lieu :</label><br>
-    <input type="text" th:field="*{lieu}" required/><br><br>
+    <label>Date Fin:</label>
+    <input type="datetime-local" th:field="*{dateFin}" required/><br>
+
+    <label>Lieu:</label>
+    <input type="text" th:field="*{lieu}" required/><br>
 
     <button type="submit">Créer</button>
 </form>
 
-<br>
-<a href="/profil/voirProfil">Retour au profil</a>
-
+<a href="/accueil">Retour à l'accueil</a>
 </body>
 </html>

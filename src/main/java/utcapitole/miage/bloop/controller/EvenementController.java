@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.EvenementService;
+import utcapitole.miage.bloop.service.UtilisateurService;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/evenement")
@@ -16,6 +19,9 @@ public class EvenementController {
     @Autowired
     private EvenementService evenementService;
 
+    @Autowired
+    private UtilisateurService utilisateurService;
+
     @GetMapping("/creer")
     public String afficherFormulaire(Model model) {
         model.addAttribute("evenement", new Evenement());
@@ -23,10 +29,8 @@ public class EvenementController {
     }
 
     @PostMapping("/creer")
-    public String creerEvenement(@ModelAttribute Evenement evenement,
-                                 HttpSession session,
-                                 Model model) {
-        Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
+    public String creerEvenement(@ModelAttribute Evenement evenement, HttpSession session, Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
         if (utilisateur == null) {
             return "login";
@@ -34,8 +38,18 @@ public class EvenementController {
 
         evenement.setOrganisateur(utilisateur);
         evenementService.creerEvenement(evenement);
-
         model.addAttribute("message", "Événement créé avec succès !");
         return "voirProfil";
     }
+
+    @GetMapping("/mesEvenements")
+    public String afficherMesEvenements(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) return "login";
+
+        List<Evenement> evenements = evenementService.getEvenementsParOrganisateur(utilisateur.getIdUser());
+        model.addAttribute("evenements", evenements);
+        return "mesEvenements";
+    }
+
 }
