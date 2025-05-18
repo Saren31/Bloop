@@ -59,4 +59,13 @@ class PostServiceTest {
 
         assertThat(exception.getMessage()).contains("Post introuvable pour l'identifiant donné.");
     }
+
+    @Test
+    void testSupprimerPost_Succes() {
+        doNothing().when(postRepository).deleteById(1L);
+
+        postService.supprimerPost(1L);
+
+        verify(postRepository).deleteById(1L);
+    }
 }

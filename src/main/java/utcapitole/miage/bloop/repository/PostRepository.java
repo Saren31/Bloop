@@ -10,4 +10,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUtilisateur_IdUser(Long idUser);
 
     void deleteAllByUtilisateur(Utilisateur utilisateur);
+
+    List<Post> findByUtilisateur(Utilisateur utilisateur);
 }

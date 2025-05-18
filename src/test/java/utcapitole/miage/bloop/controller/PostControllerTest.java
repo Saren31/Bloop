@@ -124,4 +124,61 @@ class PostControllerTest {
                 .andExpect(model().attributeExists("post"))
                 .andExpect(model().attributeExists("commentaires"));
     }
+
+    @Test
+    void testSupprimerPost_Succes() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        Post post = new Post();
+        post.setIdPost(1L);
+        post.setUtilisateur(utilisateur);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(delete("/post/1/supprimer").principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+
+        verify(postService).supprimerPost(1L);
+    }
+
+    @Test
+    void testSupprimerPost_PostInexistant() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+
+        when(postService.getPostParId(1L)).thenThrow(new IllegalArgumentException("Post introuvable pour l'identifiant donné."));
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(delete("/post/1/supprimer").principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+
+        verify(postService, never()).supprimerPost(1L);
+    }
+
+    @Test
+    void testSupprimerPost_NonAutorise() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        Utilisateur autre = new Utilisateur();
+        autre.setIdUser(2L);
+
+        Post post = new Post();
+        post.setIdPost(1L);
+        post.setUtilisateur(autre);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(delete("/post/1/supprimer").principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+
+        verify(postService, never()).supprimerPost(1L);
+    }
 }
