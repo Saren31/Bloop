@@ -159,11 +159,12 @@ public class PostController {
         Utilisateur utilisateur = getUtilisateurConnecte();
         if (utilisateur == null) return "login";
 
-        Post post = postService.getPostParId(postId);
-        if (post == null) {
+        Post post;
+        try {
+            post = postService.getPostParId(postId);
+        } catch (IllegalArgumentException e) {
             model.addAttribute(ERROR_ATTRIBUTE, "Post introuvable.");
-            model.addAttribute("utilisateur", utilisateur);
-            return "voirProfil";
+            return "redirect:/profil/voirProfil";
         }
 
         Long postUserId = post.getUtilisateur().getIdUser();
@@ -171,17 +172,11 @@ public class PostController {
 
         if (!postUserId.equals(currentUserId)) {
             model.addAttribute(ERROR_ATTRIBUTE, "Vous n'êtes pas autorisé à supprimer ce post.");
-            model.addAttribute("utilisateur", utilisateur);
-            model.addAttribute("posts", postService.findByUtilisateur(utilisateur)); // 也加上帖子列表
-            return "voirProfil";
+            return "redirect:/profil/voirProfil";
         }
 
         postService.supprimerPost(postId);
-
-        model.addAttribute("utilisateur", utilisateur);
-        model.addAttribute("posts", postService.findByUtilisateur(utilisateur));
-        model.addAttribute("message", "Post supprimé avec succès.");
-        return "voirProfil";
+        return "redirect:/profil/voirProfil";
     }
 
 }
