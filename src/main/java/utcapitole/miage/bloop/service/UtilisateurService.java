@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.EvenementRepository;
 import utcapitole.miage.bloop.repository.PostRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
@@ -21,6 +23,7 @@ public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PostRepository postRepository;
+    private final EvenementRepository evenementRepository;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -28,9 +31,10 @@ public class UtilisateurService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository, EvenementRepository evenementRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.postRepository = postRepository;
+        this.evenementRepository = evenementRepository;
     }
 
     /**
@@ -122,6 +126,10 @@ public class UtilisateurService {
 
     public Utilisateur findByEmail(String email) {
         return utilisateurRepository.findByEmailUser(email);
+    }
+
+    public List<Evenement> getEvenementsParUtilisateur(Utilisateur utilisateur) {
+        return evenementRepository.findByOrganisateur(utilisateur);
     }
 
 }
