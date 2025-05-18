@@ -15,8 +15,7 @@
 <p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
 
 <h2>Mes publications</h2>
-<div th:if="${posts != null}">
-  <div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+<div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
   <a th:href="@{'/post/' + ${post.idPost}}">
     <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
     <div th:if="${post.imagePost != null}">
@@ -24,8 +23,12 @@
     </div>
     <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
   </a>
-  </div>
+  <!-- 🔴 Supprimer le post -->
+  <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get" style="margin-top: 10px;">
+    <button type="submit">🗑️ Supprimer</button>
+  </form>
 </div>
+
 
 <a th:href="@{/post/creer}">Créer un nouveau post</a>
 <br/>
@@ -47,5 +50,7 @@
   <input type="hidden" name="_method" value="delete"/>
   <button type="submit">Supprimer mon compte</button>
 </form>
+
+
 </body>
 </html>

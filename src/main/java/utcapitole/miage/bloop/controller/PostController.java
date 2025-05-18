@@ -135,4 +135,53 @@ public class PostController {
         model.addAttribute("commentaires", commentaireService.getCommentairesParPost(postId));
         return "afficherPost";
     }
+
+    /**
+     * Supprime un post appartenant à l'utilisateur connecté.
+     *
+     * @param postId ID du post à supprimer
+     * @param model  Le modèle pour afficher des messages
+     * @return redirection vers le profil ou une page d'erreur
+     */
+    @GetMapping("/{postId}/confirmer-suppression")
+    public String confirmerSuppression(@PathVariable Long postId, Model model) {
+        Post post = postService.getPostParId(postId);
+        if (post == null) {
+            return "erreur";
+        }
+        model.addAttribute("post", post);
+        return "confirmerSuppression";
+    }
+
+
+    @DeleteMapping("/{postId}/supprimer")
+    public String supprimerPost(@PathVariable Long postId, Model model) {
+        Utilisateur utilisateur = getUtilisateurConnecte();
+        if (utilisateur == null) return "login";
+
+        Post post = postService.getPostParId(postId);
+        if (post == null) {
+            model.addAttribute(ERROR_ATTRIBUTE, "Post introuvable.");
+            model.addAttribute("utilisateur", utilisateur);
+            return "voirProfil";
+        }
+
+        Long postUserId = post.getUtilisateur().getIdUser();
+        Long currentUserId = utilisateur.getIdUser();
+
+        if (!postUserId.equals(currentUserId)) {
+            model.addAttribute(ERROR_ATTRIBUTE, "Vous n'êtes pas autorisé à supprimer ce post.");
+            model.addAttribute("utilisateur", utilisateur);
+            model.addAttribute("posts", postService.findByUtilisateur(utilisateur)); // 也加上帖子列表
+            return "voirProfil";
+        }
+
+        postService.supprimerPost(postId);
+
+        model.addAttribute("utilisateur", utilisateur);
+        model.addAttribute("posts", postService.findByUtilisateur(utilisateur));
+        model.addAttribute("message", "Post supprimé avec succès.");
+        return "voirProfil";
+    }
+
 }

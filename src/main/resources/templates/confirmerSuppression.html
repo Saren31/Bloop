@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmer la suppression</title>
+</head>
+<body>
+
+<h2>Confirmation de suppression</h2>
+
+<p>Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.</p>
+
+<div style="border: 1px solid #ccc; padding: 10px;">
+    <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
+    <div th:if="${post.imagePost != null}">
+        <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
+    </div>
+    <p><strong>Date de publication:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
+</div>
+
+<!-- Formulaire de confirmation de suppression -->
+<form th:action="@{'/post/' + ${post.idPost} + '/supprimer'}" method="post">
+    <input type="hidden" name="_method" value="delete"/>
+    <button type="submit">✅ Oui, supprimer</button>
+</form>
+
+<!-- Lien pour annuler -->
+<a href="/profil/voirProfil">❌ Annuler</a>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package utcapitole.miage.bloop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Post;
+import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.PostRepository;
 
 import java.util.List;
@@ -72,6 +73,17 @@ public class PostService {
      */
     public List<Post> getPostsByUtilisateurId(Long idUser) {
         return postRepository.findByUtilisateur_IdUser(idUser);
+    }
+
+    public void supprimerPost(Long id) {
+        postRepository.deleteById(id);
+    }
+
+    public List<Post> findByUtilisateur(Utilisateur utilisateur) {
+        if (utilisateur == null) {
+            throw new IllegalArgumentException("L'utilisateur ne peut pas être null.");
+        }
+        return postRepository.findByUtilisateur(utilisateur);
     }
 
 }
