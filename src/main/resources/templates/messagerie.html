@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Messagerie Simple</title>
+</head>
+<body>
+<h2>Messagerie simple (test)</h2>
+
+<label>Destinataire ID : <input type="number" id="destId"></label>
+<button onclick="chargerHistorique()">Charger</button>
+
+<div id="historique" style="border:1px solid #ccc; height:200px; overflow:auto; margin:10px 0;"></div>
+
+<!-- Champ CSRF caché (Thymeleaf) -->
+<input type="hidden"
+       id="csrfToken"
+       th:name="${_csrf.parameterName}"
+       th:value="${_csrf.token}"
+       th:data-header="${_csrf.headerName}" />
+
+<form onsubmit="envoyerViaWS(); return false;">
+    <input type="text" id="contenu" placeholder="Votre message..." required>
+    <button type="submit">Envoyer via WebSocket</button>
+</form>
+
+<!-- WebSocket -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient = null;
+    let destId = null;
+
+    function chargerHistorique() {
+        destId = document.getElementById('destId').value;
+        if (!destId) return alert("Saisis un ID destinataire !");
+        fetch(`/messages/history/${destId}`)
+            .then(r => r.json())
+            .then(msgs => {
+                let h = document.getElementById('historique');
+                h.innerHTML = '';
+                msgs.forEach(m => {
+                    h.innerHTML += `<div><b>${m.expediteur.nomUser || m.expediteur.idUser}:</b> ${m.contenu} <i style="color:grey;font-size:smaller">(${m.dateEnvoi || ""})</i></div>`;
+                });
+            });
+        connecterWebSocket();
+    }
+
+    function getCsrfHeader() {
+        // Permet de récupérer le header CSRF à envoyer si jamais tu fais des fetch (ici pour REST, pas WebSocket)
+        const csrfInput = document.getElementById('csrfToken');
+        return {
+            header: csrfInput.getAttribute('data-header') || 'X-CSRF-TOKEN',
+            token: csrfInput.value
+        };
+    }
+
+    function envoyerViaWS() {
+        if (!destId) return alert("Charge une conversation d’abord !");
+        let contenu = document.getElementById('contenu').value;
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/chat", {}, JSON.stringify({
+                destinataireId: Number(destId),
+                contenu: contenu
+            }));
+            document.getElementById('contenu').value = '';
+        } else {
+            alert("WebSocket non connecté !");
+        }
+    }
+
+    function afficherMessage(msg) {
+        let h = document.getElementById('historique');
+        h.innerHTML += `<div><b>${msg.expediteur.nomUser || msg.expediteur.idUser}:</b> ${msg.contenu} <i style="color:grey;font-size:smaller">(${msg.dateEnvoi || ""})</i></div>`;
+        h.scrollTop = h.scrollHeight;
+    }
+
+    function connecterWebSocket() {
+        if (stompClient) stompClient.disconnect();
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function() {
+            stompClient.subscribe("/user/queue/messages", function(message) {
+                let msg = JSON.parse(message.body);
+                console.log("Message reçu via WebSocket :", msg);
+                afficherMessage(msg);
+            });
+        });
+    }
+</script>
+</body>
+</html>

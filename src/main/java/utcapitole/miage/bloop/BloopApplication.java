@@ -58,7 +58,7 @@ public class BloopApplication {
 			u1.setNomUser("Alice");
 			u1.setPrenomUser("Test");
 			u1.setEmailUser("alice@ut-capitole.fr");
-			u1.setMdpUser("123");
+			u1.setMdpUser(passwordEncoder.encode("test"));
 			u1.setPseudoUser("alice");
 			u1.setTelUser("0000000001");
 			u1.setVisibiliteUser(true);

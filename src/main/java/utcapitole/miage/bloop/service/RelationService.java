@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service pour gérer les relations entre utilisateurs, comme l'envoi de demandes d'amitié.
+ * Service pour gérer les relations entre utilisateurs, comme l'envoi de demandes d'amitié,
+ * la gestion des demandes, la consultation de la liste d'amis et la suppression d'amis.
  */
 @Service
 public class RelationService {
@@ -67,6 +68,14 @@ public class RelationService {
         return "Demande d’amitié envoyée avec succès.";
     }
 
+    /**
+     * Gère une demande d'amitié (acceptation ou refus).
+     *
+     * @param idReceveur L'identifiant de l'utilisateur recevant la demande.
+     * @param idEnvoyeur L'identifiant de l'utilisateur ayant envoyé la demande.
+     * @param accepter   Indique si la demande est acceptée (true) ou refusée (false).
+     * @return Un message indiquant le résultat de l'opération.
+     */
     public String gererDemandeAmitie(Long idReceveur, Long idEnvoyeur, boolean accepter) {
         Optional<Utilisateur> optReceveur = utilisateurRepository.findById(idReceveur);
         Optional<Utilisateur> optEnvoyeur = utilisateurRepository.findById(idEnvoyeur);
@@ -106,7 +115,12 @@ public class RelationService {
         }
     }
 
-    //consulter ma liste d'amis
+    /**
+     * Récupère la liste des amis d'un utilisateur.
+     *
+     * @param idUser L'identifiant de l'utilisateur.
+     * @return Une liste contenant les amis de l'utilisateur, ou une liste vide si l'utilisateur n'existe pas.
+     */
     public List<Utilisateur> getListeAmis(Long idUser) {
         Optional<Utilisateur> optUser = utilisateurRepository.findById(idUser);
 
@@ -117,7 +131,13 @@ public class RelationService {
         return optUser.get().getAmis();
     }
 
-    //SUPPRIMER UN AMI
+    /**
+     * Supprime un ami de la liste d'amis d'un utilisateur.
+     *
+     * @param idUser L'identifiant de l'utilisateur effectuant la suppression.
+     * @param idAmi  L'identifiant de l'ami à supprimer.
+     * @return Un message indiquant le résultat de l'opération.
+     */
     public String supprimerAmi(Long idUser, Long idAmi) {
         Optional<Utilisateur> optUser = utilisateurRepository.findById(idUser);
         Optional<Utilisateur> optAmi = utilisateurRepository.findById(idAmi);
@@ -141,6 +161,4 @@ public class RelationService {
 
         return "Ami supprimé avec succès.";
     }
-
-
 }

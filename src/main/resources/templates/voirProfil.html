@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Mon Profil</title>
@@ -19,11 +19,18 @@
     <p>Les informations de l’utilisateur ne sont pas disponibles</p>
 </div>
 
-<br>
-
-<h2>Mes événements</h2>
-
-<a href="/evenement/creer" style="color: blue; text-decoration: underline;">Créer un nouvel événement</a>
+<h2>Mes publications</h2>
+<div th:if="${posts != null}">
+    <div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+        <a th:href="@{'/post/' + ${post.idPost}}">
+            <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
+            <div th:if="${post.imagePost != null}">
+                <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
+            </div>
+            <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
+        </a>
+    </div>
+</div>
 
 <div th:if="${evenements != null}">
     <div th:each="event : ${evenements}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
@@ -37,8 +44,27 @@
     </div>
 </div>
 
-<br>
+<a th:href="@{/post/creer}">Créer un nouveau post</a>
+<br/>
+<a th:href="@{/evenement/creer}" style="color: blue; text-decoration: underline;">Créer un nouvel événement</a>
+<br/>
+<a th:href="@{/accueil}">Retour à l'accueil</a>
+<br/>
+<a th:href="@{/messagerie}">Messagerie test</a>
 
-<a href="/accueil">Retour à l'accueil</a>
+
+<form th:action="@{/auth/logout}" method="post">
+    <button type="submit">Se déconnecter</button>
+</form>
+
+<form th:action="@{/profil/modifier}" method="get">
+    <button type="submit">Modifier mon profil</button>
+</form>
+
+<form th:action="@{/profil/me}" method="post"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
+    <input type="hidden" name="_method" value="delete"/>
+    <button type="submit">Supprimer mon compte</button>
+</form>
 </body>
 </html>

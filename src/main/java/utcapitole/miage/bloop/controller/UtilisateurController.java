@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/utilisateurs")
 public class UtilisateurController {
 
-    private UtilisateurService utilisateurService;
+    private final UtilisateurService utilisateurService;
 
     /**
      * Constructeur pour injecter le service des utilisateurs.
@@ -48,5 +48,17 @@ public class UtilisateurController {
         return utilisateurService.recupererUtilisateurParId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Gère les requêtes GET pour rechercher des utilisateurs par leur pseudo.
+     *
+     * @param pseudo Le pseudo à rechercher.
+     * @return Une réponse HTTP contenant la liste des utilisateurs correspondant au pseudo.
+     */
+    @GetMapping("/recherche_pseudo")
+    public ResponseEntity<List<Utilisateur>> rechercherParPseudo(@RequestParam String pseudo) {
+        List<Utilisateur> utilisateurs = utilisateurService.rechercherParPseudo(pseudo);
+        return ResponseEntity.ok(utilisateurs);
     }
 }
