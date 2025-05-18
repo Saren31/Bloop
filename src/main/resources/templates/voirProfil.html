@@ -1,36 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mon Profil</title>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
 </head>
 <body>
 <h1>Bienvenue sur votre profil</h1>
 
-<p><strong>Nom:</strong> <span th:text="${utilisateur.nomUser}"></span></p>
-<p><strong>Prénom:</strong> <span th:text="${utilisateur.prenomUser}"></span></p>
-<p><strong>Email:</strong> <span th:text="${utilisateur.emailUser}"></span></p>
-<p><strong>Pseudo:</strong> <span th:text="${utilisateur.pseudoUser}"></span></p>
-<p><strong>Téléphone:</strong> <span th:text="${utilisateur.telUser}"></span></p>
-<p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
+<div th:if="${utilisateur != null}">
+    <p><strong>Nom:</strong> <span th:text="${utilisateur.nomUser}"></span></p>
+    <p><strong>Prénom:</strong> <span th:text="${utilisateur.prenomUser}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${utilisateur.emailUser}"></span></p>
+    <p><strong>Pseudo:</strong> <span th:text="${utilisateur.pseudoUser}"></span></p>
+    <p><strong>Téléphone:</strong> <span th:text="${utilisateur.telUser}"></span></p>
+    <p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
+</div>
+<div th:unless="${utilisateur != null}">
+    <p>Les informations de l’utilisateur ne sont pas disponibles</p>
+</div>
 
 <h2>Mes publications</h2>
-<div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
-  <a th:href="@{'/post/' + ${post.idPost}}">
-    <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
-    <div th:if="${post.imagePost != null}">
-      <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
+<div th:if="${posts != null}">
+    <div th:each="post : ${posts}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+        <a th:href="@{'/post/' + ${post.idPost}}">
+            <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
+            <div th:if="${post.imagePost != null}">
+                <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
+            </div>
+            <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
+        </a>
+        <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get" style="margin-top: 10px;">
+          <button type="submit">🗑️ Supprimer</button>
+        </form>
     </div>
-    <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
-  </a>
-  <!-- 🔴 Supprimer le post -->
-  <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get" style="margin-top: 10px;">
-    <button type="submit">🗑️ Supprimer</button>
-  </form>
+</div>
+
+<h2>Mes évènements</h2>
+<div th:if="${evenements != null}">
+    <div th:each="event : ${evenements}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+        <p><strong>Titre:</strong> <span th:text="${event.titre}"></span></p>
+        <p><strong>Contenu:</strong> <span th:text="${event.description}"></span></p>
+        <p><strong>Date:</strong>
+            <span th:text="${#dates.format(event.dateDebut, 'dd/MM/yyyy HH:mm')}"></span> -
+            <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
+        </p>
+        <p><strong>Adresse:</strong> <span th:text="${event.lieu}"></span></p>
+    </div>
 </div>
 
 
 <a th:href="@{/post/creer}">Créer un nouveau post</a>
+<br/>
+<a th:href="@{/evenement/creer}" style="color: blue; text-decoration: underline;">Créer un nouvel événement</a>
 <br/>
 <a th:href="@{/accueil}">Retour à l'accueil</a>
 <br/>
@@ -38,17 +59,17 @@
 
 
 <form th:action="@{/auth/logout}" method="post">
-  <button type="submit">Se déconnecter</button>
+    <button type="submit">Se déconnecter</button>
 </form>
 
 <form th:action="@{/profil/modifier}" method="get">
-  <button type="submit">Modifier mon profil</button>
+    <button type="submit">Modifier mon profil</button>
 </form>
 
 <form th:action="@{/profil/me}" method="post"
       onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.');">
-  <input type="hidden" name="_method" value="delete"/>
-  <button type="submit">Supprimer mon compte</button>
+    <input type="hidden" name="_method" value="delete"/>
+    <button type="submit">Supprimer mon compte</button>
 </form>
 
 
