@@ -32,15 +32,16 @@
     </div>
 </div>
 
+<h2>Mes évènements</h2>
 <div th:if="${evenements != null}">
     <div th:each="event : ${evenements}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
-        <p><strong>Titre:</strong> <span th:text="${event.titreEvent}"></span></p>
-        <p><strong>Contenu:</strong> <span th:text="${event.contenuEvent}"></span></p>
+        <p><strong>Titre:</strong> <span th:text="${event.titre}"></span></p>
+        <p><strong>Contenu:</strong> <span th:text="${event.description}"></span></p>
         <p><strong>Date:</strong>
-            <span th:text="${#dates.format(event.dateDebutEvent, 'dd/MM/yyyy HH:mm')}"></span> -
-            <span th:text="${#dates.format(event.dateFinEvent, 'dd/MM/yyyy HH:mm')}"></span>
+            <span th:text="${#dates.format(event.dateDebut, 'dd/MM/yyyy HH:mm')}"></span> -
+            <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
         </p>
-        <p><strong>Adresse:</strong> <span th:text="${event.adresseEvent}"></span></p>
+        <p><strong>Adresse:</strong> <span th:text="${event.lieu}"></span></p>
     </div>
 </div>
 

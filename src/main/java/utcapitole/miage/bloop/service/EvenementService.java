@@ -10,8 +10,12 @@ import java.util.List;
 @Service
 public class EvenementService {
 
+    private final EvenementRepository evenementRepository;
+
     @Autowired
-    private EvenementRepository evenementRepository;
+    public EvenementService(EvenementRepository evenementRepository) {
+        this.evenementRepository = evenementRepository;
+    }
 
     public void creerEvenement(Evenement evenement) {
         evenementRepository.save(evenement);

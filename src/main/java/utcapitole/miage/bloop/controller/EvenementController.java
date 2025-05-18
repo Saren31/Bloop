@@ -16,11 +16,15 @@ import java.util.List;
 @RequestMapping("/evenement")
 public class EvenementController {
 
-    @Autowired
-    private EvenementService evenementService;
+    private final EvenementService evenementService;
+
+    private final UtilisateurService utilisateurService;
 
     @Autowired
-    private UtilisateurService utilisateurService;
+    public EvenementController(EvenementService evenementService, UtilisateurService utilisateurService) {
+        this.evenementService = evenementService;
+        this.utilisateurService = utilisateurService;
+    }
 
     @GetMapping("/creer")
     public String afficherFormulaire(Model model) {
@@ -39,7 +43,7 @@ public class EvenementController {
         evenement.setOrganisateur(utilisateur);
         evenementService.creerEvenement(evenement);
         model.addAttribute("message", "Événement créé avec succès !");
-        return "voirProfil";
+        return "redirect:/profil/voirProfil";
     }
 
     @GetMapping("/mesEvenements")

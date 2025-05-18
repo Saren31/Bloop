@@ -26,7 +26,7 @@ class UtilisateurServiceTest {
 
 
     // Instance du service à tester
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository, evenementRepository);
 
 
     /**
