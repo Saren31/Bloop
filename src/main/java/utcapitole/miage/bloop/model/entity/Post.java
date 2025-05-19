@@ -42,6 +42,8 @@ public class Post {
     @Transient
     private int likeCount;
 
+
+
     public boolean isLikedByCurrentUser() {
         return likedByCurrentUser;
     }
