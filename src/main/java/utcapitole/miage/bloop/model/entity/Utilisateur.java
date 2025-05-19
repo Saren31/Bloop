@@ -205,7 +205,7 @@ public class Utilisateur implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return validerInscription;;
+        return validerInscription;
     }
 
     /**
