@@ -136,16 +136,29 @@ class RelationServiceTest {
 
     @Test
     void testGetListeAmis_UtilisateurExistant() {
+        // Configuration des entités
         Utilisateur u = new Utilisateur();
         u.setIdUser(1L);
         Utilisateur ami = new Utilisateur();
         ami.setIdUser(2L);
+        ami.setNomUser("Doe");
+        ami.setPrenomUser("John");
+        ami.setPseudoUser("johndoe");
+        ami.setEmailUser("john@ut-capitole.fr");
         u.getAmis().add(ami);
 
         when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u));
 
-        var amis = relationService.getListeAmis(1L);
-        assertThat(amis).containsExactly(ami);
+        // Appel de la méthode
+        var amisDTO = relationService.getListeAmis(1L);
+
+        // Vérification
+        assertThat(amisDTO).hasSize(1);
+        assertThat(amisDTO.get(0).getIdUser()).isEqualTo(2L);
+        assertThat(amisDTO.get(0).getNomUser()).isEqualTo("Doe");
+        assertThat(amisDTO.get(0).getPrenomUser()).isEqualTo("John");
+        assertThat(amisDTO.get(0).getPseudoUser()).isEqualTo("johndoe");
+        assertThat(amisDTO.get(0).getEmailUser()).isEqualTo("john@ut-capitole.fr");
     }
 
     @Test

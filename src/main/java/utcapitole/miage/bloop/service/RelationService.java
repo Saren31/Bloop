@@ -2,12 +2,14 @@ package utcapitole.miage.bloop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service pour gérer les relations entre utilisateurs, comme l'envoi de demandes d'amitié,
@@ -116,19 +118,31 @@ public class RelationService {
     }
 
     /**
-     * Récupère la liste des amis d'un utilisateur.
+     * Récupère la liste des amis d'un utilisateur sous forme de DTOs.
      *
      * @param idUser L'identifiant de l'utilisateur.
-     * @return Une liste contenant les amis de l'utilisateur, ou une liste vide si l'utilisateur n'existe pas.
+     * @return Une liste contenant les DTOs des amis de l'utilisateur, ou une liste vide si l'utilisateur n'existe pas.
      */
-    public List<Utilisateur> getListeAmis(Long idUser) {
+    public List<UtilisateurDTO> getListeAmis(Long idUser) {
         Optional<Utilisateur> optUser = utilisateurRepository.findById(idUser);
 
-        if (optUser.isEmpty()) {
-            return new ArrayList<>();
-        }
+        return optUser.map(utilisateur -> utilisateur.getAmis().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList())).orElseGet(ArrayList::new);
 
-        return optUser.get().getAmis();
+    }
+
+    /**
+     * Convertit une entité Utilisateur en DTO.
+     */
+    private UtilisateurDTO convertToDTO(Utilisateur utilisateur) {
+        UtilisateurDTO dto = new UtilisateurDTO();
+        dto.setIdUser(utilisateur.getIdUser());
+        dto.setNomUser(utilisateur.getNomUser());
+        dto.setPrenomUser(utilisateur.getPrenomUser());
+        dto.setPseudoUser(utilisateur.getPseudoUser());
+        dto.setEmailUser(utilisateur.getEmailUser());
+        return dto;
     }
 
     /**
