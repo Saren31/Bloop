@@ -185,4 +185,85 @@ class PostControllerTest {
 
         verify(postService, never()).supprimerPost(1L);
     }
+
+    @Test
+    void testAfficherFormulaireModification_Autorise() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        Post post = new Post();
+        post.setIdPost(1L);
+        post.setUtilisateur(utilisateur);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(get("/post/1/modifier").principal(auth))
+                .andExpect(status().isOk())
+                .andExpect(view().name("modifierPost"))
+                .andExpect(model().attributeExists("post"));
+    }
+
+    @Test
+    void testAfficherFormulaireModification_NonAutorise() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        Utilisateur autre = new Utilisateur();
+        autre.setIdUser(2L);
+
+        Post post = new Post();
+        post.setIdPost(1L);
+        post.setUtilisateur(autre);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(get("/post/1/modifier").principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+    }
+
+    @Test
+    void testModifierPost_Autorise() throws Exception {
+        Utilisateur utilisateur = creerUtilisateurSimule();
+        Post post = new Post();
+        post.setIdPost(1L);
+        post.setUtilisateur(utilisateur);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(post("/post/1/modifier")
+                        .param("textePost", "Nouveau texte")
+                        .principal(auth))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+
+        verify(postService).save(any(Post.class));
+    }
+
+    @Test
+    void testConfirmerSuppression_Succes() throws Exception {
+        Post post = new Post();
+        post.setIdPost(1L);
+
+        when(postService.getPostParId(1L)).thenReturn(post);
+
+        mockMvc.perform(get("/post/1/confirmer-suppression"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("confirmerSuppression"))
+                .andExpect(model().attributeExists("post"));
+    }
+
+    /**@Test
+    void testConfirmerSuppression_Erreur() throws Exception {
+        when(postService.getPostParId(1L)).thenReturn(null);
+
+        mockMvc.perform(get("/post/1/confirmer-suppression"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("erreur"));
+    }*/
 }

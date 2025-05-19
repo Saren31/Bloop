@@ -176,4 +176,43 @@ class PostServiceTest {
         assertThat(result.get(0).getIdPost()).isEqualTo(3L);
         assertThat(result.get(0).getUtilisateur().getNomUser()).isEqualTo("TestNom");
     }
+
+    @Test
+    void testSave() {
+        Post post = new Post();
+        post.setIdPost(1L);
+
+        postService.save(post);
+
+        verify(postRepository).save(post);
+    }
+
+    @Test
+    void testGetPostsByUtilisateur() {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setIdUser(1L);
+
+        Post post = new Post();
+        post.setIdPost(1L);
+
+        when(postRepository.findByUtilisateur_IdUser(1L)).thenReturn(List.of(post));
+
+        List<Post> result = postService.getPostsByUtilisateur(1L);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getIdPost()).isEqualTo(1L);
+    }
+
+    @Test
+    void testGetPostsByUtilisateurId() {
+        Post post = new Post();
+        post.setIdPost(2L);
+
+        when(postRepository.findByUtilisateur_IdUser(2L)).thenReturn(List.of(post));
+
+        List<Post> result = postService.getPostsByUtilisateurId(2L);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getIdPost()).isEqualTo(2L);
+    }
 }
