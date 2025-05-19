@@ -24,7 +24,8 @@
         <a th:href="@{/auth/register}" class="register-link">Pas encore de compte ? Inscrivez-vous</a>
 
         <div class="text-center text-danger mt-3">
-            <p th:if="${param.error}">Identifiants invalides</p>
+            <p th:if="${param.error == 'true' and param.email_not_verified != 'true'}">Identifiants invalides</p>
+            <p th:if="${param.email_not_verified == 'true'}">Veuillez vérifier votre compte avant de vous connecter</p>
             <p th:if="${param.logout}">Déconnecté avec succès</p>
         </div>
     </div>

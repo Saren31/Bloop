@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")       // Page personnalisée de connexion.
                         .defaultSuccessUrl("/accueil", true) // Redirection après connexion réussie.
+                        .failureUrl("/auth/login?error=true") // URL en cas d'échec de connexion
                         .permitAll()                    // Autorise l'accès à la page de connexion.
                 )
                 .logout(logout -> logout

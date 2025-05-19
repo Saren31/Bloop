@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.RelationService;
 
@@ -95,17 +96,26 @@ class RelationControllerTest {
 
     @Test
     void testVoirListeAmis_Succes() throws Exception {
-        Utilisateur ami = new Utilisateur();
-        ami.setIdUser(3L);
-        ami.setNomUser("Ami");
+        // Créer un DTO au lieu d'une entité
+        UtilisateurDTO amiDTO = new UtilisateurDTO();
+        amiDTO.setIdUser(3L);
+        amiDTO.setNomUser("Ami");
+        amiDTO.setPrenomUser("Prénom");
+        amiDTO.setPseudoUser("pseudo");
+        amiDTO.setEmailUser("ami@ut-capitole.fr");
 
-        when(relationService.getListeAmis(1L)).thenReturn(List.of(ami));
+        // Mock du service pour retourner une liste de DTOs
+        when(relationService.getListeAmis(1L)).thenReturn(List.of(amiDTO));
 
+        // Test de l'endpoint
         mockMvc.perform(get("/relations/amis")
                         .param("idUser", "1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].idUser").value(3L))
-                .andExpect(jsonPath("$[0].nomUser").value("Ami"));
+                .andExpect(jsonPath("$[0].idUser").value(3))
+                .andExpect(jsonPath("$[0].nomUser").value("Ami"))
+                .andExpect(jsonPath("$[0].prenomUser").value("Prénom"))
+                .andExpect(jsonPath("$[0].pseudoUser").value("pseudo"))
+                .andExpect(jsonPath("$[0].emailUser").value("ami@ut-capitole.fr"));
     }
 
     @Test

@@ -3,6 +3,7 @@ package utcapitole.miage.bloop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.RelationService;
 
@@ -86,8 +87,8 @@ public class RelationController {
      * @return Une réponse HTTP contenant la liste des amis de l'utilisateur.
      */
     @GetMapping("/amis")
-    public ResponseEntity<List<Utilisateur>> voirListeAmis(@RequestParam Long idUser) {
-        List<Utilisateur> amis = relationService.getListeAmis(idUser);
+    public ResponseEntity<List<UtilisateurDTO>> voirListeAmis(@RequestParam Long idUser) {
+        List<UtilisateurDTO> amis = relationService.getListeAmis(idUser);
         return ResponseEntity.ok(amis);
     }
 
