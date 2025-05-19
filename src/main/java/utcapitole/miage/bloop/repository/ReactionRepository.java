@@ -9,10 +9,14 @@ import java.util.Optional;
 
 public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 
-    int countByPostAndLiked(Post post, boolean liked);
 
     Optional<Reaction> findByPostAndUtilisateur(Post post, Utilisateur utilisateur);
 
 
-    Optional<Reaction> findByPostIdAndUtilisateurId(Long idPost, Long idUser);
+    Optional<Reaction> findByPostIdPostAndUtilisateurIdUser(Long idPost, Long idUser);
+
+
+    int countByPostAndType(Post post, String type);
+
+
 }

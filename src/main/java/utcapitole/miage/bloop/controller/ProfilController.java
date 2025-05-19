@@ -53,11 +53,23 @@ public class ProfilController {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
         if (utilisateur == null) {
-            return "accueil"; // Redirige vers l'accueil si l'utilisateur n'est pas connecté
+            return "accueil";
         }
 
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
 
+
+        posts.forEach(post -> {
+            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
+            post.setLikeCount(reactionService.countLikes(post));
+        });
+
+        posts.forEach(post -> {
+            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
+            post.setDislikedByCurrentUser(reactionService.isDislikedBy(post, utilisateur));
+            post.setLikeCount(reactionService.countLikes(post));
+            post.setDislikeCount(reactionService.countDislikes(post));
+        });
 
 
         model.addAttribute("utilisateur", utilisateur);
@@ -76,6 +88,7 @@ public class ProfilController {
 
         return "voirProfil";
     }
+
 
     /**
      * Affiche le profil d'un autre utilisateur en fonction de son identifiant.
