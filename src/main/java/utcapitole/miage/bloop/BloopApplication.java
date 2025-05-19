@@ -6,7 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.GroupeRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.List;
@@ -36,11 +38,12 @@ public class BloopApplication {
 	 */
 	@Bean
 	@Profile("!test")
-	public CommandLineRunner initParticipant(UtilisateurRepository utilisateurRepository,
+	public CommandLineRunner initParticipant(UtilisateurRepository utilisateurRepository, GroupeRepository groupeRepository,
 											 PasswordEncoder passwordEncoder) {
 		return args -> {
 			// Supprime tous les utilisateurs existants
 			utilisateurRepository.deleteAll();
+			groupeRepository.deleteAll();
 
 			// Création et configuration d'un utilisateur validé
 			Utilisateur u = new Utilisateur();
@@ -73,8 +76,26 @@ public class BloopApplication {
 			u2.setTelUser("0000000002");
 			u2.setVisibiliteUser(true);
 
-			// Sauvegarde des utilisateurs dans la base de données
 			utilisateurRepository.saveAll(List.of(u, u1, u2));
+
+			// Création d'un groupe de test
+			Groupe groupeTest = new Groupe();
+			groupeTest.setNomGroupe("Groupe de Test");
+			groupeTest.setThemeGroupe("Test");
+			groupeTest.setDescriptionGroupe("Ceci est un groupe de test.");
+			groupeTest.setCreateurGroupe(u);
+
+			groupeRepository.save(groupeTest);
+
+			// Ajout de l'utilisateur comme membre du groupe
+			groupeTest.getMembres().add(u);
+			u.getGroupes().add(groupeTest);
+			u1.getGroupes().add(groupeTest);
+
+			// Sauvegarde du membre
+			groupeRepository.save(groupeTest);
+			utilisateurRepository.saveAll(List.of(u, u1));
+
 		};
 	}
 }

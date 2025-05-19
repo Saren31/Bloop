@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts en Temps Réel</title>
+</head>
+<body>
+<h2>Envoyer des posts dans un groupe</h2>
+
+<!-- Sélection du groupe -->
+<label>Groupe ID : <input type="number" id="groupeId"></label>
+<button onclick="chargerPosts()">Charger les posts</button>
+
+<!-- Historique des posts -->
+<div id="posts" style="border:1px solid #ccc; height:200px; overflow:auto; margin:10px 0;"></div>
+
+<!-- Champ CSRF caché (Thymeleaf) -->
+<input type="hidden"
+       id="csrfToken"
+       th:name="${_csrf.parameterName}"
+       th:value="${_csrf.token}"
+       th:data-header="${_csrf.headerName}" />
+
+<!-- Formulaire pour envoyer un post -->
+<form onsubmit="envoyerPost(); return false;">
+    <textarea id="textePost" placeholder="Écrivez votre post..." required></textarea>
+    <button type="submit">Envoyer</button>
+</form>
+
+<input type="hidden" id="nomUser" th:value="${utilisateur.nomUser}" />
+<!-- WebSocket -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient = null;
+    let groupeId = null;
+
+    function chargerPosts() {
+    groupeId = document.getElementById('groupeId').value;
+    if (!groupeId) return alert("Saisissez un ID de groupe !");
+    fetch(`/groupes/${groupeId}/posts`)
+        .then(response => response.json())
+        .then(posts => {
+            const container = document.getElementById('posts');
+            container.innerHTML = '';
+            posts.forEach(post => {
+                container.innerHTML += `
+                    <div>
+                        <b>${post.utilisateur.nomUser}:</b> ${post.textePost}
+                        <i style="color:grey;font-size:smaller">(${post.datePost || ""})</i>
+                    </div>`;
+            });
+        })
+        .then(() => connecterWebSocket()); // Connecte le WebSocket après avoir chargé les posts
+    }
+
+    function getCsrfHeader() {
+        const csrfInput = document.getElementById('csrfToken');
+        return {
+            header: csrfInput.getAttribute('data-header') || 'X-CSRF-TOKEN',
+            token: csrfInput.value
+        };
+    }
+
+    function envoyerPost() {
+        if (!groupeId) return alert("Chargez un groupe d’abord !");
+        let textePost = document.getElementById('textePost').value;
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/post", {}, JSON.stringify({
+                textePost: textePost,
+                groupeId: Number(groupeId)
+            }));
+            document.getElementById('textePost').value = '';
+        } else {
+            alert("WebSocket non connecté !");
+        }
+    }
+
+    function afficherPost(post) {
+        let container = document.getElementById('posts');
+        // Récupère le nom depuis le champ hidden si disponible, sinon utilise l'ID
+        let nomUser = document.getElementById('nomUser')?.value || post.utilisateurId || "?";
+        container.innerHTML += `<div><b>${nomUser}:</b> ${post.textePost} <i style="color:grey;font-size:smaller">(${post.datePost || ""})</i></div>`;
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function connecterWebSocket() {
+        if (stompClient) stompClient.disconnect();
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function() {
+            stompClient.subscribe(`/topic/groupes/${groupeId}`, function(message) {
+                let post = JSON.parse(message.body);
+                console.log("Post reçu via WebSocket :", post);
+                afficherPost(post);
+            });
+        });
+    }
+</script>
+</body>
+</html>

@@ -2,11 +2,13 @@ package utcapitole.miage.bloop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.GroupeDTO;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.GroupeService;
+import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ public class GroupeController {
 
     private final GroupeService groupeService;
     private final UtilisateurService utilisateurService;
+    private final PostService postService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -28,9 +31,10 @@ public class GroupeController {
      * @param utilisateurService Service pour gérer les utilisateurs.
      */
     @Autowired
-    public GroupeController(GroupeService groupeService, UtilisateurService utilisateurService) {
+    public GroupeController(GroupeService groupeService, UtilisateurService utilisateurService, PostService postService) {
         this.groupeService = groupeService;
         this.utilisateurService = utilisateurService;
+        this.postService = postService;
     }
 
     /**
@@ -91,4 +95,12 @@ public class GroupeController {
 
         return "accueil";
     }
+
+    @GetMapping("/groupe")
+    public String afficherPageGroupe(Model model) {
+        Utilisateur utilisateurConnecte = utilisateurService.getUtilisateurConnecte();
+        model.addAttribute("utilisateur", utilisateurConnecte);
+        return "groupe";
+    }
+
 }
