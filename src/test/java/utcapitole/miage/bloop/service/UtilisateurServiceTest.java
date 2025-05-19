@@ -3,6 +3,7 @@ package utcapitole.miage.bloop.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.EvenementRepository;
 import utcapitole.miage.bloop.repository.PostRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
@@ -20,12 +21,12 @@ class UtilisateurServiceTest {
 
     // Mock du repository UtilisateurRepository
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
-
+    private final EvenementRepository evenementRepository = mock(EvenementRepository.class);
     private final PostRepository postRepository = mock(PostRepository.class);
 
 
     // Instance du service à tester
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository, evenementRepository);
 
 
     /**

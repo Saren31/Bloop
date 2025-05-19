@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head><title>Connexion</title></head>
-<body>
-<h2>Connexion</h2>
-<form th:action="@{/auth/login}" method="post">
-    <label>Email:</label>
-    <input type="text" name="username" />
-    <br>
-    <label>Mot de passe:</label>
-    <input type="password" name="password" />
-    <br>
-    <button type="submit">Se connecter</button>
-</form>
-<a th:href="@{/auth/register}">S'inscrire</a>
-<p th:if="${param.error}">Identifiants invalides</p>
-<p th:if="${param.logout}">Déconnecté</p>
-<p th:if="${param.deleted}">Compte supprimé !</p>
+<head th:replace="fragments :: headLinks">
+    <title>Connexion</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Section centrée pour le formulaire -->
+<main class="login-page flex-fill">
+    <div class="login-card">
+        <h2>Connexion</h2>
+        <form th:action="@{/auth/login}" method="post">
+            <label for="username" class="form-label">Email</label>
+            <input id="username" type="text" name="username"
+                   class="form-control" required autofocus />
+
+            <label for="password" class="form-label">Mot de passe</label>
+            <input id="password" type="password" name="password"
+                   class="form-control" required />
+
+            <button type="submit" class="btn btn-primary">Se connecter</button>
+        </form>
+
+        <a th:href="@{/auth/register}" class="register-link">Pas encore de compte ? Inscrivez-vous</a>
+
+        <div class="text-center text-danger mt-3">
+            <p th:if="${param.error}">Identifiants invalides</p>
+            <p th:if="${param.logout}">Déconnecté avec succès</p>
+        </div>
+    </div>
+</main>
+
+<!-- Footer & scripts -->
+<div th:replace="fragments :: footer"></div>
+<div th:replace="fragments :: scripts"></div>
 </body>
 </html>

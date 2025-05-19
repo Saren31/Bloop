@@ -136,7 +136,49 @@ public class PostController {
         return "afficherPost";
     }
 
-    // US39 modifier son post
+    /**
+     * Supprime un post appartenant à l'utilisateur connecté.
+     *
+     * @param postId ID du post à supprimer
+     * @param model  Le modèle pour afficher des messages
+     * @return redirection vers le profil ou une page d'erreur
+     */
+    @GetMapping("/{postId}/confirmer-suppression")
+    public String confirmerSuppression(@PathVariable Long postId, Model model) {
+        Post post = postService.getPostParId(postId);
+        if (post == null) {
+            return "erreur";
+        }
+        model.addAttribute("post", post);
+        return "confirmerSuppression";
+    }
+
+
+    @DeleteMapping("/{postId}/supprimer")
+    public String supprimerPost(@PathVariable Long postId, Model model) {
+        Utilisateur utilisateur = getUtilisateurConnecte();
+        if (utilisateur == null) return "login";
+
+        Post post;
+        try {
+            post = postService.getPostParId(postId);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute(ERROR_ATTRIBUTE, "Post introuvable.");
+            return "redirect:/profil/voirProfil";
+        }
+
+        Long postUserId = post.getUtilisateur().getIdUser();
+        Long currentUserId = utilisateur.getIdUser();
+
+        if (!postUserId.equals(currentUserId)) {
+            model.addAttribute(ERROR_ATTRIBUTE, "Vous n'êtes pas autorisé à supprimer ce post.");
+            return "redirect:/profil/voirProfil";
+        }
+
+        postService.supprimerPost(postId);
+        return "redirect:/profil/voirProfil";
+    }
+
     @GetMapping("/{postId}/modifier")
     public String afficherFormulaireModification(@PathVariable Long postId, Model model) {
         Utilisateur utilisateur = getUtilisateurConnecte();
@@ -144,7 +186,7 @@ public class PostController {
 
         if (post == null || utilisateur == null || post.getUtilisateur().getIdUser() != utilisateur.getIdUser()) {
             return "redirect:/profil/voirProfil";
-    }
+        }
 
         model.addAttribute("post", post);
         return "modifierPost";

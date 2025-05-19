@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
@@ -54,8 +55,27 @@ public class ProfilController {
 
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
 
+
+
         model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
+
+
+        List<Evenement> evenements = utilisateurService.getEvenementsParUtilisateur(utilisateur);
+
+
+        if (evenements == null) {
+            evenements = List.of();
+        }
+
+
+        evenements = evenements.stream()
+                .filter(e -> e != null)
+                .toList();
+
+        model.addAttribute("evenements", evenements);
+
+
 
         return "voirProfil";
     }
