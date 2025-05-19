@@ -7,17 +7,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
-import org.springframework.web.bind.annotation.*;
-import utcapitole.miage.bloop.model.entity.Reaction;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Contrôleur pour gérer les opérations liées au profil utilisateur.
@@ -61,11 +59,6 @@ public class ProfilController {
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
 
 
-
-        for (Post post : posts) {
-            Optional<Reaction> reaction = reactionService.getReaction(post, utilisateur);
-            reaction.ifPresent(post::setReaction);
-        }
 
         model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
@@ -167,26 +160,13 @@ public class ProfilController {
         return "redirect:/profil/voirProfil";
     }
 
-    @PostMapping("/post/{postId}/reaction")
-    public String reactToPost(@PathVariable Long postId,
-                              @RequestParam boolean liked) {
-        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) {
-            return "redirect:/auth/login";
-        }
-
-        Optional<Post> postOpt = postService.getPostById(postId);
-        if (postOpt.isEmpty()) {
-            return "redirect:/profil/voirProfil";
-        }
-
-        Post post = postOpt.get();
-        reactionService.saveReaction(post, utilisateur, liked);
-        postService.updateNbLikes(post);
-
+    @GetMapping("")
+    public String redirectionProfilParDefaut() {
         return "redirect:/profil/voirProfil";
     }
 
-
-
 }
+
+
+
+

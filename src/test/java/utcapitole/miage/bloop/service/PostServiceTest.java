@@ -21,8 +21,7 @@ class PostServiceTest {
     @BeforeEach
     void setUp() {
         postRepository = mock(PostRepository.class);
-        reactionRepository = mock(ReactionRepository.class);
-        postService = new PostService(postRepository, reactionRepository);
+        postService = new PostService(postRepository);
     }
 
     @Test

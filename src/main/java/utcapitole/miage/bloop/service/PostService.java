@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.PostRepository;
-import utcapitole.miage.bloop.repository.ReactionRepository;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +16,8 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final ReactionRepository reactionRepository;
+
+
 
     /**
      * Constructeur pour injecter le repository des posts.
@@ -26,12 +25,10 @@ public class PostService {
      * @param postRepository Le repository pour interagir avec les entités Post.
      */
     @Autowired
-    public PostService(PostRepository postRepository, ReactionRepository reactionRepository) {
+    public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.reactionRepository = reactionRepository;
+
     }
-
-
 
     /**
      * Récupère la liste des posts d'un utilisateur spécifique.
@@ -91,17 +88,6 @@ public class PostService {
             throw new IllegalArgumentException("L'utilisateur ne peut pas être null.");
         }
         return postRepository.findByUtilisateur(utilisateur);
-    }
-
-
-    public void save(Post post) {
-        postRepository.save(post);
-    }
-
-    public void updateNbLikes(Post post) {
-        long countLikes = reactionRepository.countByPostAndLikedTrue(post);
-        post.setNbLikes((int) countLikes);
-        postRepository.save(post);
     }
 
     public Optional<Post> getPostById(Long id) {

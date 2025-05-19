@@ -9,26 +9,32 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Boolean liked = Boolean.FALSE;
-
     @ManyToOne
-    private Utilisateur utilisateur;
-
-    @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    // Getters et setters
+    @ManyToOne
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
+
+    private boolean liked;
+
+    private String type;
+
     public Long getId() {
         return id;
     }
 
-    public boolean isLiked() {
-        return Boolean.TRUE.equals(this.liked);
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setLiked(boolean like) {
-        liked = like;
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public Utilisateur getUtilisateur() {
@@ -39,11 +45,19 @@ public class Reaction {
         this.utilisateur = utilisateur;
     }
 
-    public Post getPost() {
-        return post;
+    public boolean isLiked() {
+        return liked;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -1,6 +1,7 @@
 package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -35,14 +36,26 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePost;
 
-    @Column(name = "nb_likes")
-    private Integer nbLikes;
+    @Transient
+    private boolean likedByCurrentUser;
 
-    public void setNbLikes(Integer nbLikes) {
-        this.nbLikes = nbLikes;
+    @Transient
+    private int likeCount;
+
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
     }
-    public Integer getNbLikes() {
-        return nbLikes;
+
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
     /**
@@ -51,9 +64,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
-
-    @Transient
-    private Reaction reaction;
 
     /**
      * Récupère l'identifiant du post.
@@ -126,9 +136,7 @@ public class Post {
      */
     public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
 
-    public Reaction getReaction() {return reaction;}
 
-    public void setReaction(Reaction reaction) {this.reaction = reaction;}
 
 
     /**

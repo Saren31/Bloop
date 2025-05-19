@@ -33,32 +33,11 @@
           <button type="submit">🗑️ Supprimer</button>
         </form>
 
-        <p>
-            Nombre de likes :
-            <span th:text="${#numbers.formatInteger(post.nbLikes, 0)}">0</span>
-        </p>
-
-        <div th:if="${post.reaction == null}">
-            <form th:action="@{'/reaction/' + ${post.idPost} + '/like'}" method="post">
-                <button type="submit">👍 J'aime</button>
-            </form>
-            <form th:action="@{'/reaction/' + ${post.idPost} + '/dislike'}" method="post">
-                <button type="submit">👎 Je n’aime pas</button>
-            </form>
-        </div>
-        <div th:if="${post.reaction != null}">
-            <div th:if="${post.reaction.like}">
-                <form th:action="@{'/reaction/' + ${post.idPost} + '/annuler'}" method="post">
-                    <button type="submit">❌ Annuler Like</button>
-                </form>
-            </div>
-            <div th:if="${!post.reaction.like}">
-                <form th:action="@{'/reaction/' + ${post.idPost} + '/annuler'}" method="post">
-                    <button type="submit">❌ Annuler Dislike</button>
-                </form>
-            </div>
-        </div>
-</div>
+        <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post">
+            <button type="submit" th:text="${post.likedByCurrentUser} ? '💔 Annuler Like' : '❤️ Like'"></button>
+            <span th:text="'Likes: ' + ${post.likeCount}"></span>
+        </form>
+    </div>
 
 <h2>Mes évènements</h2>
 <div th:if="${evenements != null}">
