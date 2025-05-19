@@ -2,7 +2,9 @@ package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Post;
+import utcapitole.miage.bloop.repository.GroupeRepository;
 import utcapitole.miage.bloop.repository.PostRepository;
+import utcapitole.miage.bloop.repository.UtilisateurRepository;
 
 import java.util.Optional;
 
@@ -13,7 +15,9 @@ import static org.mockito.Mockito.*;
 class PostServiceTest {
 
     private final PostRepository postRepository = mock(PostRepository.class);
-    private final PostService postService = new PostService(postRepository);
+    private final GroupeRepository groupeRepository = mock(GroupeRepository.class);
+    private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
+    private final PostService postService = new PostService(postRepository, groupeRepository, utilisateurRepository);
 
     @Test
     void testCreerPostSucces() {

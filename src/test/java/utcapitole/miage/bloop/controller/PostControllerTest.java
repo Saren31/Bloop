@@ -12,6 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.repository.GroupeRepository;
 import utcapitole.miage.bloop.repository.UtilisateurRepository;
 import utcapitole.miage.bloop.service.CommentaireService;
 import utcapitole.miage.bloop.service.PostService;
@@ -36,6 +37,9 @@ class PostControllerTest {
 
     @MockitoBean
     private UtilisateurRepository utilisateurRepository;
+
+    @MockitoBean
+    private GroupeRepository groupeRepository;
 
     @MockitoBean
     private UtilisateurService utilisateurService;
