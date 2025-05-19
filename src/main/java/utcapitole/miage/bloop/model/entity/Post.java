@@ -35,6 +35,16 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePost;
 
+    @Column(name = "nb_likes")
+    private Integer nbLikes;
+
+    public void setNbLikes(Integer nbLikes) {
+        this.nbLikes = nbLikes;
+    }
+    public Integer getNbLikes() {
+        return nbLikes;
+    }
+
     /**
      * Utilisateur ayant créé le post.
      */
@@ -42,11 +52,15 @@ public class Post {
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
+    @Transient
+    private Reaction reaction;
+
     /**
      * Récupère l'identifiant du post.
      *
      * @return L'identifiant du post.
      */
+
     public Long getIdPost() { return idPost; }
 
     /**
@@ -111,6 +125,11 @@ public class Post {
      * @param utilisateur L'utilisateur à définir.
      */
     public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
+
+    public Reaction getReaction() {return reaction;}
+
+    public void setReaction(Reaction reaction) {this.reaction = reaction;}
+
 
     /**
      * Vérifie l'égalité entre deux objets Post.

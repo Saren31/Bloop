@@ -1,10 +1,12 @@
 package utcapitole.miage.bloop.service;
 
+import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.PostRepository;
+
 
 import java.util.List;
 

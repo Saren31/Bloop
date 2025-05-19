@@ -162,4 +162,6 @@ public class ProfilController {
         utilisateurService.save(utilisateur);
         return "redirect:/profil/voirProfil";
     }
+
+
 }
