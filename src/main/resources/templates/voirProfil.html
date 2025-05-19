@@ -35,8 +35,18 @@
         <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get" style="margin-top: 10px;">
             <button type="submit">🗑️ Supprimer</button>
         </form>
+
+        <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post" style="display:inline">
+            <button type="submit" th:text="${post.likedByCurrentUser} ? '💔 Annuler Like' : '❤️ Like'"></button>
+        </form>
+        <span th:text="'Likes: ' + ${post.likeCount}"></span>
+
+        <form th:action="@{'/reaction/dislike/' + ${post.idPost}}" method="post" style="display:inline">
+            <button type="submit" th:text="${post.dislikedByCurrentUser} ? '❌ Annuler Dislike' : '👎 Dislike'"></button>
+        </form>
+        <span th:text="'Dislikes: ' + ${post.dislikeCount}"></span>
+
     </div>
-</div>
 
 <h2>Mes évènements</h2>
 <div th:if="${evenements != null}">

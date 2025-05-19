@@ -7,11 +7,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
-import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
+import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ProfilController {
 
     private final UtilisateurService utilisateurService;
     private final PostService postService;
+    private final ReactionService reactionService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -34,9 +36,10 @@ public class ProfilController {
      * @param postService Service pour gérer les posts.
      */
     @Autowired
-    public ProfilController(UtilisateurService utilisateurService, PostService postService) {
+    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService) {
         this.utilisateurService = utilisateurService;
         this.postService = postService;
+        this.reactionService = reactionService;
     }
 
     /**
@@ -50,24 +53,32 @@ public class ProfilController {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
         if (utilisateur == null) {
-            return "accueil"; // Redirige vers l'accueil si l'utilisateur n'est pas connecté
+            return "accueil";
         }
 
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
 
 
+        posts.forEach(post -> {
+            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
+            post.setLikeCount(reactionService.countLikes(post));
+        });
+
+        posts.forEach(post -> {
+            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
+            post.setDislikedByCurrentUser(reactionService.isDislikedBy(post, utilisateur));
+            post.setLikeCount(reactionService.countLikes(post));
+            post.setDislikeCount(reactionService.countDislikes(post));
+        });
+
 
         model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
 
-
         List<Evenement> evenements = utilisateurService.getEvenementsParUtilisateur(utilisateur);
-
-
         if (evenements == null) {
             evenements = List.of();
         }
-
 
         evenements = evenements.stream()
                 .filter(e -> e != null)
@@ -75,10 +86,9 @@ public class ProfilController {
 
         model.addAttribute("evenements", evenements);
 
-
-
         return "voirProfil";
     }
+
 
     /**
      * Affiche le profil d'un autre utilisateur en fonction de son identifiant.
@@ -162,4 +172,14 @@ public class ProfilController {
         utilisateurService.save(utilisateur);
         return "redirect:/profil/voirProfil";
     }
+
+    @GetMapping("")
+    public String redirectionProfilParDefaut() {
+        return "redirect:/profil/voirProfil";
+    }
+
 }
+
+
+
+

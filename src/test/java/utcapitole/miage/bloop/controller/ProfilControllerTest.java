@@ -14,7 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
+import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -34,6 +37,9 @@ class ProfilControllerTest {
 
     @MockitoBean
     private PostService postService;
+
+    @MockitoBean
+    private ReactionService reactionService;
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
@@ -207,5 +213,31 @@ class ProfilControllerTest {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/auth/login"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testRedirectionProfilParDefaut() throws Exception {
+        mockMvc.perform(get("/profil"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/profil/voirProfil"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testAfficherMonProfil_AvecEvenementsNull() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setIdUser(1L);
+
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
+        when(postService.getPostsByUtilisateur(1L)).thenReturn(List.of());
+        when(utilisateurService.getEvenementsParUtilisateur(utilisateur)).thenReturn(null);
+
+        mockMvc.perform(get("/profil/voirProfil"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("utilisateur"))
+                .andExpect(model().attributeExists("posts"))
+                .andExpect(model().attributeExists("evenements"))
+                .andExpect(view().name("voirProfil"));
     }
 }

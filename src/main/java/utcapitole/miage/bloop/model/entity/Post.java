@@ -35,6 +35,54 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePost;
 
+    @Transient
+    private boolean likedByCurrentUser;
+
+    @Transient
+    private int likeCount;
+
+
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
+    }
+
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    @Transient
+    private boolean dislikedByCurrentUser;
+
+    @Transient
+    private int dislikeCount;
+
+
+    public boolean isDislikedByCurrentUser() {
+        return dislikedByCurrentUser;
+    }
+
+    public void setDislikedByCurrentUser(boolean dislikedByCurrentUser) {
+        this.dislikedByCurrentUser = dislikedByCurrentUser;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+
+
     /**
      * Utilisateur ayant créé le post.
      */
@@ -51,6 +99,7 @@ public class Post {
      *
      * @return L'identifiant du post.
      */
+
     public Long getIdPost() { return idPost; }
 
     /**

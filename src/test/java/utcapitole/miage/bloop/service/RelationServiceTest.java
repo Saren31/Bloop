@@ -133,4 +133,39 @@ class RelationServiceTest {
         String result = relationService.supprimerAmi(1L, 2L);
         assertThat(result).contains("n’est pas dans votre liste");
     }
+
+    @Test
+    void testGetListeAmis_UtilisateurExistant() {
+        Utilisateur u = new Utilisateur();
+        u.setIdUser(1L);
+        Utilisateur ami = new Utilisateur();
+        ami.setIdUser(2L);
+        u.getAmis().add(ami);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u));
+
+        var amis = relationService.getListeAmis(1L);
+        assertThat(amis).containsExactly(ami);
+    }
+
+    @Test
+    void testGetListeAmis_UtilisateurInexistant() {
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.empty());
+
+        var amis = relationService.getListeAmis(1L);
+        assertThat(amis).isEmpty();
+    }
+
+    @Test
+    void testGererDemandeAmitie_DemandeInexistante() {
+        Utilisateur receveur = new Utilisateur(); receveur.setIdUser(1L);
+        Utilisateur envoyeur = new Utilisateur(); envoyeur.setIdUser(2L);
+
+        // Pas de demande dans la liste
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(receveur));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(envoyeur));
+
+        String result = relationService.gererDemandeAmitie(1L, 2L, true);
+        assertThat(result).contains("Aucune demande");
+    }
 }
