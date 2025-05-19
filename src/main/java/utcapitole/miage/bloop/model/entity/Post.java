@@ -43,7 +43,6 @@ public class Post {
     private int likeCount;
 
 
-
     public boolean isLikedByCurrentUser() {
         return likedByCurrentUser;
     }
@@ -59,6 +58,31 @@ public class Post {
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
     }
+
+    @Transient
+    private boolean dislikedByCurrentUser;
+
+    @Transient
+    private int dislikeCount;
+
+
+    public boolean isDislikedByCurrentUser() {
+        return dislikedByCurrentUser;
+    }
+
+    public void setDislikedByCurrentUser(boolean dislikedByCurrentUser) {
+        this.dislikedByCurrentUser = dislikedByCurrentUser;
+    }
+
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+
 
     /**
      * Utilisateur ayant créé le post.

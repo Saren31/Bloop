@@ -33,4 +33,14 @@ public class ReactionController {
 
         return "redirect:/profil/voirProfil";
     }
+
+    @PostMapping("/dislike/{postId}")
+    public String dislikePost(@PathVariable Long postId) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur != null) {
+            reactionService.toggleDislike(postId, utilisateur);
+        }
+        return "redirect:/profil/voirProfil";
+    }
+
 }

@@ -33,10 +33,16 @@
           <button type="submit">🗑️ Supprimer</button>
         </form>
 
-        <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post">
+        <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post" style="display:inline">
             <button type="submit" th:text="${post.likedByCurrentUser} ? '💔 Annuler Like' : '❤️ Like'"></button>
-            <span th:text="'Likes: ' + ${post.likeCount}"></span>
         </form>
+        <span th:text="'Likes: ' + ${post.likeCount}"></span>
+
+        <form th:action="@{'/reaction/dislike/' + ${post.idPost}}" method="post" style="display:inline">
+            <button type="submit" th:text="${post.dislikedByCurrentUser} ? '❌ Annuler Dislike' : '👎 Dislike'"></button>
+        </form>
+        <span th:text="'Dislikes: ' + ${post.dislikeCount}"></span>
+
     </div>
 
 <h2>Mes évènements</h2>
