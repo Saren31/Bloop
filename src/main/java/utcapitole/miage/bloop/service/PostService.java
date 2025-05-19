@@ -62,7 +62,6 @@ public class PostService {
         Post post = new Post();
         post.setTextePost(postDTO.getTextePost());
         post.setGroupe(groupeRepository.findById(postDTO.getGroupeId()).orElseThrow());
-        System.out.println("ID Utilisateur = " + expId);
         post.setUtilisateur(utilisateurRepository.findById(expId).orElseThrow());
         this.creerPost(post);
 

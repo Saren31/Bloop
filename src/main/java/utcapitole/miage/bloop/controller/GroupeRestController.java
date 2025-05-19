@@ -23,7 +23,6 @@ public class GroupeRestController {
 
     @GetMapping("/{id}/posts")
     public List<PostDTO> getPostsByGroupe(@PathVariable Long id) {
-        System.out.println("ID du groupe : " + id);
         return postService.getPostsByGroupe(id);
     }
 }

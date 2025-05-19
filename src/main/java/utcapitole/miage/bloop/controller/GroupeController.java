@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.GroupeDTO;
-import utcapitole.miage.bloop.dto.PostDTO;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.GroupeService;
@@ -13,7 +12,6 @@ import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Contrôleur pour gérer les opérations liées aux groupes.
