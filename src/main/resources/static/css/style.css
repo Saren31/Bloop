@@ -1,0 +1,281 @@
+/* Import de la police Montserrat + Pacifico */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Pacifico&display=swap');
+
+/*=============================================
+=            Fond animé en dégradé violet     =
+=============================================*/
+
+:root {
+    --violet: #d33bfd;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+
+    background: linear-gradient(#442547, #371b4e, #4f2a6e);
+
+}
+
+
+
+
+
+/*=============================================
+=               Navbar ultra-légère           =
+=============================================*/
+.navbar {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+}
+.navbar .navbar-brand {
+    font-family: 'Pacifico', cursive;
+    font-size: 2rem;
+    color: var(--violet);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+.navbar .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+}
+.navbar .nav-link:hover {
+    color: var(--violet);
+}
+
+/*=============================================
+=         Contenu principal lisible          =
+=============================================*/
+.main-content {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    color: #212529;
+}
+
+/*=============================================
+=               Utilitaires                  =
+=============================================*/
+/* Ajustement des gutters Bootstrap */
+.row.g-4 {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 1.5rem;
+}
+
+/*=============================================
+=               Boutons primaires            =
+=============================================*/
+.btn-primary {
+    background-color: transparent;
+    border-color: #d33bfd;
+    color: #d33bfd;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-primary:hover {
+    background-color: var(--violet);
+    color: #fff;
+}
+.btn-light:hover{
+    background-color: var(--violet);
+    color: #fff;
+}
+
+/*=============================================
+=                                Cartes       =
+=============================================*/
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/*=============================================================================
+=                          Page de connexion                                 =
+=============================================================================*/
+/* Glassmorphism pour la card de connexion */
+.login-card {
+    /* fond semi-transparent */
+    background: rgba(255, 255, 255, 0.15);
+    /* flou d’arrière-plan */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* bord fin et arrondi */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    /* ombre douce pour la profondeur */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* Titres et textes */
+.login-card h2 {
+    color: #ffffff; /* violet clair */
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Champs de saisie : fond translucide + arrondis */
+.login-card .form-control {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+/* Placeholder plus foncé */
+.login-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Labels blancs légèrement opaques */
+.login-card .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+/* Bouton glassy */
+.login-card .btn-primary {
+    background: rgba(255, 255, 255, 0.25);
+    color: #e0c5ff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Hover plus opaque */
+.login-card .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+/* Lien d’inscription */
+.login-card .register-link {
+    color: #e0c5ff;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    transition: color 0.3s;
+}
+.login-card .register-link:hover {
+    color: #fff;
+}
+
+/* Centrage de la page */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);
+    padding: 2rem;
+    background: linear-gradient(315deg,
+    #341b47 0%,
+    #8a2be2 100%
+    );
+}
+
+/*=============================================================================
+=                     Page d'inscription : Glassmorphism                      =
+=============================================================================*/
+
+/* Conteneur centré */
+.registration-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);  /* adapte si ton header fait 80px */
+    padding: 2rem;
+    background: linear-gradient(315deg,
+    #341b47 0%,
+    #8a2be2 100%
+    );  /* ton fond violet statique */
+}
+
+/* Glass card */
+.register-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+}
+
+/* Titre */
+.register-card h2 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Labels */
+.register-card .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+/* Inputs */
+.register-card .form-control {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+/* Placeholder */
+.register-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Bouton */
+.register-card .btn-primary {
+    background: rgba(255, 255, 255, 0.25);
+    color: #e0c5ff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    width: 100%;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 1rem;
+}
+.register-card .btn-primary:hover {
+    background: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
+
+/* Message d’erreur */
+.register-card .text-danger {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Lien connexion */
+.register-card .login-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #e0c5ff;
+    transition: color 0.3s;
+}
+.register-card .login-link:hover {
+    color: #fff;
+}
