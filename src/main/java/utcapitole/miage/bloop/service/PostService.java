@@ -23,9 +23,11 @@ public class PostService {
     private final UtilisateurRepository utilisateurRepository;
 
     /**
-     * Constructeur pour injecter le repository des posts.
+     * Constructeur pour injecter les dépendances nécessaires.
      *
      * @param postRepository Le repository pour interagir avec les entités Post.
+     * @param groupeRepository Le repository pour interagir avec les entités Groupe.
+     * @param utilisateurRepository Le repository pour interagir avec les entités Utilisateur.
      */
     @Autowired
     public PostService(PostRepository postRepository, GroupeRepository groupeRepository, UtilisateurRepository utilisateurRepository) {
@@ -58,6 +60,13 @@ public class PostService {
         postRepository.save(post);
     }
 
+    /**
+     * Envoie un post en le liant à un utilisateur et un groupe.
+     *
+     * @param postDTO Le DTO contenant les informations du post.
+     * @param expId L'identifiant de l'utilisateur expéditeur.
+     * @return Le DTO du post créé avec les informations mises à jour.
+     */
     public PostDTO envoyerPost(PostDTO postDTO, long expId) {
         Post post = new Post();
         post.setTextePost(postDTO.getTextePost());
@@ -96,10 +105,22 @@ public class PostService {
         return postRepository.findByUtilisateur_IdUser(idUser);
     }
 
+    /**
+     * Supprime un post par son identifiant.
+     *
+     * @param id L'identifiant du post à supprimer.
+     */
     public void supprimerPost(Long id) {
         postRepository.deleteById(id);
     }
 
+    /**
+     * Récupère les posts associés à un utilisateur donné.
+     *
+     * @param utilisateur L'entité Utilisateur.
+     * @return La liste des posts associés à l'utilisateur.
+     * @throws IllegalArgumentException Si l'utilisateur est null.
+     */
     public List<Post> findByUtilisateur(Utilisateur utilisateur) {
         if (utilisateur == null) {
             throw new IllegalArgumentException("L'utilisateur ne peut pas être null.");
@@ -107,6 +128,12 @@ public class PostService {
         return postRepository.findByUtilisateur(utilisateur);
     }
 
+    /**
+     * Récupère les posts associés à un groupe spécifique.
+     *
+     * @param groupeId L'identifiant du groupe.
+     * @return Une liste de PostDTO représentant les posts du groupe.
+     */
     public List<PostDTO> getPostsByGroupe(Long groupeId) {
         return postRepository.findByGroupe_IdGroupe(groupeId)
                 .stream()
@@ -126,7 +153,15 @@ public class PostService {
 
                     return postDTO;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    /**
+     * Sauvegarde un post dans le repository.
+     *
+     * @param post L'entité Post à sauvegarder.
+     */
+    public void save(Post post) {
+        postRepository.save(post);
+    }
 }

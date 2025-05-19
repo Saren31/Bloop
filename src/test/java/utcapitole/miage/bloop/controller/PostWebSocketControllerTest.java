@@ -19,11 +19,10 @@ class PostWebSocketControllerTest {
     void testEnvoyerPost() {
         SimpMessagingTemplate messagingTemplate = mock(SimpMessagingTemplate.class);
         PostService postService = mock(PostService.class);
-        GroupeService groupeService = mock(GroupeService.class);
         UtilisateurService utilisateurService = mock(UtilisateurService.class);
 
         PostWebSocketController controller = new PostWebSocketController(
-                messagingTemplate, postService, groupeService, utilisateurService);
+                messagingTemplate, postService, utilisateurService);
 
         PostDTO postDTO = new PostDTO();
         postDTO.setGroupeId(42L);

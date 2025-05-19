@@ -29,8 +29,11 @@
             </div>
             <p><strong>Date:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
         </a>
+        <form th:action="@{'/post/' + ${post.idPost} + '/modifier'}" method="get">
+            <button type="submit">Modifier</button>
+        </form>
         <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get" style="margin-top: 10px;">
-          <button type="submit">🗑️ Supprimer</button>
+            <button type="submit">🗑️ Supprimer</button>
         </form>
     </div>
 </div>

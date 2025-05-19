@@ -8,7 +8,6 @@ import utcapitole.miage.bloop.dto.GroupeDTO;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.GroupeService;
-import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.io.IOException;
@@ -22,7 +21,6 @@ public class GroupeController {
 
     private final GroupeService groupeService;
     private final UtilisateurService utilisateurService;
-    private final PostService postService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -31,10 +29,9 @@ public class GroupeController {
      * @param utilisateurService Service pour gérer les utilisateurs.
      */
     @Autowired
-    public GroupeController(GroupeService groupeService, UtilisateurService utilisateurService, PostService postService) {
+    public GroupeController(GroupeService groupeService, UtilisateurService utilisateurService) {
         this.groupeService = groupeService;
         this.utilisateurService = utilisateurService;
-        this.postService = postService;
     }
 
     /**
@@ -52,6 +49,7 @@ public class GroupeController {
      *
      * @param groupeDTO Les données du groupe à créer.
      * @return Le nom de la vue à afficher après la validation.
+     * @throws RuntimeException Si une erreur survient lors du traitement du logo.
      */
     @PostMapping("/valider")
     public String validerGroupe(@ModelAttribute GroupeDTO groupeDTO) {
@@ -96,6 +94,12 @@ public class GroupeController {
         return "accueil";
     }
 
+    /**
+     * Affiche la page d'un groupe.
+     *
+     * @param model Le modèle contenant les données à afficher dans la vue.
+     * @return Le nom de la vue pour afficher la page du groupe.
+     */
     @GetMapping("/groupe")
     public String afficherPageGroupe(Model model) {
         Utilisateur utilisateurConnecte = utilisateurService.getUtilisateurConnecte();
