@@ -1,10 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Modifier le post</title>
 </head>
 <body>
+
+<h2>Modifier le post</h2>
+
+<form th:action="@{'/post/' + ${post.idPost} + '/modifier'}" method="post">
+  <label>Texte :</label><br>
+  <textarea name="textePost" rows="4" cols="50" th:text="${post.textePost}"></textarea><br><br>
+
+  <button type="submit">Enregistrer</button>
+</form>
+
+<a href="/profil/voirProfil">Annuler</a>
 
 </body>
 </html>

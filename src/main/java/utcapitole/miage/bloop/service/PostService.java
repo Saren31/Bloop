@@ -74,4 +74,8 @@ public class PostService {
         return postRepository.findByUtilisateur_IdUser(idUser);
     }
 
+
+    public void save(Post post) {
+        postRepository.save(post);
+    }
 }

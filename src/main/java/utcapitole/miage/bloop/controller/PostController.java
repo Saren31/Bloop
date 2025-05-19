@@ -135,4 +135,34 @@ public class PostController {
         model.addAttribute("commentaires", commentaireService.getCommentairesParPost(postId));
         return "afficherPost";
     }
+
+    // US39 modifier son post
+    @GetMapping("/{postId}/modifier")
+    public String afficherFormulaireModification(@PathVariable Long postId, Model model) {
+        Utilisateur utilisateur = getUtilisateurConnecte();
+        Post post = postService.getPostParId(postId);
+
+        if (post == null || utilisateur == null || post.getUtilisateur().getIdUser() != utilisateur.getIdUser()) {
+            return "redirect:/profil/voirProfil";
+    }
+
+        model.addAttribute("post", post);
+        return "modifierPost";
+    }
+
+    @PostMapping("/{postId}/modifier")
+    public String modifierPost(@PathVariable Long postId, @ModelAttribute Post postModifie, Model model) {
+        Utilisateur utilisateur = getUtilisateurConnecte();
+        Post post = postService.getPostParId(postId);
+
+        if (post == null || utilisateur == null || post.getUtilisateur().getIdUser() != utilisateur.getIdUser()) {
+            return "redirect:/profil/voirProfil";
+        }
+
+        post.setTextePost(postModifie.getTextePost());
+        postService.save(post);
+
+        return "redirect:/profil/voirProfil";
+    }
+
 }
