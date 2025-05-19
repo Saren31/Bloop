@@ -1,6 +1,5 @@
 package utcapitole.miage.bloop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.MessageDTO;
 import utcapitole.miage.bloop.model.entity.Message;

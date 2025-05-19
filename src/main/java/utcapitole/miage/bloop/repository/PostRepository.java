@@ -12,4 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void deleteAllByUtilisateur(Utilisateur utilisateur);
 
     List<Post> findByUtilisateur(Utilisateur utilisateur);
+
+    List<Post> findByGroupe_IdGroupe(Long groupeId);
 }

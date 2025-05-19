@@ -1,7 +1,6 @@
 package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
-
 import java.util.Date;
 import java.util.Objects;
 
@@ -91,6 +90,10 @@ public class Post {
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
+    @ManyToOne
+    @JoinColumn(name = "groupe_id")
+    private Groupe groupe;
+
     /**
      * Récupère l'identifiant du post.
      *
@@ -162,8 +165,13 @@ public class Post {
      */
     public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
 
+    public Groupe getGroupe() {
+        return groupe;
+    }
 
-
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
+    }
 
     /**
      * Vérifie l'égalité entre deux objets Post.

@@ -1,9 +1,7 @@
 package utcapitole.miage.bloop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.MessageDTO;
-import utcapitole.miage.bloop.model.entity.Message;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.MessageService;
 import utcapitole.miage.bloop.service.UtilisateurService;

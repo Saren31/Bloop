@@ -2,6 +2,7 @@ package utcapitole.miage.bloop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.GroupeDTO;
 import utcapitole.miage.bloop.model.entity.Groupe;
@@ -48,6 +49,7 @@ public class GroupeController {
      *
      * @param groupeDTO Les données du groupe à créer.
      * @return Le nom de la vue à afficher après la validation.
+     * @throws RuntimeException Si une erreur survient lors du traitement du logo.
      */
     @PostMapping("/valider")
     public String validerGroupe(@ModelAttribute GroupeDTO groupeDTO) {
@@ -91,4 +93,18 @@ public class GroupeController {
 
         return "accueil";
     }
+
+    /**
+     * Affiche la page d'un groupe.
+     *
+     * @param model Le modèle contenant les données à afficher dans la vue.
+     * @return Le nom de la vue pour afficher la page du groupe.
+     */
+    @GetMapping("/groupe")
+    public String afficherPageGroupe(Model model) {
+        Utilisateur utilisateurConnecte = utilisateurService.getUtilisateurConnecte();
+        model.addAttribute("utilisateur", utilisateurConnecte);
+        return "groupe";
+    }
+
 }

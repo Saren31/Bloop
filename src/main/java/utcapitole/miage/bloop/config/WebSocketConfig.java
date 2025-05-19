@@ -37,7 +37,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/queue"); // Active un broker simple pour les files d'attente.
+        config.enableSimpleBroker("/queue", "/topic"); // Active un broker simple pour les files d'attente.
         config.setApplicationDestinationPrefixes("/app"); // Préfixe pour les messages destinés à l'application.
         config.setUserDestinationPrefix("/user"); // Préfixe pour les messages destinés à un utilisateur spécifique.
     }

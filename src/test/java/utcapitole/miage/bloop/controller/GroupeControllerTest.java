@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.GroupeService;
+import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -31,6 +32,9 @@ class GroupeControllerTest {
 
     @MockitoBean
     private GroupeService groupeService;
+
+    @MockitoBean
+    private PostService postService;
 
     @MockitoBean
     private UtilisateurService utilisateurService;

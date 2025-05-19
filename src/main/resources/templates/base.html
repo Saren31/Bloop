@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Titre de la page défini par chaque template enfant -->
+    <title th:text="${pageTitle}">Titre de la page</title>
+    <!-- Insertion des liens head (Bootstrap + custom CSS) -->
+    <div th:replace="fragments :: headLinks"></div>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Navbar commune -->
+<div th:replace="fragments :: navbar"></div>
+
+<!-- Contenu principal défini par chaque template enfant -->
+<main class="container my-4 flex-fill">
+    <div th:fragment="content">
+        <!-- Le contenu spécifique à chaque page sera injecté ici -->
+    </div>
+</main>
+
+<!-- Footer commun -->
+<div th:replace="fragments :: footer"></div>
+
+<!-- Scripts (Bootstrap JS + custom) -->
+<div th:replace="fragments :: scripts"></div>
+</body>
+</html>
