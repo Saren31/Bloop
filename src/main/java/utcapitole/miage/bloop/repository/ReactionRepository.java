@@ -11,4 +11,6 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
     int countByPostAndLiked(Post post, boolean liked);
 
     List<Reaction> findByPostAndUtilisateur(Post post, Utilisateur utilisateur);
+
+    long countByPostAndLikedTrue(Post post);
 }

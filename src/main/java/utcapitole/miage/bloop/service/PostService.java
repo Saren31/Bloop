@@ -1,14 +1,15 @@
 package utcapitole.miage.bloop.service;
 
-import jakarta.persistence.Transient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.PostRepository;
+import utcapitole.miage.bloop.repository.ReactionRepository;
 
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service pour gérer les opérations liées aux posts.
@@ -17,6 +18,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ReactionRepository reactionRepository;
 
     /**
      * Constructeur pour injecter le repository des posts.
@@ -24,9 +26,12 @@ public class PostService {
      * @param postRepository Le repository pour interagir avec les entités Post.
      */
     @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, ReactionRepository reactionRepository) {
         this.postRepository = postRepository;
+        this.reactionRepository = reactionRepository;
     }
+
+
 
     /**
      * Récupère la liste des posts d'un utilisateur spécifique.
@@ -88,4 +93,18 @@ public class PostService {
         return postRepository.findByUtilisateur(utilisateur);
     }
 
+
+    public void save(Post post) {
+        postRepository.save(post);
+    }
+
+    public void updateNbLikes(Post post) {
+        long countLikes = reactionRepository.countByPostAndLikedTrue(post);
+        post.setNbLikes((int) countLikes);
+        postRepository.save(post);
+    }
+
+    public Optional<Post> getPostById(Long id) {
+        return postRepository.findById(id);
+    }
 }

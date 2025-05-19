@@ -16,21 +16,29 @@ public class ReactionService {
     @Autowired
     private ReactionRepository reactionRepository;
 
+    @Autowired
+    private PostService postService;
+
+
     public Reaction likerPost(Post post, Utilisateur utilisateur) {
         List<Reaction> existingReactions = reactionRepository.findByPostAndUtilisateur(post, utilisateur);
 
         if (!existingReactions.isEmpty()) {
-
             return existingReactions.get(0);
         } else {
             Reaction reaction = new Reaction();
             reaction.setPost(post);
             reaction.setUtilisateur(utilisateur);
             reaction.setLiked(true);
-            return reactionRepository.save(reaction);
+            Reaction savedReaction = reactionRepository.save(reaction);
+
+            int likes = getNombreLikes(post);
+            post.setNbLikes(likes);
+            postService.save(post);
+
+            return savedReaction;
         }
     }
-
 
     public void dislikerPost(Post post, Utilisateur utilisateur) {
         List<Reaction> existingReactions = reactionRepository.findByPostAndUtilisateur(post, utilisateur);
@@ -47,13 +55,21 @@ public class ReactionService {
             reaction.setLiked(false);
             reactionRepository.save(reaction);
         }
+
+
+        int likes = getNombreLikes(post);
+        post.setNbLikes(likes);
+        postService.save(post);
     }
 
     public void annulerReaction(Post post, Utilisateur utilisateur) {
         List<Reaction> existingReactions = reactionRepository.findByPostAndUtilisateur(post, utilisateur);
         existingReactions.forEach(reactionRepository::delete);
-    }
 
+        int likes = getNombreLikes(post);
+        post.setNbLikes(likes);
+        postService.save(post);
+    }
 
     public int getNombreLikes(Post post) {
         return reactionRepository.countByPostAndLiked(post, true);
@@ -68,4 +84,19 @@ public class ReactionService {
         }
     }
 
+    public Reaction saveReaction(Post post, Utilisateur utilisateur, boolean liked) {
+        Optional<Reaction> optionalReaction = getReaction(post, utilisateur);
+
+        Reaction reaction;
+        if (optionalReaction.isPresent()) {
+            reaction = optionalReaction.get();
+            reaction.setLiked(liked);
+        } else {
+            reaction = new Reaction();
+            reaction.setPost(post);
+            reaction.setUtilisateur(utilisateur);
+            reaction.setLiked(liked);
+        }
+        return reactionRepository.save(reaction);
+    }
 }

@@ -10,11 +10,14 @@ import org.springframework.ui.Model;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.model.entity.Reaction;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.PostService;
+import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contrôleur pour gérer les opérations liées au profil utilisateur.
@@ -26,6 +29,7 @@ public class ProfilController {
 
     private final UtilisateurService utilisateurService;
     private final PostService postService;
+    private final ReactionService reactionService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -34,9 +38,10 @@ public class ProfilController {
      * @param postService Service pour gérer les posts.
      */
     @Autowired
-    public ProfilController(UtilisateurService utilisateurService, PostService postService) {
+    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService) {
         this.utilisateurService = utilisateurService;
         this.postService = postService;
+        this.reactionService = reactionService;
     }
 
     /**
@@ -57,25 +62,24 @@ public class ProfilController {
 
 
 
+        for (Post post : posts) {
+            Optional<Reaction> reaction = reactionService.getReaction(post, utilisateur);
+            reaction.ifPresent(post::setReaction);
+        }
+
         model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
 
-
         List<Evenement> evenements = utilisateurService.getEvenementsParUtilisateur(utilisateur);
-
-
         if (evenements == null) {
             evenements = List.of();
         }
-
 
         evenements = evenements.stream()
                 .filter(e -> e != null)
                 .toList();
 
         model.addAttribute("evenements", evenements);
-
-
 
         return "voirProfil";
     }
@@ -162,6 +166,27 @@ public class ProfilController {
         utilisateurService.save(utilisateur);
         return "redirect:/profil/voirProfil";
     }
+
+    @PostMapping("/post/{postId}/reaction")
+    public String reactToPost(@PathVariable Long postId,
+                              @RequestParam boolean liked) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) {
+            return "redirect:/auth/login";
+        }
+
+        Optional<Post> postOpt = postService.getPostById(postId);
+        if (postOpt.isEmpty()) {
+            return "redirect:/profil/voirProfil";
+        }
+
+        Post post = postOpt.get();
+        reactionService.saveReaction(post, utilisateur, liked);
+        postService.updateNbLikes(post);
+
+        return "redirect:/profil/voirProfil";
+    }
+
 
 
 }
