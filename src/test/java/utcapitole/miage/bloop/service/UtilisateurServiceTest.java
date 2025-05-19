@@ -143,4 +143,25 @@ class UtilisateurServiceTest {
         service.save(utilisateur);
         verify(utilisateurRepository).save(utilisateur);
     }
+
+    @Test
+    void testFindByEmail() {
+        Utilisateur utilisateur = new Utilisateur();
+        when(utilisateurRepository.findByEmailUser("test@mail.com")).thenReturn(utilisateur);
+
+        Utilisateur result = service.findByEmail("test@mail.com");
+
+        assertThat(result).isEqualTo(utilisateur);
+    }
+
+    @Test
+    void testGetEvenementsParUtilisateur() {
+        Utilisateur utilisateur = new Utilisateur();
+        List<utcapitole.miage.bloop.model.entity.Evenement> evenements = List.of(mock(utcapitole.miage.bloop.model.entity.Evenement.class));
+        when(evenementRepository.findByOrganisateur(utilisateur)).thenReturn(evenements);
+
+        List<utcapitole.miage.bloop.model.entity.Evenement> result = service.getEvenementsParUtilisateur(utilisateur);
+
+        assertThat(result).isEqualTo(evenements);
+    }
 }

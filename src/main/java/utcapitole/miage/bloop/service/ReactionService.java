@@ -12,26 +12,63 @@ import java.util.Optional;
 @Service
 public class ReactionService {
 
-    @Autowired
-    private ReactionRepository reactionRepository;
+    private final ReactionRepository reactionRepository;
+    private final PostService postService;
 
     @Autowired
-    private PostService postService;
+    public ReactionService(ReactionRepository reactionRepository, PostService postService) {
+        this.reactionRepository = reactionRepository;
+        this.postService = postService;
+    }
 
     public void toggleLike(Long idPost, Utilisateur utilisateur) {
         Optional<Reaction> existing = reactionRepository.findByPostIdPostAndUtilisateurIdUser(idPost, utilisateur.getIdUser());
 
         if (existing.isPresent()) {
-            reactionRepository.delete(existing.get());
+            if ("LIKE".equals(existing.get().getType())) {
+                reactionRepository.delete(existing.get());
+            } else {
+                reactionRepository.delete(existing.get());
+                addLike(idPost, utilisateur);
+            }
         } else {
-            Reaction r = new Reaction();
-            Post post = postService.getPostParId(idPost);
-            r.setPost(post);
-            r.setUtilisateur(utilisateur);
-            r.setType("LIKE");
-            r.setLiked(true);
-            reactionRepository.save(r);
+            addLike(idPost, utilisateur);
         }
+    }
+
+    private void addLike(Long idPost, Utilisateur utilisateur) {
+        Post post = postService.getPostParId(idPost);
+        Reaction r = new Reaction();
+        r.setPost(post);
+        r.setUtilisateur(utilisateur);
+        r.setType("LIKE");
+        r.setLiked(true);
+        reactionRepository.save(r);
+    }
+
+    public void toggleDislike(Long idPost, Utilisateur utilisateur) {
+        Optional<Reaction> existing = reactionRepository.findByPostIdPostAndUtilisateurIdUser(idPost, utilisateur.getIdUser());
+
+        if (existing.isPresent()) {
+            if ("DISLIKE".equals(existing.get().getType())) {
+                reactionRepository.delete(existing.get());
+            } else {
+                reactionRepository.delete(existing.get());
+                addDislike(idPost, utilisateur);
+            }
+        } else {
+            addDislike(idPost, utilisateur);
+        }
+    }
+
+    private void addDislike(Long idPost, Utilisateur utilisateur) {
+        Post post = postService.getPostParId(idPost);
+        Reaction r = new Reaction();
+        r.setPost(post);
+        r.setUtilisateur(utilisateur);
+        r.setType("DISLIKE");
+        r.setLiked(false);
+        reactionRepository.save(r);
     }
 
     public boolean isLikedBy(Post post, Utilisateur utilisateur) {
@@ -44,26 +81,6 @@ public class ReactionService {
         return reactionRepository.countByPostAndType(post, "LIKE");
     }
 
-    public void toggleDislike(Long idPost, Utilisateur utilisateur) {
-        Post post = postService.getPostParId(idPost);
-
-        Optional<Reaction> existing = reactionRepository.findByPostAndUtilisateur(post, utilisateur);
-        if (existing.isPresent()) {
-            if ("DISLIKE".equals(existing.get().getType())) {
-                reactionRepository.delete(existing.get());
-                return;
-            } else {
-                reactionRepository.delete(existing.get());
-            }
-        }
-
-        Reaction r = new Reaction();
-        r.setPost(post);
-        r.setUtilisateur(utilisateur);
-        r.setType("DISLIKE");
-        reactionRepository.save(r);
-    }
-
     public boolean isDislikedBy(Post post, Utilisateur utilisateur) {
         return reactionRepository.findByPostAndUtilisateur(post, utilisateur)
                 .map(r -> "DISLIKE".equals(r.getType()))
@@ -73,5 +90,4 @@ public class ReactionService {
     public int countDislikes(Post post) {
         return reactionRepository.countByPostAndType(post, "DISLIKE");
     }
-
 }

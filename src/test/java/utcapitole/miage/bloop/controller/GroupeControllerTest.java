@@ -18,6 +18,7 @@ import utcapitole.miage.bloop.service.UtilisateurService;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -87,5 +88,24 @@ class GroupeControllerTest {
                 .andExpect(view().name("accueil"));
 
         assertThat(groupe.getMembres().size()).isEqualTo(1);
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testCreerGroupe_AfficheVue() throws Exception {
+        mockMvc.perform(get("/groupes/creer"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("creer_groupe"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser", roles = "USER")
+    void testAfficherPageGroupe() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
+
+        mockMvc.perform(get("/groupes/groupe"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("groupe"));
     }
 }
