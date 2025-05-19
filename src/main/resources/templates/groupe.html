@@ -78,7 +78,9 @@
 
     function afficherPost(post) {
         let container = document.getElementById('posts');
-        container.innerHTML += `<div><b>${post.utilisateurId}:</b> ${post.textePost} <i style="color:grey;font-size:smaller">(${post.datePost || ""})</i></div>`;
+        // Récupère le nom depuis le champ hidden si disponible, sinon utilise l'ID
+        let nomUser = document.getElementById('nomUser')?.value || post.utilisateurId || "?";
+        container.innerHTML += `<div><b>${nomUser}:</b> ${post.textePost} <i style="color:grey;font-size:smaller">(${post.datePost || ""})</i></div>`;
         container.scrollTop = container.scrollHeight;
     }
 
