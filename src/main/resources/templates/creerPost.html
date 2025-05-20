@@ -1,29 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Créer un post</title>
+<head th:replace="~{fragments :: headLinks}">
+    <title>Créer un post – Bloop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
-<body>
-<h1>Créer un nouveau post</h1>
+<body class="d-flex flex-column min-vh-100">
 
-<form th:action="@{/post/creer}" th:object="${post}" method="post" enctype="multipart/form-data">
-    <label>Texte :</label><br>
-    <textarea th:field="*{textePost}" rows="4" cols="50"></textarea><br>
+<!-- Navbar -->
+<div th:replace="~{fragments :: navbar}"></div>
 
-    <label>Image :</label><br>
-    <input type="file" th:field="*{imageFile}"/><br>
+<!-- Formulaire central -->
+<main class="create-post-page flex-fill d-flex justify-content-center align-items-start pt-5">
+    <div class="post-card glass-card">
+        <h2>Créer un nouveau post</h2>
 
-    <button type="submit">Publier</button>
-</form>
+        <form th:action="@{/post/creer}"
+              th:object="${post}"
+              method="post"
+              enctype="multipart/form-data">
 
-<a th:href="@{/profil/voirProfil}">Retour au profil</a>
+            <div class="mb-4">
+                <label for="textePost" class="form-label">Texte</label>
+                <textarea id="textePost"
+                          th:field="*{textePost}"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Qu’avez-vous à partager ?"></textarea>
+            </div>
 
-<div th:if="${error}" style="color: red;">
-    <p th:text="${error}"></p>
-</div>
-<div th:if="${message}" style="color: green;">
-    <p th:text="${message}"></p>
-</div>
+            <div class="mb-4">
+                <label for="imageFile" class="form-label">Image (optionnel)</label>
+                <input id="imageFile"
+                       type="file"
+                       th:field="*{imageFile}"
+                       class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-white w-100 mb-3">
+                Publier
+            </button>
+
+            <div th:if="${error}" class="text-danger text-center mb-2" th:text="${error}"></div>
+            <div th:if="${message}" class="text-success text-center" th:text="${message}"></div>
+        </form>
+
+        <a th:href="@{/profil/voirProfil}" class="btn btn-link d-block text-center mt-3">
+            ← Retour au profil
+        </a>
+    </div>
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>

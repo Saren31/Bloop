@@ -4,15 +4,28 @@
       lang="fr">
 <head>
     <title>Accueil – Bloop</title>
-    <!-- On insère les meta/link  -->
-    <th:block th:replace="fragments :: headLinks" />
+    <!-- Meta, Bootstrap, FontAwesome-->
+    <th:block th:replace="~{fragments :: headLinks}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <!-- FontAwesome pour les icônes -->
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-pVI4f5R/JW8X8ZLJVTcT6M/8zY+MVWfbyW6MTF5fY4v3xkTDrXjVgzbzInY+W6A2Z6e2J1MZsRdjXQX3ycuZrA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+
 </head>
 <body class="d-flex flex-column min-vh-100">
-<!-- Navbar -->
-<th:block th:replace="fragments :: navbar" />
 
-<!-- Hero / Jumbotron -->
-<section class="jumbotron text-center py-5 mx-3 mt-5">
+<!-- Navbar -->
+<th:block th:replace="~{fragments :: navbar}" />
+
+
+<!-- Hero  -->
+<section class="jumbotron text-center py-5 mx-3 mt-5 ">
+
     <div class="container">
         <h1 class="display-5">Bienvenue sur Bloop</h1>
         <p class="lead text-light">
@@ -28,25 +41,64 @@
         <!-- Authentifié : Mon Profil / Déconnexion -->
         <div sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-3">
             <a class="btn btn-primary btn-lg" th:href="@{/profil/voirProfil}">
-                <i class="bi bi-person-circle me-1"></i> Mon Profil
+                <i class="fa-solid fa-user me-1"></i> Mon Profil
             </a>
             <form th:action="@{/auth/logout}" method="post" class="d-inline">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button class="btn btn-secondary btn-lg">
-                    <i class="bi bi-box-arrow-right me-1"></i> Se déconnecter
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Se déconnecter
                 </button>
             </form>
         </div>
     </div>
+
 </section>
 
-<!-- Feed + Sidebar -->
-<main class="container my-4 flex-fill main-content">
-    <!-- ... ton feed ... -->
-</main>
+
+<section class="about-section py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
+
+            <!-- Texte  bouton à gauche si non connecte  -->
+            <div sec:authorize="isAnonymous()" class="col-md-6 mb-4 mb-md-0">
+                <h2 class="display-6 text-dark">Discutez en toute simplicité</h2>
+                <p class="lead text-secondary">
+                    Sur Bloop, créez votre profil, rejoignez des groupes, et échangez avec vos amis via messages privés ou discussions de groupe.
+                </p>
+                <a class="btn btn-primary btn-lg" th:href="@{/auth/register}">
+                    Inscription gratuite
+                </a>
+            </div>
+            <!-- Texte  bouton à gauche si connecté -->
+            <div sec:authorize="isAuthenticated()" class="col-md-6 mb-4 mb-md-0">
+                <h2 class="display-6 text-dark">Discutez en toute simplicité</h2>
+                <p class="lead text-secondary">
+                    Sur Bloop, créez votre profil, rejoignez des groupes, et échangez avec vos amis via messages privés ou discussions de groupe.
+                </p>
+                <a class="btn btn-primary btn-lg" th:href="@{/messagerie}">
+                    Messagerie
+                </a>
+            </div>
+
+
+
+            <!-- Illustration à droite -->
+            <div class="col-md-6 text-center">
+                <img th:src="@{/img/7121.jpg}"
+                     alt="Partage entre amis"
+                     class="img-fluid"
+                     style="max-height:400px; width:auto;" />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
 
 <!-- Footer & scripts -->
-<th:block th:replace="fragments :: footer" />
-<th:block th:replace="fragments :: scripts" />
+<th:block th:replace="~{fragments :: footer}" />
+<th:block th:replace="~{fragments :: scripts}" />
 </body>
 </html>

@@ -1,30 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Créer un Événement</title>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: headLinks}">
+    <title>Créer un événement – Bloop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
-<body>
-<h1>Créer un événement</h1>
+<body class="d-flex flex-column min-vh-100">
 
-<form th:action="@{/evenement/creer}" th:object="${evenement}" method="post">
-    <label>Titre:</label>
-    <input type="text" th:field="*{titre}" required/><br>
+<!-- Navbar -->
+<div th:replace="~{fragments :: navbar}"></div>
 
-    <label>Description:</label>
-    <textarea th:field="*{description}" rows="4" cols="50"></textarea><br>
+<!-- Formulaire centré -->
+<main class="event-page flex-fill d-flex justify-content-center align-items-center py-5">
+    <div class="event-card glass-card text-white">
+        <h2 class="mb-4">Créer un événement</h2>
 
-    <label>Date Début:</label>
-    <input type="datetime-local" th:field="*{dateDebut}" required/><br>
+        <form th:action="@{/evenement/creer}"
+              th:object="${evenement}"
+              method="post"
+              class="row g-3">
 
-    <label>Date Fin:</label>
-    <input type="datetime-local" th:field="*{dateFin}" required/><br>
+            <div class="col-12">
+                <label for="titre" class="form-label">Titre</label>
+                <input id="titre"
+                       type="text"
+                       th:field="*{titre}"
+                       class="form-control"
+                       required />
+            </div>
 
-    <label>Lieu:</label>
-    <input type="text" th:field="*{lieu}" required/><br>
+            <div class="col-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description"
+                          th:field="*{description}"
+                          class="form-control"
+                          rows="4"></textarea>
+            </div>
 
-    <button type="submit">Créer</button>
-</form>
+            <div class="col-md-6">
+                <label for="dateDebut" class="form-label">Date début</label>
+                <input id="dateDebut"
+                       type="datetime-local"
+                       th:field="*{dateDebut}"
+                       class="form-control"
+                       required />
+            </div>
 
-<a href="/accueil">Retour à l'accueil</a>
+            <div class="col-md-6">
+                <label for="dateFin" class="form-label">Date fin</label>
+                <input id="dateFin"
+                       type="datetime-local"
+                       th:field="*{dateFin}"
+                       class="form-control"
+                       required />
+            </div>
+
+            <div class="col-12">
+                <label for="lieu" class="form-label">Lieu</label>
+                <input id="lieu"
+                       type="text"
+                       th:field="*{lieu}"
+                       class="form-control"
+                       required />
+            </div>
+
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-white px-5">Créer</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a th:href="@{/accueil}" class="cancel-link">❌ Annuler</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>

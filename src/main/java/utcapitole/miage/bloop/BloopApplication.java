@@ -75,6 +75,8 @@ public class BloopApplication {
 
 			// Sauvegarde des utilisateurs dans la base de données
 			utilisateurRepository.saveAll(List.of(u, u1, u2));
+			;
 		};
+
 	}
 }
