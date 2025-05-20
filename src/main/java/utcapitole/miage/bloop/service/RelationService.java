@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class RelationService {
 
     private UtilisateurRepository utilisateurRepository;
+    private GraphSyncService graphSyncService;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -26,8 +27,9 @@ public class RelationService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public RelationService(UtilisateurRepository utilisateurRepository) {
+    public RelationService(UtilisateurRepository utilisateurRepository, GraphSyncService graphSyncService) {
         this.utilisateurRepository = utilisateurRepository;
+        this.graphSyncService = graphSyncService;
     }
 
     /**
@@ -104,6 +106,8 @@ public class RelationService {
             utilisateurRepository.save(envoyeur);
             utilisateurRepository.save(receveur);
 
+            graphSyncService.syncAllToGraph();
+
             return "Demande d'amitié acceptée.";
         } else {
             // Si la demande est refusée
@@ -172,6 +176,9 @@ public class RelationService {
 
         utilisateurRepository.save(user);
         utilisateurRepository.save(ami);
+
+        graphSyncService.syncAllToGraph();
+
 
         return "Ami supprimé avec succès.";
     }

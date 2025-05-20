@@ -119,7 +119,7 @@ public class ProfilController {
     public String voirProfilAutre(@PathVariable Long id, Model model, Authentication authentication) {
         Utilisateur moi = (Utilisateur) authentication.getPrincipal();
 
-        Utilisateur autre = utilisateurService.getUtilisateurParId(id);
+        Utilisateur autre = utilisateurService.getUtilisateurById(id);
         if (autre == null ) {
             return "accueil"; // Redirection vers l'accueil
         }

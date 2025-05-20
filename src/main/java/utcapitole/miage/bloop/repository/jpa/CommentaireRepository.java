@@ -1,4 +1,4 @@
-package utcapitole.miage.bloop.repository;
+package utcapitole.miage.bloop.repository.jpa;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import utcapitole.miage.bloop.model.entity.Commentaire;

@@ -3,9 +3,9 @@ package utcapitole.miage.bloop.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.EvenementRepository;
-import utcapitole.miage.bloop.repository.PostRepository;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.PostRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -87,20 +87,20 @@ class UtilisateurServiceTest {
     }
 
     @Test
-    void testGetUtilisateurParId_found() {
+    void testGetUtilisateurById_found() {
         Utilisateur u1 = new Utilisateur();
         when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u1));
 
-        Utilisateur result = service.getUtilisateurParId(1L);
+        Utilisateur result = service.getUtilisateurById(1L);
 
         assertThat(result).isEqualTo(u1);
     }
 
     @Test
-    void testGetUtilisateurParId_notFound() {
+    void testGetUtilisateurById_notFound() {
         when(utilisateurRepository.findById(2L)).thenReturn(Optional.empty());
 
-        Utilisateur result = service.getUtilisateurParId(2L);
+        Utilisateur result = service.getUtilisateurById(2L);
 
         assertThat(result).isNull();
     }
