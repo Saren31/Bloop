@@ -52,11 +52,11 @@ public class ChatWebSocketController {
 
         // Récupère les noms d'utilisateur (ou emails) de l'expéditeur et du destinataire
         String destinataireUsername = utilisateurService
-                .getUtilisateurParId(message.getDestinataireId())
+                .getUtilisateurById(message.getDestinataireId())
                 .getEmailUser();
 
         String envoyeurUsername = utilisateurService
-                .getUtilisateurParId(expId)
+                .getUtilisateurById(expId)
                 .getEmailUser();
 
         // Envoie le message au destinataire via WebSocket

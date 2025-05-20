@@ -3,8 +3,8 @@ package utcapitole.miage.bloop.service;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.MessageDTO;
 import utcapitole.miage.bloop.model.entity.Message;
-import utcapitole.miage.bloop.repository.MessageRepository;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.MessageRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Commentaire;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.CommentaireRepository;
-import utcapitole.miage.bloop.repository.PostRepository;
+import utcapitole.miage.bloop.repository.jpa.CommentaireRepository;
+import utcapitole.miage.bloop.repository.jpa.PostRepository;
 
 import java.util.Date;
 import java.util.List;

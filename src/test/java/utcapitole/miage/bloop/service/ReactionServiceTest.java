@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Reaction;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.ReactionRepository;
+import utcapitole.miage.bloop.repository.jpa.ReactionRepository;
 
 import java.util.Optional;
 

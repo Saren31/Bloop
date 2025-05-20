@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.PostDTO;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.GroupeRepository;
-import utcapitole.miage.bloop.repository.PostRepository;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
+import utcapitole.miage.bloop.repository.jpa.PostRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service pour gérer les opérations liées aux posts.
