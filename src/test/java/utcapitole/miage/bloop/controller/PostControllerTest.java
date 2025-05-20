@@ -24,6 +24,7 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -120,18 +121,27 @@ class PostControllerTest {
 
     @Test
     void testCommenterPost() throws Exception {
+        // 1) Prépare l’utilisateur et le place dans le contexte
         Utilisateur utilisateur = creerUtilisateurSimule();
-        TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
+        TestingAuthenticationToken auth =
+                new TestingAuthenticationToken(utilisateur, null, "ROLE_USER");
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        when(commentaireService.ajouterCommentaire(1L, "Coucou", utilisateur)).thenReturn(null);
+        // 2) Enlève le when(commentaireService.ajouterCommentaire(...)).thenReturn(...)
+        //    il n’est pas nécessaire puisque la méthode retourne une valeur non utilisée
 
+        // 3) Exécution de la requête
         mockMvc.perform(post("/post/1/commenter")
-                        .param("texte", "Coucou")
-                        .principal(auth))
+                        .with(csrf())
+                        .principal(auth)
+                        .param("texte", "Coucou"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/post/1"));
+
+        // 4) Vérifie bien que la méthode a été appelée
+        verify(commentaireService).ajouterCommentaire(1L, "Coucou", utilisateur);
     }
+
 
     @Test
     void testAfficherPost() throws Exception {
@@ -205,19 +215,22 @@ class PostControllerTest {
 
     @Test
     void testAfficherFormulaireModification_Autorise() throws Exception {
+        // Prépare l’utilisateur et le post existant
         Utilisateur utilisateur = creerUtilisateurSimule();
         Post post = new Post();
         post.setIdPost(1L);
         post.setUtilisateur(utilisateur);
 
+        // Seul le stub sur getPostParId(...) est réellement utilisé
         when(postService.getPostParId(1L)).thenReturn(post);
+
         TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         mockMvc.perform(get("/post/1/modifier").principal(auth))
                 .andExpect(status().isOk())
                 .andExpect(view().name("modifierPost"))
-                .andExpect(model().attributeExists("post"));
+                .andExpect(model().attribute("post", post));
     }
 
     @Test
@@ -247,23 +260,20 @@ class PostControllerTest {
         post.setIdPost(1L);
         post.setUtilisateur(utilisateur);
 
+        // Seul ce stub est nécessaire pour autoriser la modification
         when(postService.getPostParId(1L)).thenReturn(post);
 
-        // <-- Ici, on stubbe la méthode void save(...)
-        doNothing().when(postService).save(any(Post.class));
-
-        // Simule l’authentification
         TestingAuthenticationToken auth = new TestingAuthenticationToken(utilisateur, null);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        // Appel du contrôleur
         mockMvc.perform(post("/post/1/modifier")
+                        .principal(auth)
                         .param("textePost", "Nouveau texte")
-                        .principal(auth))
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profil/voirProfil"));
 
-        // Vérifie bien l’appel à la méthode void
+        // La méthode save(...) est void par défaut, pas besoin de doNothing()
         verify(postService).save(any(Post.class));
     }
 
