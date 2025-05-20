@@ -78,4 +78,15 @@ public class MessageService {
         dto.setDestinataireId(m.getDestinataire().getIdUser());
         return dto;
     }
+
+    public Long supprimerMessage(Long messageId, Long expId) {
+        Message msg = repo.findById(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("Message non trouvé : " + messageId));
+        if (msg.getExpediteur().getIdUser() != expId) {
+            throw new SecurityException("Suppression non autorisée");
+        }
+        Long destinataireId = msg.getDestinataire().getIdUser();
+        repo.deleteById(messageId);
+        return destinataireId;
+    }
 }
