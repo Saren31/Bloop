@@ -1,32 +1,22 @@
 /* Import de la police Montserrat + Pacifico */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Pacifico&display=swap');
 
-/*=============================================
-=            Fond animé en dégradé violet     =
-=============================================*/
-
 :root {
     --violet: #d33bfd;
 }
-
-
 body {
     margin: 0;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
     color: #fff;
     overflow-x: hidden;
-
-    background: linear-gradient(#442547, #371b4e, #4f2a6e);
+    position: relative;
+    background: linear-gradient(#86468e, #763ea5, #4f2a6e);
 
 }
 
-
-
-
-
 /*=============================================
-=               Navbar ultra-légère           =
+=               Navbar transparente          =
 =============================================*/
 .navbar {
     background-color: rgba(255, 255, 255, 0.2) !important;
@@ -47,7 +37,7 @@ body {
 }
 
 /*=============================================
-=         Contenu principal lisible          =
+=         Contenu principal          =
 =============================================*/
 .main-content {
     background: rgba(255, 255, 255, 0.85);
@@ -91,6 +81,28 @@ body {
     border-radius: 0.75rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
+/*=============================================
+=            Section “À propos” home          =
+=============================================*/
+/* =====================
+   Section « about »
+   ===================== */
+.about-section {
+    background-color: #fff;   /* blanc pur */
+}
+
+.about-section h2 {
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+
+.about-section .lead {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+
 
 /*=============================================================================
 =                          Page de connexion                                 =
@@ -279,3 +291,360 @@ body {
 .register-card .login-link:hover {
     color: #fff;
 }
+/*=============================================================================
+=                           Profil / Général                                    =
+=============================================================================*/
+
+/* ------------------
+   Carte infos persos
+   ------------------ */
+.profile-info-card {
+    background: #fff;
+    margin-top: 50px;
+    color: #333;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 0;
+    max-width: 900px;
+    width: 100%;
+}
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid var(--violet);
+}
+
+/* Boutons “Modifier” & “Supprimer” */
+.btn-outline-secondary {
+    border-color: #aaa;
+    color: #555;
+}
+.btn-outline-secondary:hover {
+    background: #555;
+    color: #fff;
+}
+
+/* Publications – grille */
+.post-card {
+    background: #fff;
+    color: #333;
+}
+.post-card p, .post-card small {
+    color: #555;
+}
+
+
+.event-card {
+    background: #fff;
+    color: #333;
+    padding: 1rem;
+}
+.event-card h5 {
+    color: #ffffff;
+}
+
+
+.profile-section h2 {
+    color: #ffffff;
+    border-bottom: 1.5px solid white;
+    padding-bottom: 0.5rem;
+}
+
+/* =============================================
+   Page “Créer un post”
+   ============================================= */
+.create-post-page {
+    background: linear-gradient(315deg, #341b47 0%, #8a2be2 100%);
+    padding-top: 4rem;
+}
+
+.post-card {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 1rem;
+    margin-top: 50px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    color: #fff;
+}
+
+.create-post-page h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    color: #fff;
+}
+
+/* Form controls dans la glass-card */
+.glass-card .form-control {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+}
+
+.glass-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-card .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* Bouton blanc avec texte violet */
+.btn-white {
+    background-color: #fff;
+    color: var(--violet);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-white:hover {
+    background-color: #f2f2f2;
+    color: var(--violet);
+}
+
+/* Lien retour profil */
+.btn-link {
+    color: #e0c5ff;
+    transition: color 0.3s;
+}
+
+.btn-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+/* ==============================================
+   Page “Modifier mon profil”
+   ============================================== */
+.profile-edit-page {
+    background: linear-gradient(315deg, #341b47 0%, #8a2be2 100%);
+}
+
+.edit-card {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 1rem;
+}
+
+/* réutilise glass-card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    color: #fff;
+    margin-top: 50px;
+}
+
+/* Titres */
+.profile-edit-page h2 {
+    color: #fff;
+    font-weight: 300;
+}
+
+/* Inputs et labels */
+.edit-card .form-control,
+.edit-card .form-select {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+.edit-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+.edit-card .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+/* Boutons blanc/violet */
+.btn-white {
+    background-color: #fff;
+    color: var(--violet);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-white:hover {
+    background-color: #f2f2f2;
+    color: var(--violet);
+}
+
+/* Lien annuler */
+.btn-link {
+    color: #e0c5ff;
+    transition: color 0.3s;
+}
+.btn-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* ==============================================
+   Page de confirmation de suppression d'UN POST
+   ============================================== */
+
+/* Zone centrale */
+.confirm-page {
+    background: linear-gradient(315deg, #341b47 0%, #8a2be2 100%);
+}
+
+/* Carte principale */
+.confirm-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Petite carte de prévisualisation */
+.glass-card-sm {
+    background: rgba(255,255,255,0.2);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: #fff;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Image preview */
+.preview-img {
+    max-height: 200px;
+    width: auto;
+}
+
+/* Bouton blanc */
+.btn-white {
+    background-color: #fff;
+    color: var(--violet);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-white:hover {
+    background-color: #f2f2f2;
+    color: var(--violet);
+}
+
+/* Lien Annuler */
+.cancel-link {
+    color: #e0c5ff;
+    font-weight: 500;
+    align-self: center;
+    transition: color 0.3s;
+}
+.cancel-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Ajustements mobiles */
+@media (max-width: 576px) {
+    .confirm-card {
+        margin: 0 1rem;
+    }
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+/* ==============================================
+   Page “Créer un événement”
+   ============================================== */
+
+/* Fond et centrage (même dégradé violet) */
+.event-page {
+    background: linear-gradient(315deg, #341b47 0%, #8a2be2 100%);
+}
+
+/* Carte du formulaire */
+.event-card {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+/* Inputs / textarea glassy */
+.event-card .form-control {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #fff;
+}
+.event-card .form-control::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Labels blancs */
+.event-card .form-label {
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+}
+
+/* Bouton blanc */
+.btn-white {
+    background-color: #fff;
+    color: var(--violet);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+.btn-white:hover {
+    background-color: #f2f2f2;
+    color: var(--violet);
+}
+
+/* Lien d’annulation */
+.cancel-link {
+    color: #e0c5ff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.cancel-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .event-card {
+        margin: 0 1rem;
+    }
+}
+
+
