@@ -62,7 +62,6 @@
 
         <div th:each="evenement : ${evenements}">
 
-
             <form th:action="@{'/evenement/' + (${inscritMap[evenement.id]} ? 'desinscription/' : 'inscription/') + ${evenement.id}}" method="post">
                 <button type="submit" th:text="${inscritMap[evenement.id]} ? 'Se désinscrire' : 'Je m\'inscris'"></button>
             </form>

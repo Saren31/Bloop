@@ -68,6 +68,7 @@ public class EvenementService {
         return evenement.getInteresses().contains(utilisateur);
     }
 
-    public void ajouterParticipant(Evenement evenement, Utilisateur utilisateur) {
-    }
+
+
+
 }
