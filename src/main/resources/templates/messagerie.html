@@ -19,6 +19,8 @@
        th:value="${_csrf.token}"
        th:data-header="${_csrf.headerName}" />
 
+<input type="hidden" id="currentUserId" th:value="${currentUserId}" />
+
 <form onsubmit="envoyerViaWS(); return false;">
     <input type="text" id="contenu" placeholder="Votre message..." required>
     <button type="submit">Envoyer via WebSocket</button>
@@ -30,6 +32,7 @@
 <script>
     let stompClient = null;
     let destId = null;
+    const currentUserId = Number(document.getElementById('currentUserId').value);
 
     function chargerHistorique() {
         destId = document.getElementById('destId').value;
@@ -40,7 +43,7 @@
                 let h = document.getElementById('historique');
                 h.innerHTML = '';
                 msgs.forEach(m => {
-                    h.innerHTML += `<div><b>${m.expediteur.nomUser || m.expediteur.idUser}:</b> ${m.contenu} <i style="color:grey;font-size:smaller">(${m.dateEnvoi || ""})</i></div>`;
+                    afficherMessage(m); // Utilise la fonction qui gère l’icône 🗑️
                 });
             });
         connecterWebSocket();
@@ -71,8 +74,18 @@
 
     function afficherMessage(msg) {
         let h = document.getElementById('historique');
-        h.innerHTML += `<div><b>${msg.expediteur.nomUser || msg.expediteur.idUser}:</b> ${msg.contenu} <i style="color:grey;font-size:smaller">(${msg.dateEnvoi || ""})</i></div>`;
+        let deleteIcon = '';
+        if (Number(msg.expediteur.idUser) === currentUserId) {
+            deleteIcon = `<span class="delete-msg" data-id="${msg.id}" style="cursor:pointer;color:red;margin-left:8px;">🗑️</span>`;
+        }
+        h.innerHTML += `<div id="msg-${msg.id}">
+            <b>${msg.expediteur.nomUser || msg.expediteur.idUser}:</b>
+            ${msg.contenu}
+            <i style="color:grey;font-size:smaller">(${msg.dateEnvoi || ""})</i>
+            ${deleteIcon}
+        </div>`;
         h.scrollTop = h.scrollHeight;
+        ajouterListenersSuppression();
     }
 
     function connecterWebSocket() {
@@ -85,8 +98,31 @@
                 console.log("Message reçu via WebSocket :", msg);
                 afficherMessage(msg);
             });
+            // Abonnement à la suppression
+            stompClient.subscribe("/user/queue/deleted", function(message) {
+                let data = JSON.parse(message.body);
+                supprimerMessageDuDOM(data.messageId);
+            });
         });
     }
+
+    function ajouterListenersSuppression() {
+    document.querySelectorAll('.delete-msg').forEach(el => {
+        el.onclick = function() {
+            let msgId = this.getAttribute('data-id');
+            if (confirm("Supprimer ce message ?")) {
+                if (stompClient && stompClient.connected) {
+                    stompClient.send("/app/delete", {}, JSON.stringify({ id: Number(msgId) }));
+                }
+            }
+        };
+    });
+}
+
+function supprimerMessageDuDOM(msgId) {
+    let el = document.getElementById('msg-' + msgId);
+    if (el) el.remove();
+}
 </script>
 </body>
 </html>
