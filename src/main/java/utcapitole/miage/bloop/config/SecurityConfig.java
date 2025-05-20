@@ -1,8 +1,13 @@
 package utcapitole.miage.bloop.config;
 
+import jakarta.persistence.EntityManagerFactory;
+import org.neo4j.driver.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.neo4j.core.transaction.Neo4jTransactionManager;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,6 +26,7 @@ import utcapitole.miage.bloop.service.CustomUserDetailsService;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     /**
      * Constructeur pour injecter le service de gestion des utilisateurs personnalisés.
@@ -28,8 +34,9 @@ public class SecurityConfig {
      * @param userDetailsService Service personnalisé pour la gestion des utilisateurs.
      */
     @Autowired
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, CustomAuthenticationFailureHandler authenticationFailureHandler) {
         this.userDetailsService = userDetailsService;
+        this.authenticationFailureHandler = authenticationFailureHandler;
     }
 
     /**
@@ -59,6 +66,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")       // Page personnalisée de connexion.
                         .defaultSuccessUrl("/accueil", true) // Redirection après connexion réussie.
+                        .failureHandler(authenticationFailureHandler) // URL en cas d'échec de connexion
                         .permitAll()                    // Autorise l'accès à la page de connexion.
                 )
                 .logout(logout -> logout
@@ -105,7 +113,5 @@ public class SecurityConfig {
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
         return new HiddenHttpMethodFilter();
     }
-
-
     
 }

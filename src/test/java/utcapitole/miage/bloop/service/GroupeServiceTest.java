@@ -2,7 +2,7 @@ package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Groupe;
-import utcapitole.miage.bloop.repository.GroupeRepository;
+import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 
 import java.util.Optional;
 

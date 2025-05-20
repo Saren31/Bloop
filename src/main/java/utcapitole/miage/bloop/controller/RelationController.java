@@ -3,6 +3,7 @@ package utcapitole.miage.bloop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.RelationService;
 
@@ -28,7 +29,7 @@ public class RelationController {
     }
 
     /**
-     * Gère les requêtes POST pour envoyer une demande d'amitié.
+     * Envoie une demande d'amitié d'un utilisateur à un autre.
      *
      * @param idEnvoyeur L'identifiant de l'utilisateur qui envoie la demande.
      * @param idReceveur L'identifiant de l'utilisateur qui reçoit la demande.
@@ -36,7 +37,6 @@ public class RelationController {
      */
     @PostMapping("/demande")
     public ResponseEntity<String> envoyerDemandeAmitie(@RequestParam Long idEnvoyeur, @RequestParam Long idReceveur) {
-
         String resultat = relationService.envoyerDemandeAmitie(idEnvoyeur, idReceveur);
 
         if (resultat.contains("succès")) {
@@ -46,6 +46,13 @@ public class RelationController {
         }
     }
 
+    /**
+     * Accepte une demande d'amitié reçue par un utilisateur.
+     *
+     * @param idReceveur L'identifiant de l'utilisateur qui accepte la demande.
+     * @param idEnvoyeur L'identifiant de l'utilisateur qui a envoyé la demande.
+     * @return Une réponse HTTP contenant un message de succès ou d'erreur.
+     */
     @PostMapping("/accepter")
     public ResponseEntity<String> accepterDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
         String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, true);
@@ -56,6 +63,13 @@ public class RelationController {
         }
     }
 
+    /**
+     * Refuse une demande d'amitié reçue par un utilisateur.
+     *
+     * @param idReceveur L'identifiant de l'utilisateur qui refuse la demande.
+     * @param idEnvoyeur L'identifiant de l'utilisateur qui a envoyé la demande.
+     * @return Une réponse HTTP contenant un message de succès ou d'erreur.
+     */
     @PostMapping("/refuser")
     public ResponseEntity<String> refuserDemandeAmitie(@RequestParam Long idReceveur, @RequestParam Long idEnvoyeur) {
         String resultat = relationService.gererDemandeAmitie(idReceveur, idEnvoyeur, false);
@@ -66,12 +80,25 @@ public class RelationController {
         }
     }
 
+    /**
+     * Récupère la liste des amis d'un utilisateur.
+     *
+     * @param idUser L'identifiant de l'utilisateur.
+     * @return Une réponse HTTP contenant la liste des amis de l'utilisateur.
+     */
     @GetMapping("/amis")
-    public ResponseEntity<List<Utilisateur>> voirListeAmis(@RequestParam Long idUser) {
-        List<Utilisateur> amis = relationService.getListeAmis(idUser);
+    public ResponseEntity<List<UtilisateurDTO>> voirListeAmis(@RequestParam Long idUser) {
+        List<UtilisateurDTO> amis = relationService.getListeAmis(idUser);
         return ResponseEntity.ok(amis);
     }
-//Supprimer un ami
+
+    /**
+     * Supprime un ami de la liste d'amis d'un utilisateur.
+     *
+     * @param idUser L'identifiant de l'utilisateur.
+     * @param idAmi L'identifiant de l'ami à supprimer.
+     * @return Une réponse HTTP contenant un message de succès ou d'erreur.
+     */
     @DeleteMapping("/supprimer")
     public ResponseEntity<String> supprimerAmi(@RequestParam Long idUser, @RequestParam Long idAmi) {
         String resultat = relationService.supprimerAmi(idUser, idAmi);
@@ -81,8 +108,4 @@ public class RelationController {
             return ResponseEntity.badRequest().body(resultat);
         }
     }
-
-
-
-
 }

@@ -13,6 +13,7 @@
         <form th:action="@{/auth/register_user}"
               th:object="${user}"
               method="post"
+              enctype="multipart/form-data"
               autocomplete="off">
 
             <div class="mb-3">
@@ -43,6 +44,15 @@
                        class="form-control"
                        autocomplete="email"
                        required />
+            </div>
+
+            <div class="mb-3">
+                <label for="avatar" class="form-label">Photo de profil</label>
+                <input id="avatar"
+                       type="file"
+                       name="avatarFile"
+                       class="form-control"
+                       accept="image/*" />
             </div>
 
             <div class="mb-3">

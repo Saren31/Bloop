@@ -1,7 +1,5 @@
 package utcapitole.miage.bloop.dto;
 
-import utcapitole.miage.bloop.model.entity.Utilisateur;
-
 import java.time.LocalDateTime;
 
 /**

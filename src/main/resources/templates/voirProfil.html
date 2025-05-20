@@ -8,7 +8,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- navbar -->
+<!-- Navbar -->
 <div th:replace="~{fragments :: navbar}"></div>
 
 <main class="container my-5 flex-fill">
@@ -18,9 +18,18 @@
         <div class="row g-0 align-items-center">
             <!-- Photo de profil -->
             <div class="col-md-3 text-center p-4">
-                <img />
+                <div th:if="${utilisateur != null}">
+                    <img th:if="${utilisateur.avatarUser != null}"
+                         th:src="@{'/avatar/' + ${utilisateur.idUser}}"
+                         alt="Avatar"
+                         class="img-fluid rounded-circle" />
+                    <img th:unless="${utilisateur.avatarUser != null}"
+                         th:src="@{/images/default-avatar.png}"
+                         alt="Avatar par défaut"
+                         class="img-fluid rounded-circle" />
+                </div>
             </div>
-            <!-- Texte -->
+            <!-- Infos utilisateur -->
             <div class="col-md-9">
                 <div class="card-body">
                     <h2 class="card-title">Mes informations</h2>
@@ -30,40 +39,34 @@
                         <p><strong>Email :</strong> <span th:text="${utilisateur.emailUser}"></span></p>
                         <p><strong>Pseudo :</strong> <span th:text="${utilisateur.pseudoUser}"></span></p>
                         <p><strong>Téléphone :</strong> <span th:text="${utilisateur.telUser}"></span></p>
-                        <p><strong>Visibilité :</strong>
-                            <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span>
-                        </p>
+                        <p><strong>Visibilité :</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
                     </div>
                     <div th:unless="${utilisateur != null}">
                         <p>Les informations de l’utilisateur ne sont pas disponibles.</p>
                     </div>
 
-                    <!-- Boutons modifier / supprimer -->
+                    <!-- Boutons modifier / supprimer compte -->
                     <div class="mt-4 d-flex gap-3">
                         <a th:href="@{/profil/modifier}" class="btn btn-outline-primary">Modifier</a>
                         <form th:action="@{/profil/me}" method="post"
-                              onsubmit="return confirm('Supprimer votre compte ?');">
+                              onsubmit="return confirm('Supprimer votre compte ? Cette action est irréversible.');">
                             <input type="hidden" name="_method" value="delete"/>
-                            <button type="submit" class="btn btn-outline-secondary">
-                                Supprimer le compte
-                            </button>
+                            <button type="submit" class="btn btn-outline-secondary">Supprimer le compte</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- liste d’amis -->
+        <!-- Liste d’amis -->
         <div class="card-footer bg-transparent">
             <button id="friendsToggle" class="btn btn-outline-secondary">
                 <i class="fa-solid fa-user-friends me-1"></i>
                 <span>Afficher mes amis</span>
             </button>
             <div id="friendsList" class="mt-3" style="display:none;">
-                <!-- Boucle sur les amis -->
                 <ul class="list-group list-group-flush">
-                    <li th:each="ami : ${amis}"
-                        class="list-group-item">
+                    <li th:each="ami : ${amis}" class="list-group-item">
                         <i class="fa-solid fa-user me-2"></i>
                         <span th:text="${ami.pseudoUser}">Pseudo</span>
                     </li>
@@ -75,7 +78,7 @@
         </div>
     </section>
 
-    <!-- Publications-->
+    <!-- Publications -->
     <section class="profile-section mb-5">
         <h2 class="mb-3">Mes publications</h2>
         <div th:if="${posts != null}" class="row g-4">
@@ -86,28 +89,42 @@
                             <p><strong>Contenu :</strong> <span th:text="${post.textePost}"></span></p>
                             <div th:if="${post.imagePost != null}" class="mt-2 mb-2">
                                 <img th:src="@{'/post/image/' + ${post.idPost}}"
-                                     alt="Image du post" class="img-fluid rounded" />
+                                     alt="Image du post"
+                                     class="img-fluid rounded" />
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted"
-                                   th:text="${#dates.format(post.datePost,'dd/MM/yyyy HH:mm')}"></small>
-                            <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}"
-                                  method="get">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                            <small class="text-muted" th:text="${#dates.format(post.datePost,'dd/MM/yyyy HH:mm')}"></small>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{'/post/' + ${post.idPost} + '/modifier'}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <form th:action="@{'/post/' + ${post.idPost} + '/confirmer-suppression'}" method="get">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="mt-2 d-flex align-items-center gap-3">
+                            <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-link p-0" th:text="${post.likedByCurrentUser} ? '💔 Annuler Like' : '❤️ Like'"></button>
                             </form>
+                            <span th:text="${post.likeCount}"></span>
+
+                            <form th:action="@{'/reaction/dislike/' + ${post.idPost}}" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-link p-0" th:text="${post.dislikedByCurrentUser} ? '❌ Annuler Dislike' : '👎 Dislike'"></button>
+                            </form>
+                            <span th:text="${post.dislikeCount}"></span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <a th:href="@{/post/creer}" class="btn btn-primary mt-3">Créer un nouveau post</a>
     </section>
 
-    <!-- Événements : style timeline légère -->
+    <!-- Événements -->
     <section class="profile-section mb-5">
         <h2 class="mb-3">Mes événements</h2>
         <div th:if="${evenements != null}" class="list-group">
@@ -121,14 +138,36 @@
                     <span th:text="${#dates.format(event.dateFin,'dd/MM/yyyy HH:mm')}"></span>
                 </small>
                 <p class="mt-2"><i class="fa-solid fa-location-dot me-1"></i><span th:text="${event.lieu}"></span></p>
+
+                <div class="mt-3 d-flex gap-3">
+                    <form th:action="@{'/evenement/' + (${inscritMap[event.id]} ? 'desinscription/' : 'inscription/') + ${event.id}}" method="post">
+                        <button type="submit" class="btn btn-outline-primary btn-sm"
+                                th:text="${inscritMap[event.id]} ? 'Se désinscrire' : 'Je m\'inscris'"></button>
+                    </form>
+                    <form th:action="@{'/evenement/' + (${interesseMap[event.id]} ? 'retirerInteret/' : 'interet/') + ${event.id}}" method="post">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                th:text="${interesseMap[event.id]} ? 'Ne plus suivre' : 'Je suis intéressé(e)'"></button>
+                    </form>
+                </div>
             </div>
         </div>
         <a th:href="@{/evenement/creer}" class="btn btn-primary mt-3">Créer un nouvel événement</a>
     </section>
 
+    <!-- Liens supplémentaires -->
+    <section class="profile-section mb-5">
+        <h2 class="mb-3">Navigation rapide</h2>
+        <div class="d-flex flex-wrap gap-3">
+            <a th:href="@{/accueil}" class="btn btn-outline-secondary">Retour à l'accueil</a>
+            <a th:href="@{/messagerie}" class="btn btn-outline-secondary">Messagerie</a>
+            <a th:href="@{/groupes/groupe}" class="btn btn-outline-secondary">Groupe test</a>
+            <a th:href="@{/recommandations}" class="btn btn-outline-secondary">Recommandations d'amis</a>
+        </div>
+    </section>
+
 </main>
 
-<!-- footer & scripts -->
+<!-- Footer & scripts -->
 <div th:replace="~{fragments :: footer}"></div>
 <div th:replace="~{fragments :: scripts}"></div>
 
@@ -143,5 +182,6 @@
             : 'Masquer mes amis';
     });
 </script>
+
 </body>
 </html>

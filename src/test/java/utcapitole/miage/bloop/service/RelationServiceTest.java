@@ -2,7 +2,7 @@ package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.Optional;
 
@@ -12,7 +12,8 @@ import static org.mockito.Mockito.*;
 class RelationServiceTest {
 
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
-    private final RelationService relationService = new RelationService(utilisateurRepository);
+    private final GraphSyncService graphSyncService = mock(GraphSyncService.class);
+    private final RelationService relationService = new RelationService(utilisateurRepository, graphSyncService);
 
     @Test
     void testDemandeSucces() {
@@ -132,5 +133,53 @@ class RelationServiceTest {
 
         String result = relationService.supprimerAmi(1L, 2L);
         assertThat(result).contains("n’est pas dans votre liste");
+    }
+
+    @Test
+    void testGetListeAmis_UtilisateurExistant() {
+        // Configuration des entités
+        Utilisateur u = new Utilisateur();
+        u.setIdUser(1L);
+        Utilisateur ami = new Utilisateur();
+        ami.setIdUser(2L);
+        ami.setNomUser("Doe");
+        ami.setPrenomUser("John");
+        ami.setPseudoUser("johndoe");
+        ami.setEmailUser("john@ut-capitole.fr");
+        u.getAmis().add(ami);
+
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(u));
+
+        // Appel de la méthode
+        var amisDTO = relationService.getListeAmis(1L);
+
+        // Vérification
+        assertThat(amisDTO).hasSize(1);
+        assertThat(amisDTO.get(0).getIdUser()).isEqualTo(2L);
+        assertThat(amisDTO.get(0).getNomUser()).isEqualTo("Doe");
+        assertThat(amisDTO.get(0).getPrenomUser()).isEqualTo("John");
+        assertThat(amisDTO.get(0).getPseudoUser()).isEqualTo("johndoe");
+        assertThat(amisDTO.get(0).getEmailUser()).isEqualTo("john@ut-capitole.fr");
+    }
+
+    @Test
+    void testGetListeAmis_UtilisateurInexistant() {
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.empty());
+
+        var amis = relationService.getListeAmis(1L);
+        assertThat(amis).isEmpty();
+    }
+
+    @Test
+    void testGererDemandeAmitie_DemandeInexistante() {
+        Utilisateur receveur = new Utilisateur(); receveur.setIdUser(1L);
+        Utilisateur envoyeur = new Utilisateur(); envoyeur.setIdUser(2L);
+
+        // Pas de demande dans la liste
+        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(receveur));
+        when(utilisateurRepository.findById(2L)).thenReturn(Optional.of(envoyeur));
+
+        String result = relationService.gererDemandeAmitie(1L, 2L, true);
+        assertThat(result).contains("Aucune demande");
     }
 }
