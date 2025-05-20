@@ -113,18 +113,5 @@ public class SecurityConfig {
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
         return new HiddenHttpMethodFilter();
     }
-
-    @Bean(name = "neo4jTransactionManager")
-    public Neo4jTransactionManager neo4jTransactionManager(Driver driver) {
-        return new Neo4jTransactionManager(driver);
-    }
-
-    @Bean
-    @Primary
-    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory);
-        return transactionManager;
-    }
     
 }
