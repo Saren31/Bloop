@@ -4,12 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.AuthService;
+
+import java.io.IOException;
 
 /**
  * Contrôleur pour gérer les requêtes liées à l'authentification.
@@ -61,8 +61,23 @@ public class AuthController {
      * @return Une chaîne représentant la vue ou la redirection après l'enregistrement.
      */
     @PostMapping("/register_user")
-    public String registerUser(@ModelAttribute Utilisateur user, HttpServletRequest request, Model model) {
-        return authService.enregistrerUtilisateur(user, request, model);
+    public String registerUser(@ModelAttribute Utilisateur user,
+                               @RequestParam("avatarFile") MultipartFile avatarFile,
+                               HttpServletRequest request,
+                               Model model) {
+        try {
+            // Si une image a été uploadée, la convertir en bytes
+            if (avatarFile != null && !avatarFile.isEmpty()) {
+                user.setAvatarUser(avatarFile.getBytes());
+            }
+
+            // Appeler le service d'authentification avec l'utilisateur mis à jour
+            return authService.enregistrerUtilisateur(user, request, model);
+
+        } catch (IOException e) {
+            model.addAttribute("error", "Erreur lors du téléchargement de l'image");
+            return "inscription";
+        }
     }
 
 

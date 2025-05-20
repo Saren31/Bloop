@@ -14,6 +14,8 @@
     <p><strong>Pseudo:</strong> <span th:text="${utilisateur.pseudoUser}"></span></p>
     <p><strong>Téléphone:</strong> <span th:text="${utilisateur.telUser}"></span></p>
     <p><strong>Visibilité:</strong> <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span></p>
+    <img th:if="${utilisateur.avatarUser != null}" th:src="@{'/avatar/' + ${utilisateur.idUser}}" alt="Avatar" />
+    <img th:unless="${utilisateur.avatarUser != null}" th:src="@{/images/default-avatar.png}" alt="Avatar par défaut" />
 </div>
 <div th:unless="${utilisateur != null}">
     <p>Les informations de l’utilisateur ne sont pas disponibles</p>
@@ -59,7 +61,6 @@
             <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
         </p>
         <p><strong>Adresse:</strong> <span th:text="${event.lieu}"></span></p>
-
         <div th:each="evenement : ${evenements}">
 
 
