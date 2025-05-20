@@ -1,13 +1,8 @@
 package utcapitole.miage.bloop.config;
 
-import jakarta.persistence.EntityManagerFactory;
-import org.neo4j.driver.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.neo4j.core.transaction.Neo4jTransactionManager;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,9 +24,11 @@ public class SecurityConfig {
     private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     /**
-     * Constructeur pour injecter le service de gestion des utilisateurs personnalisés.
+     * Constructeur pour injecter le service de gestion des utilisateurs personnalisés
+     * et le gestionnaire d'échec d'authentification.
      *
      * @param userDetailsService Service personnalisé pour la gestion des utilisateurs.
+     * @param authenticationFailureHandler Gestionnaire personnalisé pour les échecs d'authentification.
      */
     @Autowired
     public SecurityConfig(CustomUserDetailsService userDetailsService, CustomAuthenticationFailureHandler authenticationFailureHandler) {
@@ -49,16 +46,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                //.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
                                 "/",                       // Page racine.
                                 "/auth/login",            // Page de connexion personnalisée.
                                 "/auth/register",         // Formulaire d'inscription.
                                 "/auth/register_user",    // Soumission du formulaire d'inscription.
-                                "/confirm**",// Confirmation par e-mail.
-                                "/relations/**",
-                                "/evenement/**",
+                                "/confirm**",             // Confirmation par e-mail.
+                                "/relations/**",          // Gestion des relations.
+                                "/evenement/**",          // Gestion des événements.
                                 "/css/**", "/js/**", "/img/**" // Ressources statiques.
                         ).permitAll()                   // Autorise l'accès sans authentification.
                         .anyRequest().authenticated()   // Requiert une authentification pour toutes les autres requêtes.
@@ -66,7 +62,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login")       // Page personnalisée de connexion.
                         .defaultSuccessUrl("/accueil", true) // Redirection après connexion réussie.
-                        .failureHandler(authenticationFailureHandler) // URL en cas d'échec de connexion
+                        .failureHandler(authenticationFailureHandler) // Gestionnaire d'échec de connexion.
                         .permitAll()                    // Autorise l'accès à la page de connexion.
                 )
                 .logout(logout -> logout
@@ -109,9 +105,14 @@ public class SecurityConfig {
         return authBuilder.build();
     }
 
+    /**
+     * Définit un filtre pour gérer les méthodes HTTP cachées (comme PUT ou DELETE).
+     *
+     * @return Une instance de HiddenHttpMethodFilter.
+     */
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
         return new HiddenHttpMethodFilter();
     }
-    
+
 }
