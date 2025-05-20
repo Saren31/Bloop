@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail de l'événement</title>
+</head>
+<body>
+
+<div th:if="${message}" style="color: green; font-weight: bold;">
+  <p th:text="${message}"></p>
+</div>
+
+<h2 th:text="${evenement.titre}"></h2>
+<p th:text="${evenement.description}"></p>
+<p><strong>Lieu :</strong> <span th:text="${evenement.lieu}"></span></p>
+<p><strong>Date :</strong>
+  <span th:text="${#dates.format(evenement.dateDebut, 'dd/MM/yyyy HH:mm')}"></span> -
+  <span th:text="${#dates.format(evenement.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
+</p>
+
+<div th:each="evenement : ${evenements}">
+  <h3 th:text="${evenement.titre}"></h3>
+  <p th:text="${evenement.description}"></p>
+
+  <form th:action="@{'/evenement/' + (${inscritMap[evenement.id]} ? 'desinscription/' : 'inscription/') + ${evenement.id}}" method="post">
+    <button type="submit" th:text="${inscritMap[evenement.id]} ? 'Se désinscrire' : 'Je m\'inscris'">Inscrire</button>
+  </form>
+
+  <form th:action="@{'/evenement/' + (${interesseMap[evenement.id]} ? 'retirerInteret/' : 'interet/') + ${evenement.id}}" method="post">
+    <button type="submit" th:text="${interesseMap[evenement.id]} ? 'Ne plus suivre' : 'Je suis intéressé(e)'">Interesse</button>
+  </form>
+</div>
+
+<p><strong>Participants :</strong> <span th:text="${evenement.participants.size()}"></span></p>
+<p><strong>Intéressés :</strong> <span th:text="${evenement.interesses.size()}"></span></p>
+
+<a href="/profil/voirProfil">
+  <button type="button">Retour à mon profil</button>
+</a>
+
+</body>
+</html>

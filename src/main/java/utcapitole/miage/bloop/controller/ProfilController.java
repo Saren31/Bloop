@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
+import utcapitole.miage.bloop.service.EvenementService;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contrôleur pour gérer les opérations liées au profil utilisateur.
@@ -28,6 +32,7 @@ public class ProfilController {
     private final UtilisateurService utilisateurService;
     private final PostService postService;
     private final ReactionService reactionService;
+    private final EvenementService evenementService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -36,10 +41,11 @@ public class ProfilController {
      * @param postService Service pour gérer les posts.
      */
     @Autowired
-    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService) {
+    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService,EvenementService evenementService){
         this.utilisateurService = utilisateurService;
         this.postService = postService;
         this.reactionService = reactionService;
+        this.evenementService = evenementService;
     }
 
     /**
@@ -85,6 +91,17 @@ public class ProfilController {
                 .toList();
 
         model.addAttribute("evenements", evenements);
+
+        Map<Long, Boolean> inscritMap = new HashMap<>();
+        Map<Long, Boolean> interesseMap = new HashMap<>();
+
+        for (Evenement e : evenements) {
+            inscritMap.put(e.getId(), evenementService.estInscrit(e, utilisateur));
+            interesseMap.put(e.getId(), evenementService.estInteresse(e, utilisateur));
+        }
+
+        model.addAttribute("inscritMap", inscritMap);
+        model.addAttribute("interesseMap", interesseMap);
 
         return "voirProfil";
     }

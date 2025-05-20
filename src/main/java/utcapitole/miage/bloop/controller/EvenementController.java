@@ -56,4 +56,66 @@ public class EvenementController {
         return "mesEvenements";
     }
 
+    @GetMapping("/{id}")
+    public String afficherDetailEvenement(@PathVariable Long id, Model model) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement == null) {
+            return "redirect:/profil/voirProfil";
+        }
+
+        model.addAttribute("evenement", evenement);
+        model.addAttribute("inscrit", utilisateur != null && evenementService.estInscrit(evenement, utilisateur));
+        model.addAttribute("interesse", utilisateur != null && evenementService.estInteresse(evenement, utilisateur));
+        return "detailEvenement";
+    }
+
+    @PostMapping("/inscription/{id}")
+    public String inscrire(@PathVariable Long id) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement != null && utilisateur != null) {
+            evenementService.inscrireUtilisateur(evenement, utilisateur);
+        }
+        return "redirect:/evenement/" + id;
+    }
+
+
+    @PostMapping("/desinscription/{id}")
+    public String desinscrire(@PathVariable Long id) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement != null && utilisateur != null) {
+            evenementService.retirerUtilisateur(evenement, utilisateur);
+        }
+        return "redirect:/evenement/" + id;
+    }
+
+
+    @PostMapping("/interet/{id}")
+    public String marquerInteresse(@PathVariable Long id) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement != null && utilisateur != null) {
+            evenementService.marquerInteresse(evenement, utilisateur);
+        }
+        return "redirect:/evenement/" + id;
+    }
+
+
+    @PostMapping("/retirerInteret/{id}")
+    public String retirerInteresse(@PathVariable Long id) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement != null && utilisateur != null) {
+            evenementService.retirerInteresse(evenement, utilisateur);
+        }
+        return "redirect:/evenement/" + id;
+    }
+
 }
