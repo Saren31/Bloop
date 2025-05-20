@@ -63,6 +63,11 @@ class PostControllerTest {
     }
 
     @BeforeEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
+    @BeforeEach
     void setup() {
         InternalResourceViewResolver vr = new InternalResourceViewResolver();
         vr.setPrefix("");
