@@ -35,8 +35,8 @@ class ChatWebSocketControllerTest {
         exp.setEmailUser("user@mail.com");
 
         when(utilisateurService.findByEmail("user@mail.com")).thenReturn(exp);
-        when(utilisateurService.getUtilisateurParId(2L)).thenReturn(dest);
-        when(utilisateurService.getUtilisateurParId(1L)).thenReturn(exp);
+        when(utilisateurService.getUtilisateurById(2L)).thenReturn(dest);
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(exp);
         MessageDTO saved = new MessageDTO();
         when(messageService.envoyerMessage(1L, 2L, "Salut")).thenReturn(saved);
 

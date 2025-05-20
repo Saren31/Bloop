@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.EvenementRepository;
-import utcapitole.miage.bloop.repository.PostRepository;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.PostRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +54,13 @@ public class UtilisateurService {
      * @param id L'identifiant de l'utilisateur à récupérer.
      * @return L'utilisateur correspondant ou null s'il n'existe pas.
      */
-    public Utilisateur getUtilisateurParId(long id) {
+    public Utilisateur getUtilisateurById(long id) {
         Optional<Utilisateur> utilisateur = utilisateurRepository.findById(id);
         return utilisateur.orElse(null);
+    }
+
+    public List<Utilisateur> getUtilisateursById(List<Long> ids) {
+        return utilisateurRepository.findAllById(ids);
     }
 
     /**

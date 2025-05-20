@@ -2,7 +2,7 @@ package utcapitole.miage.bloop.service;
 
 import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.Optional;
 
@@ -12,7 +12,8 @@ import static org.mockito.Mockito.*;
 class RelationServiceTest {
 
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
-    private final RelationService relationService = new RelationService(utilisateurRepository);
+    private final GraphSyncService graphSyncService = mock(GraphSyncService.class);
+    private final RelationService relationService = new RelationService(utilisateurRepository, graphSyncService);
 
     @Test
     void testDemandeSucces() {

@@ -47,6 +47,7 @@
         <span th:text="'Dislikes: ' + ${post.dislikeCount}"></span>
 
     </div>
+</div>
 
 <h2>Mes évènements</h2>
 <div th:if="${evenements != null}">
@@ -71,6 +72,9 @@
 <a th:href="@{/messagerie}">Messagerie test</a>
 <br/>
 <a th:href="@{/groupes/groupe}">Groupe test</a>
+<br/>
+<a th:href="@{/recommandations}">Recommendations d'amis</a>
+
 
 
 

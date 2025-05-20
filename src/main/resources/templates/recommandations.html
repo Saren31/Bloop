@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommandations d'amis</title>
+</head>
+<body>
+<h1>Recommandations</h1>
+
+<!-- Affichage des recommandations d'amis -->
+<div>
+    <h2>Recommandations d'amis</h2>
+    <ul>
+        <th:block th:if="${#lists.isEmpty(recommandations)}">
+            <li>Aucune recommandation pour le moment.</li>
+        </th:block>
+        <th:block th:each="ami : ${recommandations}">
+            <li>
+                <span th:text="${ami.prenomUser}"></span>
+                <span th:text="${ami.nomUser}"></span>
+                <span th:if="${ami.pseudoUser != null}" th:text="'(@' + ${ami.pseudoUser} + ')'"></span>
+                <span th:if="${ami.emailUser == null}" th:text="'(' + ${ami.emailUser} + ')'"></span>
+            </li>
+        </th:block>
+    </ul>
+</div>
+</body>
+</html>

@@ -49,7 +49,7 @@ class ProfilControllerTest {
         utilisateur.setNomUser("Test");
 
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
-        when(utilisateurService.getUtilisateurParId(1L)).thenReturn(utilisateur);
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(utilisateur);
 
         mockMvc.perform(get("/profil/voirProfil"))
                 .andExpect(status().isOk())
@@ -83,7 +83,7 @@ class ProfilControllerTest {
         Utilisateur autre = new Utilisateur();
         autre.setIdUser(2L);
 
-        when(utilisateurService.getUtilisateurParId(2L)).thenReturn(autre);
+        when(utilisateurService.getUtilisateurById(2L)).thenReturn(autre);
 
         mockMvc.perform(get("/profil/voir/2").with(utilisateurPrincipal(moi)))
                 .andExpect(status().isOk())
@@ -97,7 +97,7 @@ class ProfilControllerTest {
         Utilisateur moi = new Utilisateur();
         moi.setIdUser(1L);
 
-        when(utilisateurService.getUtilisateurParId(1L)).thenReturn(moi);
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(moi);
 
         mockMvc.perform(get("/profil/voir/1").with(utilisateurPrincipal(moi)))
                 .andExpect(status().is3xxRedirection())
@@ -110,7 +110,7 @@ class ProfilControllerTest {
         Utilisateur moi = new Utilisateur();
         moi.setIdUser(1L);
 
-        when(utilisateurService.getUtilisateurParId(99L)).thenReturn(null);
+        when(utilisateurService.getUtilisateurById(99L)).thenReturn(null);
 
         mockMvc.perform(get("/profil/voir/99").with(utilisateurPrincipal(moi)))
                 .andExpect(status().isOk())

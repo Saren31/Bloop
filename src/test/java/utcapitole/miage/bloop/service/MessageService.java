@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.dto.MessageDTO;
 import utcapitole.miage.bloop.model.entity.Message;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.MessageRepository;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.MessageRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -9,7 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.repository.UtilisateurRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 import utcapitole.miage.bloop.service.EvenementService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
