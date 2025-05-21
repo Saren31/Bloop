@@ -12,8 +12,12 @@ import utcapitole.miage.bloop.service.UtilisateurService;
 @Controller
 public class ImageController {
 
+    private final UtilisateurService utilisateurService;
+
     @Autowired
-    private UtilisateurService utilisateurService;
+    public ImageController(UtilisateurService utilisateurService) {
+        this.utilisateurService = utilisateurService;
+    }
 
     @GetMapping("/avatar/{id}")
     public ResponseEntity<byte[]> getAvatar(@PathVariable Long id) {

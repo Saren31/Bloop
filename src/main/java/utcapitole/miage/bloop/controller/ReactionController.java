@@ -14,15 +14,18 @@ import utcapitole.miage.bloop.service.UtilisateurService;
 @RequestMapping("/reaction")
 public class ReactionController {
 
-    @Autowired
-    private ReactionService reactionService;
+    private final ReactionService reactionService;
+
+    private final PostService postService;
+
+    private final UtilisateurService utilisateurService;
 
     @Autowired
-    private PostService postService;
-
-    @Autowired
-    private UtilisateurService utilisateurService;
-
+    public ReactionController(ReactionService reactionService, PostService postService, UtilisateurService utilisateurService) {
+        this.reactionService = reactionService;
+        this.postService = postService;
+        this.utilisateurService = utilisateurService;
+    }
 
     @PostMapping("/like/{postId}")
     public String likePost(@PathVariable Long postId) {

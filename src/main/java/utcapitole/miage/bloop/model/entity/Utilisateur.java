@@ -263,30 +263,12 @@ public class Utilisateur implements UserDetails {
     }
 
     /**
-     * Récupère l'adresse e-mail de l'utilisateur.
-     *
-     * @return L'adresse e-mail.
-     */
-    public String getEmailUser() {
-        return emailUser;
-    }
-
-    /**
      * Définit l'adresse e-mail de l'utilisateur.
      *
      * @param emailUser L'adresse e-mail à définir.
      */
     public void setEmailUser(String emailUser) {
         this.emailUser = emailUser;
-    }
-
-    /**
-     * Récupère le mot de passe de l'utilisateur.
-     *
-     * @return Le mot de passe.
-     */
-    public String getMdpUser() {
-        return mdpUser;
     }
 
     /**
@@ -371,15 +353,6 @@ public class Utilisateur implements UserDetails {
     }
 
     /**
-     * Indique si l'inscription de l'utilisateur est validée.
-     *
-     * @return true si l'inscription est validée, false sinon.
-     */
-    public boolean isValiderInscription() {
-        return validerInscription;
-    }
-
-    /**
      * Définit si l'inscription de l'utilisateur est validée.
      *
      * @param validerInscription true pour valider l'inscription, false sinon.
@@ -442,17 +415,12 @@ public class Utilisateur implements UserDetails {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Utilisateur that = (Utilisateur) o;
-        return getIdUser() == that.getIdUser() && isVisibiliteUser() == that.isVisibiliteUser() && Objects.equals(getNomUser(), that.getNomUser()) && Objects.equals(getPrenomUser(), that.getPrenomUser()) && Objects.equals(getEmailUser(), that.getEmailUser()) && Objects.equals(getMdpUser(), that.getMdpUser()) && Objects.equals(getPseudoUser(), that.getPseudoUser()) && Objects.deepEquals(getAvatarUser(), that.getAvatarUser()) && Objects.equals(getTelUser(), that.getTelUser());
+        return getIdUser() == that.getIdUser() && isVisibiliteUser() == that.isVisibiliteUser() && Objects.equals(getNomUser(), that.getNomUser()) && Objects.equals(getPrenomUser(), that.getPrenomUser()) && Objects.equals(emailUser, that.emailUser) && Objects.equals(mdpUser, that.mdpUser) && Objects.equals(getPseudoUser(), that.getPseudoUser()) && Objects.deepEquals(getAvatarUser(), that.getAvatarUser()) && Objects.equals(getTelUser(), that.getTelUser());
     }
 
-    /**
-     * Génère un hash code pour l'objet Utilisateur.
-     *
-     * @return Le hash code.
-     */
     @Override
     public int hashCode() {
-        return Objects.hash(getIdUser(), getNomUser(), getPrenomUser(), getEmailUser(), getMdpUser(), getPseudoUser(), Arrays.hashCode(getAvatarUser()), getTelUser(), isVisibiliteUser());
+        return Objects.hash(getIdUser(), getNomUser(), getPrenomUser(), emailUser, mdpUser, getPseudoUser(), Arrays.hashCode(getAvatarUser()), getTelUser(), isVisibiliteUser());
     }
 
     /**

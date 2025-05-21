@@ -10,7 +10,7 @@ public class MessageDTO {
     private Long id; // Identifiant unique du message
     private String contenu; // Contenu du message
     private LocalDateTime dateEnvoi; // Date et heure d'envoi du message
-    private UtilisateurSummary expediteur; // Résumé des informations sur l'expéditeur
+    private UtilisateurSummaryDTO expediteur; // Résumé des informations sur l'expéditeur
     private Long destinataireId; // Identifiant du destinataire
 
     /**
@@ -72,7 +72,7 @@ public class MessageDTO {
      *
      * @return Un objet contenant les informations de l'expéditeur.
      */
-    public UtilisateurSummary getExpediteur() {
+    public UtilisateurSummaryDTO getExpediteur() {
         return expediteur;
     }
 
@@ -81,7 +81,7 @@ public class MessageDTO {
      *
      * @param expediteur Un objet contenant les informations de l'expéditeur.
      */
-    public void setExpediteur(UtilisateurSummary expediteur) {
+    public void setExpediteur(UtilisateurSummaryDTO expediteur) {
         this.expediteur = expediteur;
     }
 
@@ -102,49 +102,5 @@ public class MessageDTO {
      */
     public void setDestinataireId(Long destinataireId) {
         this.destinataireId = destinataireId;
-    }
-
-    /**
-     * Classe interne représentant un résumé des informations d'un utilisateur.
-     */
-    public static class UtilisateurSummary {
-        private Long idUser; // Identifiant unique de l'utilisateur
-        private String nomUser; // Nom de l'utilisateur
-
-        /**
-         * Obtient l'identifiant unique de l'utilisateur.
-         *
-         * @return L'identifiant de l'utilisateur.
-         */
-        public Long getIdUser() {
-            return idUser;
-        }
-
-        /**
-         * Définit l'identifiant unique de l'utilisateur.
-         *
-         * @param idUser L'identifiant de l'utilisateur.
-         */
-        public void setIdUser(Long idUser) {
-            this.idUser = idUser;
-        }
-
-        /**
-         * Obtient le nom de l'utilisateur.
-         *
-         * @return Le nom de l'utilisateur.
-         */
-        public String getNomUser() {
-            return nomUser;
-        }
-
-        /**
-         * Définit le nom de l'utilisateur.
-         *
-         * @param nomUser Le nom de l'utilisateur.
-         */
-        public void setNomUser(String nomUser) {
-            this.nomUser = nomUser;
-        }
     }
 }

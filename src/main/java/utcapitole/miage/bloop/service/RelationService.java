@@ -145,7 +145,7 @@ public class RelationService {
         dto.setNomUser(utilisateur.getNomUser());
         dto.setPrenomUser(utilisateur.getPrenomUser());
         dto.setPseudoUser(utilisateur.getPseudoUser());
-        dto.setEmailUser(utilisateur.getEmailUser());
+        dto.setEmailUser(utilisateur.getUsername());
         return dto;
     }
 

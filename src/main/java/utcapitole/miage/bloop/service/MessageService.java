@@ -2,6 +2,7 @@ package utcapitole.miage.bloop.service;
 
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.MessageDTO;
+import utcapitole.miage.bloop.dto.UtilisateurSummaryDTO;
 import utcapitole.miage.bloop.model.entity.Message;
 import utcapitole.miage.bloop.repository.jpa.MessageRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
@@ -71,7 +72,7 @@ public class MessageService {
         dto.setContenu(m.getContenu());
         dto.setDateEnvoi(m.getDateEnvoi());
         // Résumé de l'expéditeur
-        MessageDTO.UtilisateurSummary u = new MessageDTO.UtilisateurSummary();
+        UtilisateurSummaryDTO u = new UtilisateurSummaryDTO();
         u.setIdUser(m.getExpediteur().getIdUser());
         u.setNomUser(m.getExpediteur().getNomUser());
         dto.setExpediteur(u);
