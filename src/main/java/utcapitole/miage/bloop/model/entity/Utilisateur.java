@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -12,7 +14,9 @@ import java.util.*;
  */
 @Entity
 @Table(name = "utilisateur")
-public class Utilisateur implements UserDetails {
+public class Utilisateur implements UserDetails, Serializable {
+    @Serial
+    private static final long serialVersionUID = -2962561866036848859L;
 
     /**
      * Identifiant unique de l'utilisateur.

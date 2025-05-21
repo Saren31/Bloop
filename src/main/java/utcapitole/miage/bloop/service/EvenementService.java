@@ -8,6 +8,7 @@ import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -32,12 +33,17 @@ public class EvenementService {
         return evenementRepository.findById(id).orElse(null);
     }
 
+
     public void inscrireUtilisateur(Evenement evenement, Utilisateur utilisateur) {
-        if (!evenement.getParticipants().contains(utilisateur)) {
-            evenement.getParticipants().add(utilisateur);
+        if (evenement.getInscrits() == null) {
+            evenement.setInscrits(new HashSet<>());
+        }
+        if (!evenement.getInscrits().contains(utilisateur)) {
+            evenement.getInscrits().add(utilisateur);
             evenementRepository.save(evenement);
         }
     }
+
 
     public void retirerUtilisateur(Evenement evenement, Utilisateur utilisateur) {
         if (evenement.getParticipants().contains(utilisateur)) {
@@ -78,4 +84,7 @@ public class EvenementService {
         evenements.sort(Comparator.comparing(Evenement::getDateDebut));
         return evenements;
     }
+
+
+
 }

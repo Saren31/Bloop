@@ -59,9 +59,9 @@ class EvenementServiceTest {
     void testInscrireUtilisateur() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
-        e.setParticipants(new ArrayList<>());
+        e.setInscrits(new HashSet<>()); // Initialiser inscrits
         evenementService.inscrireUtilisateur(e, u);
-        assertThat(e.getParticipants()).contains(u);
+        assertThat(e.getInscrits()).contains(u); // Vérifier inscrits
         verify(evenementRepository).save(e);
     }
 
@@ -69,9 +69,9 @@ class EvenementServiceTest {
     void testInscrireUtilisateur_DejaInscrit() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
-        List<Utilisateur> participants = new ArrayList<>();
-        participants.add(u);
-        e.setParticipants(participants);
+        Set<Utilisateur> inscrits = new HashSet<>();
+        inscrits.add(u);
+        e.setInscrits(inscrits);
         evenementService.inscrireUtilisateur(e, u);
         verify(evenementRepository, never()).save(e);
     }

@@ -14,9 +14,11 @@
         <p><strong>Du:</strong> <span th:text="${#dates.format(e.dateDebut, 'dd/MM/yyyy HH:mm')}"></span></p>
         <p><strong>Au:</strong> <span th:text="${#dates.format(e.dateFin, 'dd/MM/yyyy HH:mm')}"></span></p>
         <hr>
+        <a th:href="@{'/evenement/' + ${e.id} + '/participants'}">Voir les participants</a>
     </div>
 </div>
 
+<br>
 <a href="/accueil">Retour à l'accueil</a>
 </body>
 </html>
