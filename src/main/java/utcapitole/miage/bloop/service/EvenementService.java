@@ -6,6 +6,7 @@ import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -32,8 +33,13 @@ public class EvenementService {
 
 
     public void inscrireUtilisateur(Evenement evenement, Utilisateur utilisateur) {
-        evenement.getInscrits().add(utilisateur);
-        evenementRepository.save(evenement);
+        if (evenement.getInscrits() == null) {
+            evenement.setInscrits(new HashSet<>());
+        }
+        if (!evenement.getInscrits().contains(utilisateur)) {
+            evenement.getInscrits().add(utilisateur);
+            evenementRepository.save(evenement);
+        }
     }
 
 
