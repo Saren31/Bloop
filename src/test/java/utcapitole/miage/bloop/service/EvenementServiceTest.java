@@ -174,4 +174,22 @@ class EvenementServiceTest {
         e.setInteresses(new HashSet<>());
         assertThat(evenementService.estInteresse(e, u)).isFalse();
     }
+
+    @Test
+    void testGetEvenementsOuUtilisateurEstInscrit() {
+        Utilisateur u = new Utilisateur();
+        u.setIdUser(1L);
+
+        Evenement e1 = new Evenement();
+        e1.setDateDebut(new java.util.Date(2000000));
+        Evenement e2 = new Evenement();
+        e2.setDateDebut(new java.util.Date(1000000));
+        List<Evenement> evenements = List.of(e1, e2);
+
+        when(evenementRepository.findByInscrits_IdUser(1L)).thenReturn(evenements);
+
+        List<Evenement> result = evenementService.getEvenementsOuUtilisateurEstInscrit(1L);
+
+        assertThat(result).containsExactly(e2, e1); // trié du plus proche au plus loin
+    }
 }

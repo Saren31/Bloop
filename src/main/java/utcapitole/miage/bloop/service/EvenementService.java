@@ -6,6 +6,8 @@ import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -74,6 +76,14 @@ public class EvenementService {
         return evenement.getInteresses().contains(utilisateur);
     }
 
+    public void ajouterParticipant(Evenement evenement, Utilisateur utilisateur) {
+    }
+
+    public List<Evenement> getEvenementsOuUtilisateurEstInscrit(Long idUser) {
+        List<Evenement> evenements = new ArrayList<>(evenementRepository.findByInscrits_IdUser(idUser));
+        evenements.sort(Comparator.comparing(Evenement::getDateDebut));
+        return evenements;
+    }
 
 
 

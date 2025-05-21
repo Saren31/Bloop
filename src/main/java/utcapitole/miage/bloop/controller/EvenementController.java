@@ -174,6 +174,15 @@ public class EvenementController {
         return "redirect:/evenement/" + id;
     }
 
+    @GetMapping("/mesInscriptions")
+    public String afficherMesInscriptions(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) return "login";
+        List<Evenement> evenements = evenementService.getEvenementsOuUtilisateurEstInscrit(utilisateur.getIdUser());
+        model.addAttribute("evenements", evenements);
+        return "mesInscriptions";
+    }
+
 
 
     @GetMapping("/{id}/participants")

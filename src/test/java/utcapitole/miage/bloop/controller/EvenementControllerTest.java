@@ -41,7 +41,6 @@ class EvenementControllerTest {
 
     @BeforeEach
     void setup() {
-        // ViewResolver pour que les noms de vue ne bouclent pas
         InternalResourceViewResolver vr = new InternalResourceViewResolver();
         vr.setPrefix("");
         vr.setSuffix(".html");
@@ -171,5 +170,28 @@ class EvenementControllerTest {
                 .andExpect(redirectedUrl("/evenement/8"));
 
         verify(evenementService).retirerInteresse(evenement, utilisateur);
+    }
+
+    @Test
+    void shouldAfficherMesInscriptions() throws Exception {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setIdUser(1L);
+        Evenement e = new Evenement();
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(utilisateur);
+        when(evenementService.getEvenementsOuUtilisateurEstInscrit(1L)).thenReturn(List.of(e));
+
+        mockMvc.perform(get("/evenement/mesInscriptions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("mesInscriptions"))
+                .andExpect(model().attributeExists("evenements"));
+    }
+
+    @Test
+    void shouldRedirectToLoginIfNotConnectedOnMesInscriptions() throws Exception {
+        when(utilisateurService.getUtilisateurConnecte()).thenReturn(null);
+
+        mockMvc.perform(get("/evenement/mesInscriptions"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
     }
 }
