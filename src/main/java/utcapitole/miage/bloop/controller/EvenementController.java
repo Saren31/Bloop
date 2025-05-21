@@ -22,6 +22,10 @@ public class EvenementController {
     private final EvenementService evenementService;
     private final UtilisateurService utilisateurService;
 
+    private static final String LOGIN_VIEW = "login";
+    private static final String EVENT_ATRIBUTE = "evenement";
+
+
     /**
      * Constructeur pour injecter les services nécessaires.
      *
@@ -42,7 +46,7 @@ public class EvenementController {
      */
     @GetMapping("/creer")
     public String afficherFormulaire(Model model) {
-        model.addAttribute("evenement", new Evenement());
+        model.addAttribute(EVENT_ATRIBUTE, new Evenement());
         return "creerEvenement";
     }
 
@@ -59,7 +63,7 @@ public class EvenementController {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
 
         if (utilisateur == null) {
-            return "login";
+            return LOGIN_VIEW;
         }
 
         evenement.setOrganisateur(utilisateur);
@@ -77,7 +81,7 @@ public class EvenementController {
     @GetMapping("/mesEvenements")
     public String afficherMesEvenements(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) return "login";
+        if (utilisateur == null) return LOGIN_VIEW;
 
         List<Evenement> evenements = evenementService.getEvenementsParOrganisateur(utilisateur.getIdUser());
         model.addAttribute("evenements", evenements);
@@ -100,7 +104,7 @@ public class EvenementController {
             return "redirect:/profil/voirProfil";
         }
 
-        model.addAttribute("evenement", evenement);
+        model.addAttribute(EVENT_ATRIBUTE, evenement);
         model.addAttribute("inscrit", utilisateur != null && evenementService.estInscrit(evenement, utilisateur));
         model.addAttribute("interesse", utilisateur != null && evenementService.estInteresse(evenement, utilisateur));
         return "detailEvenement";
@@ -177,7 +181,7 @@ public class EvenementController {
     @GetMapping("/mesInscriptions")
     public String afficherMesInscriptions(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) return "login";
+        if (utilisateur == null) return LOGIN_VIEW;
         List<Evenement> evenements = evenementService.getEvenementsOuUtilisateurEstInscrit(utilisateur.getIdUser());
         model.addAttribute("evenements", evenements);
         return "mesInscriptions";
@@ -194,7 +198,7 @@ public class EvenementController {
             return "redirect:/accueil";
         }
 
-        model.addAttribute("evenement", evenement);
+        model.addAttribute(EVENT_ATRIBUTE, evenement);
         model.addAttribute("participants", evenement.getInscrits());
         return "listeParticipants";
     }

@@ -66,12 +66,10 @@ public class AuthController {
                                HttpServletRequest request,
                                Model model) {
         try {
-            // Si une image a été uploadée, la convertir en bytes
             if (avatarFile != null && !avatarFile.isEmpty()) {
                 user.setAvatarUser(avatarFile.getBytes());
             }
 
-            // Appeler le service d'authentification avec l'utilisateur mis à jour
             return authService.enregistrerUtilisateur(user, request, model);
 
         } catch (IOException e) {

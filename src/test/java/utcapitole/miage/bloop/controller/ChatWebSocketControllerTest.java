@@ -32,26 +32,27 @@ class ChatWebSocketControllerTest {
 
     @Test
     void envoyerViaWS_shouldSendToBothUsers() {
-        // Préparation du message et du principal
+        // Préparation du message
         MessageDTO message = new MessageDTO();
         message.setDestinataireId(2L);
         message.setContenu("Salut");
 
-        Principal principal = () -> "user@mail.com";
+        // Mock du Principal
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("user@mail.com");
 
         // Utilisateurs expéditeur et destinataire
-        Utilisateur exp = new Utilisateur();
-        exp.setIdUser(1L);
-        exp.setEmailUser("user@mail.com");
+        Utilisateur utilisateurConnecte = new Utilisateur();
+        utilisateurConnecte.setIdUser(1L);
+        utilisateurConnecte.setEmailUser("user@mail.com");
 
         Utilisateur dest = new Utilisateur();
         dest.setIdUser(2L);
         dest.setEmailUser("dest@mail.com");
 
         // Mocks des services
-        when(utilisateurService.findByEmail("user@mail.com")).thenReturn(exp);
+        when(utilisateurService.findByEmail("user@mail.com")).thenReturn(utilisateurConnecte);
         when(utilisateurService.getUtilisateurById(2L)).thenReturn(dest);
-        when(utilisateurService.getUtilisateurById(1L)).thenReturn(exp);
 
         MessageDTO saved = new MessageDTO();
         when(messageService.envoyerMessage(1L, 2L, "Salut")).thenReturn(saved);
@@ -59,7 +60,7 @@ class ChatWebSocketControllerTest {
         // Appel de la méthode sous test
         controller.envoyerViaWS(message, principal);
 
-        // Vérifications : envoi au destinataire puis à l'expéditeur
+        // Vérifications
         verify(messagingTemplate).convertAndSendToUser("dest@mail.com", "/queue/messages", saved);
         verify(messagingTemplate).convertAndSendToUser("user@mail.com", "/queue/messages", saved);
     }
