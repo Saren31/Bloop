@@ -43,23 +43,23 @@ public class AuthService {
      * @return Le nom de la vue à afficher après l'inscription.
      */
     public String enregistrerUtilisateur(Utilisateur user, HttpServletRequest request, Model model) {
-        if (!emailValide(user.getEmailUser())) {
+        if (!emailValide(user.getUsername())) {
             return erreur(model, user, "L'adresse e-mail doit se terminer par @ut-capitole.fr");
         }
 
-        if (utilisateurRepository.findByEmailUser(user.getEmailUser()) != null) {
+        if (utilisateurRepository.findByEmailUser(user.getUsername()) != null) {
             return erreur(model, user, "L'adresse e-mail est déjà utilisée");
         }
 
         user.setValiderInscription(false);
-        user.setMdpUser(passwordEncoder.encode(user.getMdpUser()));
+        user.setMdpUser(passwordEncoder.encode(user.getPassword()));
         user.setTokenInscription(UUID.randomUUID().toString());
 
         utilisateurRepository.save(user);
 
         String appUrl = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
         String confirmationLink = appUrl + "/confirm?token=" + user.getTokenInscription();
-        emailService.envoyerMessageConfirmation(user.getEmailUser(), confirmationLink);
+        emailService.envoyerMessageConfirmation(user.getUsername(), confirmationLink);
 
         return "accueil";
     }

@@ -3,6 +3,7 @@ package utcapitole.miage.bloop.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.dto.PostDTO;
+import utcapitole.miage.bloop.dto.UtilisateurSummaryDTO;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
@@ -145,7 +146,7 @@ public class PostService {
                     postDTO.setGroupeId(post.getGroupe().getIdGroupe());
 
                     // Ajouter le résumé de l'utilisateur
-                    PostDTO.UtilisateurSummary utilisateurSummary = new PostDTO.UtilisateurSummary();
+                    UtilisateurSummaryDTO utilisateurSummary = new UtilisateurSummaryDTO();
                     utilisateurSummary.setIdUser(post.getUtilisateur().getIdUser());
                     utilisateurSummary.setNomUser(post.getUtilisateur().getNomUser());
                     postDTO.setUtilisateur(utilisateurSummary);

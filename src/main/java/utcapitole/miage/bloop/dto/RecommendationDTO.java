@@ -68,26 +68,26 @@ public class RecommendationDTO {
     }
 
     public Boolean getEstAmi() {
-        return estAmi != null ? estAmi : false;
+        return estAmi != null && estAmi;
     }
 
     public void setEstAmi(Boolean estAmi) {
-        this.estAmi = estAmi != null ? estAmi : false;
+        this.estAmi = estAmi != null && estAmi;
     }
 
     public Boolean getDemandeEnvoyee() {
-        return demandeEnvoyee != null ? demandeEnvoyee : false;
+        return demandeEnvoyee != null && demandeEnvoyee;
     }
 
     public void setDemandeEnvoyee(Boolean demandeEnvoyee) {
-        this.demandeEnvoyee = demandeEnvoyee != null ? demandeEnvoyee : false;
+        this.demandeEnvoyee = demandeEnvoyee != null && demandeEnvoyee;
     }
 
     public Boolean getDemandeRecue() {
-        return demandeRecue != null ? demandeRecue : false;
+        return demandeRecue != null && demandeRecue;
     }
 
     public void setDemandeRecue(Boolean demandeRecue) {
-        this.demandeRecue = demandeRecue != null ? demandeRecue : false;
+        this.demandeRecue = demandeRecue != null && demandeRecue;
     }
 }

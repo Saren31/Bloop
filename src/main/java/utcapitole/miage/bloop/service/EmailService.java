@@ -30,14 +30,12 @@ public class EmailService {
      * @param confirmationLink Le lien de confirmation à inclure dans l'e-mail.
      */
     public void envoyerMessageConfirmation(String to, String confirmationLink) {
-        System.out.println("DEBUT methode");
         // Création d'un message e-mail simple
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to); // Définit le destinataire
         message.setSubject("Confirmation d'inscription à Bloop"); // Définit le sujet de l'e-mail
         message.setText("Bonjour ! Cliquez ici pour confirmer votre compte : " + confirmationLink); // Définit le contenu de l'e-mail
         mailSender.send(message); // Envoie l'e-mail
-        System.out.println("fin methode");
 
     }
 

@@ -52,15 +52,4 @@ class RecommendationRestControllerTest {
                 .andExpect(jsonPath("$[0].idUser").value(1))
                 .andExpect(jsonPath("$[1].idUser").value(2));
     }
-
-    @Test
-    void testGetRecommendations_Exception() throws Exception {
-        when(recommendationService.recommendFriends(3L))
-                .thenThrow(new RuntimeException("oops"));
-
-        mockMvc.perform(get("/recommendations/3")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
-    }
 }

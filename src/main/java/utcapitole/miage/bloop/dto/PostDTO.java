@@ -14,7 +14,7 @@ public class PostDTO {
     private Date datePost;
     private Long utilisateurId;
     private Long groupeId;
-    private UtilisateurSummary utilisateur; // Résumé des informations sur l'utilisateur
+    private UtilisateurSummaryDTO utilisateur; // Résumé des informations sur l'utilisateur
 
     public String getTextePost() {
         return textePost;
@@ -64,35 +64,12 @@ public class PostDTO {
         this.groupeId = groupeId;
     }
 
-    public UtilisateurSummary getUtilisateur() {
+    public UtilisateurSummaryDTO getUtilisateur() {
         return utilisateur;
     }
 
-    public void setUtilisateur(UtilisateurSummary utilisateur) {
+    public void setUtilisateur(UtilisateurSummaryDTO utilisateur) {
         this.utilisateur = utilisateur;
     }
 
-    /**
-     * Classe interne représentant un résumé des informations d'un utilisateur.
-     */
-    public static class UtilisateurSummary {
-        private Long idUser; // Identifiant unique de l'utilisateur
-        private String nomUser; // Nom de l'utilisateur
-
-        public Long getIdUser() {
-            return idUser;
-        }
-
-        public void setIdUser(Long idUser) {
-            this.idUser = idUser;
-        }
-
-        public String getNomUser() {
-            return nomUser;
-        }
-
-        public void setNomUser(String nomUser) {
-            this.nomUser = nomUser;
-        }
-    }
 }
