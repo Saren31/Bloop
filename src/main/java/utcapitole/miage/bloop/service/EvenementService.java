@@ -30,12 +30,12 @@ public class EvenementService {
         return evenementRepository.findById(id).orElse(null);
     }
 
+
     public void inscrireUtilisateur(Evenement evenement, Utilisateur utilisateur) {
-        if (!evenement.getParticipants().contains(utilisateur)) {
-            evenement.getParticipants().add(utilisateur);
-            evenementRepository.save(evenement);
-        }
+        evenement.getInscrits().add(utilisateur);
+        evenementRepository.save(evenement);
     }
+
 
     public void retirerUtilisateur(Evenement evenement, Utilisateur utilisateur) {
         if (evenement.getParticipants().contains(utilisateur)) {

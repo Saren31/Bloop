@@ -60,17 +60,17 @@
         </p>
         <p><strong>Adresse:</strong> <span th:text="${event.lieu}"></span></p>
 
-        <div th:each="evenement : ${evenements}">
+        <form th:action="@{'/evenement/' + (${inscritMap[event.id]} ? 'desinscription/' : 'inscription/') + ${event.id}}" method="post">
+            <button type="submit" th:text="${inscritMap[event.id]} ? 'Se désinscrire' : 'Je m\'inscris'"></button>
+        </form>
 
-            <form th:action="@{'/evenement/' + (${inscritMap[evenement.id]} ? 'desinscription/' : 'inscription/') + ${evenement.id}}" method="post">
-                <button type="submit" th:text="${inscritMap[evenement.id]} ? 'Se désinscrire' : 'Je m\'inscris'"></button>
-            </form>
+        <form th:action="@{'/evenement/' + (${interesseMap[event.id]} ? 'retirerInteret/' : 'interet/') + ${event.id}}" method="post">
+            <button type="submit" th:text="${interesseMap[event.id]} ? 'Ne plus suivre' : 'Je suis intéressé(e)'"></button>
+        </form>
 
-            <form th:action="@{'/evenement/' + (${interesseMap[evenement.id]} ? 'retirerInteret/' : 'interet/') + ${evenement.id}}" method="post">
-                <button type="submit" th:text="${interesseMap[evenement.id]} ? 'Ne plus suivre' : 'Je suis intéressé(e)'"></button>
-            </form>
-        </div>
+        <a th:href="@{'/evenement/' + ${event.id} + '/participants'}">👥 Voir les participants</a>
     </div>
+
 </div>
 
 <a th:href="@{/post/creer}">Créer un nouveau post</a>
