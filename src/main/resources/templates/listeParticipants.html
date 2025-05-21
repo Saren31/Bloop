@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Participants</title>
+</head>
+<body>
+
+<h2>Participants de l'événement : <span th:text="${evenement.titre}"></span></h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="util : ${participants}">
+        <td th:text="${util.nomUser}">Nom</td>
+        <td th:text="${util.prenomUser}">Prénom</td>
+        <td th:text="${util.emailUser}">Email</td>
+    </tr>
+    </tbody>
+</table>
+<br/>
+<a th:href="@{/profil/voirProfil}">⬅ Retour au profil</a>
+
+
+</body>
+</html>

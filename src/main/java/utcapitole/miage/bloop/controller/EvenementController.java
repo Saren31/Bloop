@@ -174,4 +174,20 @@ public class EvenementController {
         return "redirect:/evenement/" + id;
     }
 
+
+
+    @GetMapping("/{id}/participants")
+    public String afficherParticipants(@PathVariable Long id, Model model) {
+        Evenement evenement = evenementService.getEvenementParId(id);
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+
+        if (evenement.getOrganisateur().getIdUser() != utilisateur.getIdUser()) {
+            return "redirect:/accueil";
+        }
+
+        model.addAttribute("evenement", evenement);
+        model.addAttribute("participants", evenement.getInscrits());
+        return "listeParticipants";
+    }
+
 }
