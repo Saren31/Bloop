@@ -19,7 +19,7 @@
                 <span th:text="${ami.prenomUser}"></span>
                 <span th:text="${ami.nomUser}"></span>
                 <span th:if="${ami.pseudoUser != null}" th:text="'(@' + ${ami.pseudoUser} + ')'"></span>
-                <span th:if="${ami.emailUser == null}" th:text="'(' + ${ami.emailUser} + ')'"></span>
+                <span th:if="${ami.username == null}" th:text="'(' + ${ami.username} + ')'"></span>
             </li>
         </th:block>
     </ul>

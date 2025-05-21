@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head th:replace="~{fragments :: headLinks}">
+<head>
     <title>Modifier mon profil – Bloop</title>
+    <th:block th:replace="~{fragments :: headLinks}" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -24,7 +25,8 @@
                        type="text"
                        th:field="*{nomUser}"
                        class="form-control"
-                       placeholder="Votre nom" />
+                       placeholder="Votre nom"
+                        required/>
             </div>
 
             <div class="mb-3">
@@ -33,7 +35,8 @@
                        type="text"
                        th:field="*{prenomUser}"
                        class="form-control"
-                       placeholder="Votre prénom" />
+                       placeholder="Votre prénom"
+                        required/>
             </div>
 
             <div class="mb-3">
@@ -42,23 +45,26 @@
                        type="text"
                        th:field="*{pseudoUser}"
                        class="form-control"
-                       placeholder="Votre pseudo" />
+                       placeholder="Votre pseudo"
+                        required/>
             </div>
 
             <div class="mb-3">
                 <label for="tel" class="form-label">Téléphone</label>
-                <input id="tel"
-                       type="text"
-                       th:field="*{telUser}"
-                       class="form-control"
-                       placeholder="Votre numéro" />
+                <input  id="tel"
+                        type="text"
+                        th:field="*{telUser}"
+                        class="form-control"
+                        placeholder="Votre numéro"
+                        required/>
             </div>
 
             <div class="mb-4">
                 <label for="visibilite" class="form-label">Visibilité</label>
                 <select id="visibilite"
                         th:field="*{visibiliteUser}"
-                        class="form-select">
+                        class="form-select"
+                        required>
                     <option th:value="true">Publique</option>
                     <option th:value="false">Privée</option>
                 </select>

@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="fr">
-<head th:replace="~{fragments :: headLinks}">
+<head>
     <title>Mon Profil – Bloop</title>
+    <th:block th:replace="~{fragments :: headLinks}" />
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -23,7 +24,7 @@
                          alt="Avatar"
                          class="img-fluid rounded-circle"/>
                     <img th:unless="${utilisateur.avatarUser != null}"
-                         th:src="@{/images/default-avatar.png}"
+                         th:src="@{/ressources/static/img/default-avatar.png}"
                          alt="Avatar par défaut"
                          class="img-fluid rounded-circle"/>
                 </div>
