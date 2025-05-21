@@ -110,6 +110,4 @@ public class Evenement {
         this.participants = participants;
     }
 
-
-
 }

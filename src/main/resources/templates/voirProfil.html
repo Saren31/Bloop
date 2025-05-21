@@ -167,10 +167,14 @@
                     <!-- lien participants depuis le deuxième snippet -->
                     <a th:href="@{'/evenement/' + ${event.id} + '/participants'}"
                        class="btn btn-link btn-sm">Voir les participants</a>
+                    <br>
+                    <a href="/evenement/autres">Voir les événements des autres</a>
                 </div>
             </div>
         </div>
         <a th:href="@{/evenement/creer}" class="btn btn-primary mt-3">Créer un nouvel événement</a>
+
+
     </section>
 
     <!-- Liens rapides & actions de compte -->
@@ -194,7 +198,6 @@
             <button type="submit" class="btn btn-outline-secondary">Supprimer mon compte</button>
         </form>
     </section>
-
 </main>
 
 <!-- Footer & scripts -->
