@@ -9,6 +9,7 @@ import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 import utcapitole.miage.bloop.repository.jpa.PostRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
@@ -24,6 +25,7 @@ public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final PostRepository postRepository;
     private final EvenementRepository evenementRepository;
+    private final GroupeRepository groupeRepository;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -31,10 +33,11 @@ public class UtilisateurService {
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
      */
     @Autowired
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository, EvenementRepository evenementRepository) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository, EvenementRepository evenementRepository, GroupeRepository groupeRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.postRepository = postRepository;
         this.evenementRepository = evenementRepository;
+        this.groupeRepository = groupeRepository;
     }
 
     /**
@@ -95,29 +98,47 @@ public class UtilisateurService {
     @Transactional
     public void supprimerUtilisateurEtRelations(long idUser) {
         Utilisateur utilisateur = utilisateurRepository.findById(idUser).orElseThrow();
+
         // Supprimer les posts
         postRepository.deleteAllByUtilisateur(utilisateur);
 
         // Retirer des groupes
         for (Groupe groupe : utilisateur.getGroupes()) {
-            groupe.getMembres().remove(utilisateur);
+            Groupe groupePersisted = groupeRepository.findById(groupe.getIdGroupe()).orElse(null);
+            if (groupePersisted != null) {
+                groupePersisted.getMembres().remove(utilisateur);
+                groupeRepository.save(groupePersisted);
+            }
         }
         utilisateur.getGroupes().clear();
 
         // Retirer des amis
         for (Utilisateur ami : utilisateur.getAmis()) {
-            ami.getAmis().remove(utilisateur);
+            Utilisateur amiPersisted = utilisateurRepository.findById(ami.getIdUser()).orElse(null);
+            if (amiPersisted != null) {
+                amiPersisted.getAmis().remove(utilisateur);
+                utilisateurRepository.save(amiPersisted);
+            }
         }
         utilisateur.getAmis().clear();
 
-        // Retirer des demandes envoyées/reçues
+        // Retirer des demandes envoyées
         for (Utilisateur u : utilisateur.getDemandesEnvoyees()) {
-            u.getDemandesRecues().remove(utilisateur);
+            Utilisateur uPersisted = utilisateurRepository.findById(u.getIdUser()).orElse(null);
+            if (uPersisted != null) {
+                uPersisted.getDemandesRecues().remove(utilisateur);
+                utilisateurRepository.save(uPersisted);
+            }
         }
         utilisateur.getDemandesEnvoyees().clear();
 
+        // Retirer des demandes reçues
         for (Utilisateur u : utilisateur.getDemandesRecues()) {
-            u.getDemandesEnvoyees().remove(utilisateur);
+            Utilisateur uPersisted = utilisateurRepository.findById(u.getIdUser()).orElse(null);
+            if (uPersisted != null) {
+                uPersisted.getDemandesEnvoyees().remove(utilisateur);
+                utilisateurRepository.save(uPersisted);
+            }
         }
         utilisateur.getDemandesRecues().clear();
 

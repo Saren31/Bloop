@@ -46,7 +46,7 @@ class RecommendationRestControllerTest {
         when(recommendationService.recommendFriends(5L))
                 .thenReturn(List.of(u1, u2));
 
-        mockMvc.perform(get("/recommendations/5")
+        mockMvc.perform(get("/recommandations/5")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].idUser").value(1))
