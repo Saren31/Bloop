@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
@@ -16,14 +15,11 @@ public class ReactionController {
 
     private final ReactionService reactionService;
 
-    private final PostService postService;
-
     private final UtilisateurService utilisateurService;
 
     @Autowired
-    public ReactionController(ReactionService reactionService, PostService postService, UtilisateurService utilisateurService) {
+    public ReactionController(ReactionService reactionService, UtilisateurService utilisateurService) {
         this.reactionService = reactionService;
-        this.postService = postService;
         this.utilisateurService = utilisateurService;
     }
 
