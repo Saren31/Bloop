@@ -10,4 +10,6 @@ public interface EvenementRepository extends JpaRepository<Evenement, Long> {
     List<Evenement> findByOrganisateur_IdUser(Long idUser);
 
     List<Evenement> findByOrganisateur(Utilisateur utilisateur);
+
+    List<Evenement> findByInscrits_IdUser(Long idUser);
 }
