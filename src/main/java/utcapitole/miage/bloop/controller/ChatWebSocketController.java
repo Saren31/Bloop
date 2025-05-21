@@ -53,11 +53,11 @@ public class ChatWebSocketController {
         // Récupère les noms d'utilisateur (ou emails) de l'expéditeur et du destinataire
         String destinataireUsername = utilisateurService
                 .getUtilisateurById(message.getDestinataireId())
-                .getEmailUser();
+                .getUsername();
 
         String envoyeurUsername = utilisateurService
                 .getUtilisateurById(expId)
-                .getEmailUser();
+                .getUsername();
 
         // Envoie le message au destinataire via WebSocket
         messagingTemplate.convertAndSendToUser(
@@ -72,5 +72,22 @@ public class ChatWebSocketController {
                 "/queue/messages",
                 saved
         );
+    }
+
+    @MessageMapping("/delete")
+    public void supprimerMessageViaWS(MessageDTO message, Principal principal) {
+        // Vérifie que l'utilisateur courant est bien l'expéditeur
+        long expId = utilisateurService.findByEmail(principal.getName()).getIdUser();
+        Long messageId = message.getId();
+        // Supprime le message et récupère l'ID du destinataire
+        Long destinataireId = messageService.supprimerMessage(messageId, expId);
+        // Récupère les emails pour l'envoi WebSocket
+        String destinataireUsername = utilisateurService.getUtilisateurById(destinataireId).getUsername();
+        String envoyeurUsername = principal.getName();
+        // Notifie l'expéditeur et le destinataire
+        messagingTemplate.convertAndSendToUser(envoyeurUsername, "/queue/deleted",
+                java.util.Map.of("messageId", messageId));
+        messagingTemplate.convertAndSendToUser(destinataireUsername, "/queue/deleted",
+                java.util.Map.of("messageId", messageId));
     }
 }

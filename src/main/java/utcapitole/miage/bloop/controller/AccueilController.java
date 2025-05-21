@@ -11,14 +11,21 @@ public class AccueilController {
 
     /**
      * Gère les requêtes GET pour l'URL "/accueil".
+     * Cette méthode retourne le nom de la vue "accueil" à afficher.
      *
-     * @return Le nom de la vue "accueil" à afficher.
+     * @return Le nom de la vue "accueil".
      */
     @GetMapping("/accueil")
     public String accueil() {
         return "accueil";
     }
 
+    /**
+     * Gère les requêtes GET pour la racine "/".
+     * Cette méthode redirige également vers la vue "accueil".
+     *
+     * @return Le nom de la vue "accueil".
+     */
     @GetMapping("/")
     public String index() {
         return "accueil";

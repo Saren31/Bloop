@@ -15,7 +15,7 @@ class UtilisateurTest {
 
         assertThat(u.getNomUser()).isEqualTo("Nom");
         assertThat(u.getPrenomUser()).isEqualTo("Prenom");
-        assertThat(u.getEmailUser()).isEqualTo("mail@test.com");
+        assertThat(u.getUsername()).isEqualTo("mail@test.com");
         assertThat(u.isVisibiliteUser()).isTrue();
     }
 

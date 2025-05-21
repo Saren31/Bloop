@@ -1,31 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Confirmer la suppression</title>
+<head th:replace="~{fragments :: headLinks}">
+    <title>Confirmer la suppression – Bloop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-<h2>Confirmation de suppression</h2>
+<!-- Navbar -->
+<div th:replace="~{fragments :: navbar}"></div>
 
-<p>Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.</p>
+<!-- Contenu centré -->
+<main class="confirm-page flex-fill d-flex justify-content-center align-items-center py-5">
+    <div class="confirm-card glass-card text-white">
+        <h2 class="mb-3">Confirmation de suppression</h2>
+        <p class="mb-4">Êtes-vous sûr de vouloir supprimer ce post ? Cette action est irréversible.</p>
 
-<div style="border: 1px solid #ccc; padding: 10px;">
-    <p><strong>Contenu:</strong> <span th:text="${post.textePost}"></span></p>
-    <div th:if="${post.imagePost != null}">
-        <img th:src="@{'/post/image/' + ${post.idPost}}" alt="Image du post" width="250px"/>
+        <div class="post-preview glass-card-sm mb-4">
+            <p><strong>Contenu :</strong> <span th:text="${post.textePost}"></span></p>
+            <div th:if="${post.imagePost != null}" class="text-center mt-2 mb-2">
+                <img th:src="@{'/post/image/' + ${post.idPost}}"
+                     alt="Image du post"
+                     class="img-fluid rounded preview-img"/>
+            </div>
+            <p class="text-muted"><small>
+                <strong>Date :</strong>
+                <span th:text="${#dates.format(post.datePost,'dd/MM/yyyy HH:mm')}"></span>
+            </small></p>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <form th:action="@{'/post/' + ${post.idPost} + '/supprimer'}"
+                  method="post"
+                  class="me-2">
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" class="btn btn-white w-100">
+                    ✅ Oui, supprimer
+                </button>
+            </form>
+            <a th:href="@{/profil/voirProfil}"
+               class="btn btn-link cancel-link align-self-center">
+                ❌ Annuler
+            </a>
+        </div>
     </div>
-    <p><strong>Date de publication:</strong> <span th:text="${#dates.format(post.datePost, 'dd/MM/yyyy HH:mm')}"></span></p>
-</div>
+</main>
 
-<!-- Formulaire de confirmation de suppression -->
-<form th:action="@{'/post/' + ${post.idPost} + '/supprimer'}" method="post">
-    <input type="hidden" name="_method" value="delete"/>
-    <button type="submit">✅ Oui, supprimer</button>
-</form>
-
-<!-- Lien pour annuler -->
-<a href="/profil/voirProfil">❌ Annuler</a>
-
+<div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.UtilisateurDTO;
-import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.RelationService;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequestMapping("/relations")
 public class RelationController {
 
-    private RelationService relationService;
+    private final RelationService relationService;
 
     /**
      * Constructeur pour injecter le service de gestion des relations.

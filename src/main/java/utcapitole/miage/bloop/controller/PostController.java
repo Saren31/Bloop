@@ -15,7 +15,6 @@ import utcapitole.miage.bloop.service.CommentaireService;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Contrôleur pour gérer les opérations liées aux posts.
