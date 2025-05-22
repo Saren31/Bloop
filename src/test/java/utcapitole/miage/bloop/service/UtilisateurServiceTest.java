@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.Authentication;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 import utcapitole.miage.bloop.repository.jpa.PostRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
@@ -23,10 +24,11 @@ class UtilisateurServiceTest {
     private final UtilisateurRepository utilisateurRepository = mock(UtilisateurRepository.class);
     private final EvenementRepository evenementRepository = mock(EvenementRepository.class);
     private final PostRepository postRepository = mock(PostRepository.class);
+    private final GroupeRepository groupeRepository = mock(GroupeRepository.class);
 
 
     // Instance du service à tester
-    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository, evenementRepository);
+    private final UtilisateurService service = new UtilisateurService(utilisateurRepository, postRepository, evenementRepository, groupeRepository);
 
 
     /**

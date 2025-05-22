@@ -28,9 +28,12 @@ public class UtilisateurService {
     private final GroupeRepository groupeRepository;
 
     /**
-     * Constructeur pour injecter le dépôt des utilisateurs.
+     * Constructeur pour injecter les dépendances nécessaires.
      *
      * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
+     * @param postRepository Le dépôt pour interagir avec les posts.
+     * @param evenementRepository Le dépôt pour interagir avec les événements.
+     * @param groupeRepository Le dépôt pour interagir avec les groupes.
      */
     @Autowired
     public UtilisateurService(UtilisateurRepository utilisateurRepository, PostRepository postRepository, EvenementRepository evenementRepository, GroupeRepository groupeRepository) {
@@ -62,6 +65,12 @@ public class UtilisateurService {
         return utilisateur.orElse(null);
     }
 
+    /**
+     * Récupère une liste d'utilisateurs par leurs identifiants.
+     *
+     * @param ids La liste des identifiants des utilisateurs à récupérer.
+     * @return Une liste d'utilisateurs correspondant aux identifiants donnés.
+     */
     public List<Utilisateur> getUtilisateursById(List<Long> ids) {
         return utilisateurRepository.findAllById(ids);
     }
@@ -95,6 +104,11 @@ public class UtilisateurService {
         return utilisateurRepository.findByPseudoStartingWith(pseudo);
     }
 
+    /**
+     * Supprime un utilisateur et toutes ses relations associées.
+     *
+     * @param idUser L'identifiant de l'utilisateur à supprimer.
+     */
     @Transactional
     public void supprimerUtilisateurEtRelations(long idUser) {
         Utilisateur utilisateur = utilisateurRepository.findById(idUser).orElseThrow();
@@ -145,14 +159,31 @@ public class UtilisateurService {
         utilisateurRepository.delete(utilisateur);
     }
 
+    /**
+     * Sauvegarde un utilisateur dans le dépôt.
+     *
+     * @param utilisateur L'utilisateur à sauvegarder.
+     */
     public void save(Utilisateur utilisateur) {
         utilisateurRepository.save(utilisateur);
     }
 
+    /**
+     * Recherche un utilisateur par son adresse e-mail.
+     *
+     * @param email L'adresse e-mail de l'utilisateur à rechercher.
+     * @return L'utilisateur correspondant à l'adresse e-mail.
+     */
     public Utilisateur findByEmail(String email) {
         return utilisateurRepository.findByEmailUser(email);
     }
 
+    /**
+     * Récupère les événements organisés par un utilisateur donné.
+     *
+     * @param utilisateur L'utilisateur organisateur.
+     * @return Une liste d'événements organisés par l'utilisateur.
+     */
     public List<Evenement> getEvenementsParUtilisateur(Utilisateur utilisateur) {
         return evenementRepository.findByOrganisateur(utilisateur);
     }

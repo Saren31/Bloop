@@ -19,8 +19,8 @@ public interface UserGraphRepository extends Neo4jRepository<UserNode, Long> {
      * exclut les amis directs et l'utilisateur lui-même, puis compte le nombre d'amis communs.
      * Elle retourne les 5 recommandations les plus pertinentes.
      *
-     * @param id l'identifiant de l'utilisateur pour lequel on souhaite obtenir des recommandations
-     * @return une liste de RecommendationDTO contenant l'id de l'utilisateur recommandé et le nombre d'amis communs
+     * @param id l'identifiant de l'utilisateur pour lequel on souhaite obtenir des recommandations.
+     * @return une liste de RecommendationDTO contenant l'id de l'utilisateur recommandé et le nombre d'amis communs.
      */
     @Query("""
     CALL {

@@ -80,6 +80,15 @@ public class MessageService {
         return dto;
     }
 
+    /**
+     * Supprime un message si l'expéditeur est autorisé.
+     *
+     * @param messageId ID du message à supprimer.
+     * @param expId ID de l'expéditeur demandant la suppression.
+     * @return L'ID du destinataire du message supprimé.
+     * @throws IllegalArgumentException si le message n'est pas trouvé.
+     * @throws SecurityException si l'expéditeur n'est pas autorisé à supprimer le message.
+     */
     public Long supprimerMessage(Long messageId, Long expId) {
         Message msg = repo.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message non trouvé : " + messageId));

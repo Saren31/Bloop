@@ -11,23 +11,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Service pour synchroniser les données des utilisateurs entre une base SQL et une base Neo4j.
+ * Fournit une méthode pour copier tous les utilisateurs et leurs relations d'amitié
+ * de la base SQL vers le graphe Neo4j.
+ */
 @Service
 public class GraphSyncService {
 
     private final UtilisateurRepository utilisateurRepository; // JPA repo SQL
     private final UserGraphRepository userGraphRepository;     // Neo4j repo
 
+    /**
+     * Constructeur avec injection des repositories nécessaires.
+     *
+     * @param utilisateurRepository Repository JPA pour les entités Utilisateur.
+     * @param userGraphRepository Repository Neo4j pour les nœuds UserNode.
+     */
     public GraphSyncService(UtilisateurRepository utilisateurRepository, UserGraphRepository userGraphRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.userGraphRepository = userGraphRepository;
     }
 
+    /**
+     * Synchronise tous les utilisateurs et leurs relations d'amitié
+     * de la base SQL vers la base Neo4j.
+     * Cette méthode est transactionnelle pour garantir la cohérence des données.
+     */
     @Transactional
     public void syncAllToGraph() {
-        // 1. Récupère tous les utilisateurs SQL
         List<Utilisateur> allUsers = utilisateurRepository.findAll();
 
-        // 2. Insère les nœuds et relations dans Neo4j
         for (Utilisateur u : allUsers) {
             UserNode node = new UserNode();
             node.setId(u.getIdUser());

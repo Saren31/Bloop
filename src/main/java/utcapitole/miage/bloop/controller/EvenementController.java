@@ -24,7 +24,7 @@ public class EvenementController {
 
     private static final String LOGIN_VIEW = "login";
     private static final String EVENT_ATRIBUTE = "evenement";
-
+    private static final String REDIRECT_EVENT = "redirect:/evenement/";
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -124,7 +124,7 @@ public class EvenementController {
         if (evenement != null && utilisateur != null) {
             evenementService.inscrireUtilisateur(evenement, utilisateur);
         }
-        return "redirect:/evenement/" + id;
+        return REDIRECT_EVENT + id;
     }
 
     /**
@@ -141,7 +141,7 @@ public class EvenementController {
         if (evenement != null && utilisateur != null) {
             evenementService.retirerUtilisateur(evenement, utilisateur);
         }
-        return "redirect:/evenement/" + id;
+        return REDIRECT_EVENT + id;
     }
 
     /**
@@ -158,7 +158,7 @@ public class EvenementController {
         if (evenement != null && utilisateur != null) {
             evenementService.marquerInteresse(evenement, utilisateur);
         }
-        return "redirect:/evenement/" + id;
+        return REDIRECT_EVENT + id;
     }
 
     /**
@@ -175,9 +175,15 @@ public class EvenementController {
         if (evenement != null && utilisateur != null) {
             evenementService.retirerInteresse(evenement, utilisateur);
         }
-        return "redirect:/evenement/" + id;
+        return REDIRECT_EVENT + id;
     }
 
+    /**
+     * Affiche les événements auxquels l'utilisateur connecté est inscrit.
+     *
+     * @param model Modèle pour passer des données à la vue.
+     * @return Le nom de la vue "mesInscriptions" ou "login" si l'utilisateur n'est pas connecté.
+     */
     @GetMapping("/mesInscriptions")
     public String afficherMesInscriptions(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
@@ -187,8 +193,13 @@ public class EvenementController {
         return "mesInscriptions";
     }
 
-
-
+    /**
+     * Affiche la liste des participants d'un événement.
+     *
+     * @param id L'identifiant de l'événement.
+     * @param model Modèle pour passer des données à la vue.
+     * @return Le nom de la vue "listeParticipants" ou une redirection si l'utilisateur n'est pas l'organisateur.
+     */
     @GetMapping("/{id}/participants")
     public String afficherParticipants(@PathVariable Long id, Model model) {
         Evenement evenement = evenementService.getEvenementParId(id);
@@ -202,5 +213,4 @@ public class EvenementController {
         model.addAttribute("participants", evenement.getInscrits());
         return "listeParticipants";
     }
-
 }

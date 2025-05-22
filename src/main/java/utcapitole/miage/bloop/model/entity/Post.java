@@ -35,53 +35,33 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private Date datePost;
 
+    /**
+     * Indique si le post est aimé par l'utilisateur actuel.
+     * Champ transitoire non stocké en base de données.
+     */
     @Transient
     private boolean likedByCurrentUser;
 
+    /**
+     * Nombre de "likes" du post.
+     * Champ transitoire non stocké en base de données.
+     */
     @Transient
     private int likeCount;
 
-
-    public boolean isLikedByCurrentUser() {
-        return likedByCurrentUser;
-    }
-
-    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
-        this.likedByCurrentUser = likedByCurrentUser;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
+    /**
+     * Indique si le post est "disliké" par l'utilisateur actuel.
+     * Champ transitoire non stocké en base de données.
+     */
     @Transient
     private boolean dislikedByCurrentUser;
 
+    /**
+     * Nombre de "dislikes" du post.
+     * Champ transitoire non stocké en base de données.
+     */
     @Transient
     private int dislikeCount;
-
-
-    public boolean isDislikedByCurrentUser() {
-        return dislikedByCurrentUser;
-    }
-
-    public void setDislikedByCurrentUser(boolean dislikedByCurrentUser) {
-        this.dislikedByCurrentUser = dislikedByCurrentUser;
-    }
-
-    public int getDislikeCount() {
-        return dislikeCount;
-    }
-
-    public void setDislikeCount(int dislikeCount) {
-        this.dislikeCount = dislikeCount;
-    }
-
-
 
     /**
      * Utilisateur ayant créé le post.
@@ -90,6 +70,9 @@ public class Post {
     @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
+    /**
+     * Groupe auquel le post appartient.
+     */
     @ManyToOne
     @JoinColumn(name = "groupe_id")
     private Groupe groupe;
@@ -99,7 +82,6 @@ public class Post {
      *
      * @return L'identifiant du post.
      */
-
     public Long getIdPost() { return idPost; }
 
     /**
@@ -165,10 +147,20 @@ public class Post {
      */
     public void setUtilisateur(Utilisateur utilisateur) { this.utilisateur = utilisateur; }
 
+    /**
+     * Récupère le groupe auquel le post appartient.
+     *
+     * @return Le groupe du post.
+     */
     public Groupe getGroupe() {
         return groupe;
     }
 
+    /**
+     * Définit le groupe auquel le post appartient.
+     *
+     * @param groupe Le groupe à définir.
+     */
     public void setGroupe(Groupe groupe) {
         this.groupe = groupe;
     }
@@ -195,5 +187,77 @@ public class Post {
     @Override
     public int hashCode() {
         return Objects.hash(idPost);
+    }
+
+    /**
+     * Récupère si le post est aimé par l'utilisateur actuel.
+     *
+     * @return true si aimé, sinon false.
+     */
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
+    }
+
+    /**
+     * Définit si le post est aimé par l'utilisateur actuel.
+     *
+     * @param likedByCurrentUser true si aimé, sinon false.
+     */
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
+    }
+
+    /**
+     * Récupère le nombre de "likes" du post.
+     *
+     * @return Le nombre de "likes".
+     */
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    /**
+     * Définit le nombre de "likes" du post.
+     *
+     * @param likeCount Le nombre de "likes" à définir.
+     */
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    /**
+     * Récupère si le post est "disliké" par l'utilisateur actuel.
+     *
+     * @return true si "disliké", sinon false.
+     */
+    public boolean isDislikedByCurrentUser() {
+        return dislikedByCurrentUser;
+    }
+
+    /**
+     * Définit si le post est "disliké" par l'utilisateur actuel.
+     *
+     * @param dislikedByCurrentUser true si "disliké", sinon false.
+     */
+    public void setDislikedByCurrentUser(boolean dislikedByCurrentUser) {
+        this.dislikedByCurrentUser = dislikedByCurrentUser;
+    }
+
+    /**
+     * Récupère le nombre de "dislikes" du post.
+     *
+     * @return Le nombre de "dislikes".
+     */
+    public int getDislikeCount() {
+        return dislikeCount;
+    }
+
+    /**
+     * Définit le nombre de "dislikes" du post.
+     *
+     * @param dislikeCount Le nombre de "dislikes" à définir.
+     */
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
     }
 }

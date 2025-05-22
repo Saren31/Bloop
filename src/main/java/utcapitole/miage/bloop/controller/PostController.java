@@ -18,7 +18,7 @@ import java.util.Date;
 
 /**
  * Contrôleur pour gérer les opérations liées aux posts.
- * Fournit des endpoints pour créer des posts, afficher des posts et ajouter des commentaires.
+ * Fournit des endpoints pour créer, afficher, modifier, commenter et supprimer des posts.
  */
 @Controller
 @RequestMapping("/post")
@@ -138,11 +138,11 @@ public class PostController {
     }
 
     /**
-     * Supprime un post appartenant à l'utilisateur connecté.
+     * Affiche une page de confirmation pour la suppression d'un post.
      *
-     * @param postId ID du post à supprimer
-     * @param model  Le modèle pour afficher des messages
-     * @return redirection vers le profil ou une page d'erreur
+     * @param postId L'identifiant du post à supprimer.
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Le nom de la vue de confirmation.
      */
     @GetMapping("/{postId}/confirmer-suppression")
     public String confirmerSuppression(@PathVariable Long postId, Model model) {
@@ -151,7 +151,13 @@ public class PostController {
         return "confirmerSuppression";
     }
 
-
+    /**
+     * Supprime un post appartenant à l'utilisateur connecté.
+     *
+     * @param postId L'identifiant du post à supprimer.
+     * @param model Le modèle pour afficher des messages.
+     * @return Une redirection vers le profil ou une page d'erreur.
+     */
     @DeleteMapping("/{postId}/supprimer")
     public String supprimerPost(@PathVariable Long postId, Model model) {
         Utilisateur utilisateur = getUtilisateurConnecte();
@@ -162,7 +168,8 @@ public class PostController {
             post = postService.getPostParId(postId);
         } catch (IllegalArgumentException e) {
             model.addAttribute(ERROR_ATTRIBUTE, "Post introuvable.");
-            return REDIRECT_PROFIL_VOIR_PROFIL;        }
+            return REDIRECT_PROFIL_VOIR_PROFIL;
+        }
 
         Long postUserId = post.getUtilisateur().getIdUser();
         Long currentUserId = utilisateur.getIdUser();
@@ -173,8 +180,16 @@ public class PostController {
         }
 
         postService.supprimerPost(postId);
-        return REDIRECT_PROFIL_VOIR_PROFIL;    }
+        return REDIRECT_PROFIL_VOIR_PROFIL;
+    }
 
+    /**
+     * Affiche le formulaire pour modifier un post.
+     *
+     * @param postId L'identifiant du post à modifier.
+     * @param model Le modèle pour passer des données à la vue.
+     * @return Le nom de la vue pour modifier un post.
+     */
     @GetMapping("/{postId}/modifier")
     public String afficherFormulaireModification(@PathVariable Long postId, Model model) {
         Utilisateur utilisateur = getUtilisateurConnecte();
@@ -188,19 +203,25 @@ public class PostController {
         return "modifierPost";
     }
 
+    /**
+     * Traite la modification d'un post.
+     * Modifie le texte du post si l'utilisateur connecté est bien le propriétaire du post.
+     * Redirige toujours vers la page de profil, que la modification ait eu lieu ou non.
+     *
+     * @param postId L'identifiant du post à modifier.
+     * @param postModifie Les nouvelles données du post (seul le texte est pris en compte).
+     * @return Une redirection vers la page de profil après la tentative de modification.
+     */
     @PostMapping("/{postId}/modifier")
-    public String modifierPost(@PathVariable Long postId, @ModelAttribute Post postModifie, Model model) {
+    public String modifierPost(@PathVariable Long postId, @ModelAttribute Post postModifie) {
         Utilisateur utilisateur = getUtilisateurConnecte();
         Post post = postService.getPostParId(postId);
 
-        if (post == null || utilisateur == null || post.getUtilisateur().getIdUser() != utilisateur.getIdUser()) {
-            return REDIRECT_PROFIL_VOIR_PROFIL;
+        if (post != null && utilisateur != null && post.getUtilisateur().getIdUser() == utilisateur.getIdUser() ) {
+            post.setTextePost(postModifie.getTextePost());
+            postService.save(post);
         }
-
-        post.setTextePost(postModifie.getTextePost());
-        postService.save(post);
 
         return REDIRECT_PROFIL_VOIR_PROFIL;
     }
-
 }
