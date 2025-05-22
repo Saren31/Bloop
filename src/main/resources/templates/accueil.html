@@ -61,7 +61,7 @@
 <div sec:authorize="isAuthenticated()">
     <section class="container">
     <!-- Barre de recherche -->
-        <form th:action="@{/accueil}" method="get" class="input-group mb-4">
+        <form th:action="@{/accueil}" method="get" class="input-group mb-4 search-bar">
             <input
                     name="pseudo"
                     th:value="${pseudo}"

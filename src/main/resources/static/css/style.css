@@ -12,7 +12,7 @@ body {
     color: #fff;
     overflow-x: hidden;
     position: relative;
-    background: linear-gradient(#86468e, #763ea5, #4f2a6e);
+    background: linear-gradient(#7e3d87, #772dae, #371b4e);
 
 }
 
@@ -654,9 +654,13 @@ body {
         margin: 0 1rem;
     }
 }
-/* BARRE DE Recherche */
+/*barre DE Recherche */
+.search-bar {
+    margin-top: 5rem;
+}
 .input-group .form-control {
     border-radius: .5rem 0 0 .5rem;
+
 }
 .input-group .btn {
     border-radius: 0 .5rem .5rem 0;
