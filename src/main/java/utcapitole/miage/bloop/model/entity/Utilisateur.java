@@ -110,6 +110,7 @@ public class Utilisateur implements UserDetails, Serializable {
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_groupe")
     )
+
     private List<Groupe> groupes = new ArrayList<>();
 
     public List<Groupe> getGroupes() {
@@ -377,18 +378,6 @@ public class Utilisateur implements UserDetails, Serializable {
      */
     public void setTokenInscription(String tokenInscription) {
         this.tokenInscription = tokenInscription;
-    }
-
-    public String getEmailUser() {
-        return emailUser;
-    }
-
-    public String getMdpUser() {
-        return mdpUser;
-    }
-
-    public boolean isValiderInscription() {
-        return validerInscription;
     }
 
     /**

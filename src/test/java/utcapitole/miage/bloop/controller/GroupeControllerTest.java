@@ -15,7 +15,7 @@ import utcapitole.miage.bloop.service.GroupeService;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -107,7 +107,7 @@ class GroupeControllerTest {
                 .andExpect(view().name("accueil"));
 
         // Then : pas de double ajout
-        assertThat(groupe.getMembres().size()).isEqualTo(1);
+        assertThat(groupe.getMembres()).hasSize(1);
     }
 
     @Test

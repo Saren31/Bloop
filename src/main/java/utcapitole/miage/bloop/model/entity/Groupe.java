@@ -2,6 +2,8 @@ package utcapitole.miage.bloop.model.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +14,11 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "groupe")
-public class Groupe {
+public class Groupe implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
 
     /**
      * Identifiant unique du groupe.

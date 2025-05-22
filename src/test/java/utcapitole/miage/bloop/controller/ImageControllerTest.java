@@ -18,8 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,10 +43,6 @@ class ImageControllerTest {
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();
     }
-
-    //
-    // GET /avatar/{id}
-    //
 
     @Test
     void getAvatar_returnsImageBytes_whenPresent() throws Exception {
