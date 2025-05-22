@@ -1,24 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+
+<head th:replace="fragments :: headLinks">
     <title>Mes Événements</title>
 </head>
-<body>
-<h1>Mes Événements</h1>
 
-<div th:if="${evenements != null}">
-    <div th:each="e : ${evenements}">
-        <h2 th:text="${e.titre}"></h2>
-        <p><strong>Description:</strong> <span th:text="${e.description}"></span></p>
-        <p><strong>Lieu:</strong> <span th:text="${e.lieu}"></span></p>
-        <p><strong>Du:</strong> <span th:text="${#dates.format(e.dateDebut, 'dd/MM/yyyy HH:mm')}"></span></p>
-        <p><strong>Au:</strong> <span th:text="${#dates.format(e.dateFin, 'dd/MM/yyyy HH:mm')}"></span></p>
-        <hr>
-        <a th:href="@{'/evenement/' + ${e.id} + '/participants'}">Voir les participants</a>
+<body class="d-flex flex-column min-vh-100">
+
+
+<div th:replace="fragments :: navbar"></div>
+
+<div class="container mt-5 pt-5">
+
+    <h1>Mes Événements</h1>
+
+    <div th:if="${evenements != null}">
+        <div th:each="e : ${evenements}" class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title" th:text="${e.titre}"></h2>
+                <p><strong>Description:</strong> <span th:text="${e.description}"></span></p>
+                <p><strong>Lieu:</strong> <span th:text="${e.lieu}"></span></p>
+                <p>
+                    <strong>Du:</strong> <span th:text="${#dates.format(e.dateDebut, 'dd/MM/yyyy HH:mm')}"></span> &nbsp;
+                    <strong>Au:</strong> <span th:text="${#dates.format(e.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
+                </p>
+                <hr>
+                <a th:href="@{'/evenement/' + ${e.id} + '/participants'}" class="btn btn-primary">Voir les participants</a>
+            </div>
+        </div>
     </div>
+
+    <a th:href="@{/accueil}" class="btn btn-outline-primary mt-3">Retour à l'accueil</a>
+
 </div>
 
-<br>
-<a href="/accueil">Retour à l'accueil</a>
+
+<div th:replace="fragments :: footer"></div>
+
+
+<div th:replace="fragments :: scripts"></div>
+
 </body>
+
 </html>
