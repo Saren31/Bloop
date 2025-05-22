@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
@@ -24,21 +25,31 @@ public class ReactionController {
     }
 
     @PostMapping("/like/{postId}")
-    public String likePost(@PathVariable Long postId) {
+    public String likePost(@PathVariable Long postId,
+                           @RequestParam(required = false) String redirect) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
         if (utilisateur != null) {
             reactionService.toggleLike(postId, utilisateur);
+        }
+
+        if ("accueil".equals(redirect)) {
+            return "redirect:/accueil";
         }
 
         return "redirect:/profil/voirProfil";
     }
 
     @PostMapping("/dislike/{postId}")
-    public String dislikePost(@PathVariable Long postId) {
+    public String dislikePost(@PathVariable Long postId,
+                              @RequestParam(required = false) String redirect) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
         if (utilisateur != null) {
             reactionService.toggleDislike(postId, utilisateur);
         }
+        if ("accueil".equals(redirect)) {
+            return "redirect:/accueil";
+        }
+
         return "redirect:/profil/voirProfil";
     }
 

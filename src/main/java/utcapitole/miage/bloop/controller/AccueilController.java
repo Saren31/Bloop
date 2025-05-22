@@ -38,6 +38,7 @@ public class AccueilController {
         // récupère tous les événements et tous les groupes
         model.addAttribute("allEvents",  evenementService.getAllEvents());
         model.addAttribute("allGroups",  groupeService.getAllGroups());
+
         model.addAttribute("allPosts", postService.getAllPosts());
 
 

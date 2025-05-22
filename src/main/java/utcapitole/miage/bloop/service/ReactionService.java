@@ -87,7 +87,12 @@ public class ReactionService {
                 .orElse(false);
     }
 
+
+
+
     public int countDislikes(Post post) {
         return reactionRepository.countByPostAndType(post, "DISLIKE");
     }
+
+
 }
