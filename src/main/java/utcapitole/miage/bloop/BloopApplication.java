@@ -16,7 +16,6 @@ import utcapitole.miage.bloop.service.GraphSyncService;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,12 +36,13 @@ public class BloopApplication {
 	}
 
 	/**
-	 * Initialise les utilisateurs dans la base de données au démarrage de l'application.
+	 * Initialise les utilisateurs et les groupes dans la base de données au démarrage de l'application.
 	 * Ce bean est exécuté uniquement si le profil actif n'est pas "test".
 	 *
 	 * @param utilisateurRepository Le dépôt pour interagir avec les utilisateurs.
-	 * @param passwordEncoder       L'encodeur de mots de passe pour sécuriser les mots de passe.
-	 * @return Une instance de CommandLineRunner qui initialise les utilisateurs.
+	 * @param groupeRepository       Le dépôt pour interagir avec les groupes.
+	 * @param passwordEncoder        L'encodeur de mots de passe pour sécuriser les mots de passe.
+	 * @return Une instance de CommandLineRunner qui initialise les utilisateurs et les groupes.
 	 */
 	@Bean
 	@Profile("!test")
@@ -287,6 +287,13 @@ public class BloopApplication {
 		};
 	}
 
+	/**
+	 * Synchronise les données des utilisateurs avec la base Neo4j au démarrage de l'application.
+	 * Ce bean est exécuté uniquement si le profil actif n'est pas "test".
+	 *
+	 * @param graphSyncService Le service pour synchroniser les données avec Neo4j.
+	 * @return Une instance de CommandLineRunner qui effectue la synchronisation.
+	 */
 	@Bean
 	@Profile("!test")
 	public CommandLineRunner syncGraphOnStartup(GraphSyncService graphSyncService) {
