@@ -1,23 +1,24 @@
 package utcapitole.miage.bloop.controller;
 
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
+
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.service.EvenementService;
-import utcapitole.miage.bloop.service.PostService;
-import utcapitole.miage.bloop.service.ReactionService;
-import utcapitole.miage.bloop.service.UtilisateurService;
+import utcapitole.miage.bloop.service.*;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class ProfilController {
     private final PostService postService;
     private final ReactionService reactionService;
     private final EvenementService evenementService;
+    private final RelationService relationService;
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -42,11 +44,13 @@ public class ProfilController {
      * @param postService Service pour gérer les posts.
      */
     @Autowired
-    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService,EvenementService evenementService){
+    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService,EvenementService evenementService, RelationService relationService){
         this.utilisateurService = utilisateurService;
         this.postService = postService;
         this.reactionService = reactionService;
         this.evenementService = evenementService;
+        this.relationService   = relationService;
+
     }
 
     /**
@@ -55,6 +59,7 @@ public class ProfilController {
      * @param model Le modèle pour passer des données à la vue.
      * @return Le nom de la vue pour afficher le profil ou une redirection vers l'accueil si l'utilisateur n'est pas connecté.
      */
+    @Transactional(readOnly = true)
     @GetMapping("/voirProfil")
     public String afficherMonProfil(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
@@ -62,22 +67,17 @@ public class ProfilController {
         if (utilisateur == null) {
             return "accueil";
         }
-
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
-
-
         posts.forEach(post -> {
             post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
             post.setLikeCount(reactionService.countLikes(post));
         });
-
         posts.forEach(post -> {
             post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
             post.setDislikedByCurrentUser(reactionService.isDislikedBy(post, utilisateur));
             post.setLikeCount(reactionService.countLikes(post));
             post.setDislikeCount(reactionService.countDislikes(post));
         });
-
 
         model.addAttribute("utilisateur", utilisateur);
         model.addAttribute("posts", posts);
@@ -86,7 +86,6 @@ public class ProfilController {
         if (evenements == null) {
             evenements = List.of();
         }
-
         evenements = evenements.stream()
                 .filter(e -> e != null)
                 .toList();
@@ -101,8 +100,13 @@ public class ProfilController {
             interesseMap.put(e.getId(), evenementService.estInteresse(e, utilisateur));
         }
 
+
         model.addAttribute("inscritMap", inscritMap);
         model.addAttribute("interesseMap", interesseMap);
+
+        List<UtilisateurDTO> amisDto = relationService.getListeAmis(utilisateur.getIdUser());
+
+        model.addAttribute("amis", amisDto);
 
         return "voirProfil";
     }
