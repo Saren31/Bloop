@@ -1,33 +1,47 @@
 package utcapitole.miage.bloop.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import utcapitole.miage.bloop.service.*;
+import org.springframework.ui.Model;
 
 /**
  * Contrôleur pour gérer les requêtes liées à la page d'accueil.
  */
 @Controller
+@RequestMapping({"/", "/accueil"})
 public class AccueilController {
 
-    /**
-     * Gère les requêtes GET pour l'URL "/accueil".
-     * Cette méthode retourne le nom de la vue "accueil" à afficher.
-     *
-     * @return Le nom de la vue "accueil".
-     */
-    @GetMapping("/accueil")
-    public String accueil() {
-        return "accueil";
-    }
+    private final EvenementService evenementService;
+    private final GroupeService groupeService;
+    private final PostService postService;
 
-    /**
-     * Gère les requêtes GET pour la racine "/".
-     * Cette méthode redirige également vers la vue "accueil".
-     *
-     * @return Le nom de la vue "accueil".
-     */
-    @GetMapping("/")
-    public String index() {
+
+    @Autowired
+    public AccueilController(EvenementService evenementService,
+                             GroupeService groupeService,PostService postService) {
+        this.evenementService = evenementService;
+        this.groupeService = groupeService;
+        this.postService = postService;
+    }
+    @Autowired
+    private UtilisateurService utilisateurService;
+
+    @Autowired
+    private ReactionService reactionService;
+
+
+    @GetMapping
+    public String accueil(Model model) {
+        // récupère tous les événements et tous les groupes
+        model.addAttribute("allEvents",  evenementService.getAllEvents());
+        model.addAttribute("allGroups",  groupeService.getAllGroups());
+        model.addAttribute("allPosts", postService.getAllPosts());
+
+
+
         return "accueil";
     }
 

@@ -73,6 +73,9 @@ public class EvenementService {
 
         return evenement.getInteresses().contains(utilisateur);
     }
+    public List<Evenement> getAllEvents() {
+        return evenementRepository.findAll();
+    }
 
 
 

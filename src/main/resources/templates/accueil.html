@@ -3,11 +3,10 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       lang="fr">
 <head>
+    <meta charset="UTF-8">
     <title>Accueil – Bloop</title>
-    <!-- Meta, Bootstrap, FontAwesome-->
     <th:block th:replace="~{fragments :: headLinks}" />
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <!-- FontAwesome pour les icônes -->
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -15,90 +14,170 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
     />
-
 </head>
 <body class="d-flex flex-column min-vh-100">
 
 <!-- Navbar -->
 <th:block th:replace="~{fragments :: navbar}" />
 
-
-<!-- Hero  -->
-<section class="jumbotron text-center py-5 mx-3 mt-5 ">
-
+<!-- HERO pour visiteurs non connectés -->
+<section sec:authorize="isAnonymous()" class="jumbotron text-center py-5 mx-3 mt-5">
     <div class="container">
         <h1 class="display-5">Bienvenue sur Bloop</h1>
         <p class="lead text-light">
             Partagez vos pensées, discutez avec vos amis, et rejoignez des groupes qui vous passionnent.
         </p>
-
-        <!-- Anonyme : Inscription / Connexion -->
-        <div sec:authorize="isAnonymous()" class="d-flex justify-content-center gap-3">
+        <div class="d-flex justify-content-center gap-3">
             <a class="btn btn-primary btn-lg" th:href="@{/auth/register}">Inscription</a>
-            <a class="btn btn-light btn-lg" th:href="@{/login}">Connexion</a>
-        </div>
-
-        <!-- Authentifié : Mon Profil / Déconnexion -->
-        <div sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-3">
-            <a class="btn btn-primary btn-lg" th:href="@{/profil/voirProfil}">
-                <i class="fa-solid fa-user me-1"></i> Mon Profil
-            </a>
-            <form th:action="@{/auth/logout}" method="post" class="d-inline">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button class="btn btn-secondary btn-lg">
-                    <i class="fa-solid fa-right-from-bracket me-1"></i> Se déconnecter
-                </button>
-            </form>
+            <a class="btn btn-light btn-lg" th:href="@{/auth/login}">Connexion</a>
         </div>
     </div>
-
 </section>
 
-
-<section class="about-section py-5 bg-white">
+<!-- About pour visiteurs non connectés -->
+<section sec:authorize="isAnonymous()" class="about-section py-5 bg-white">
     <div class="container">
         <div class="row align-items-center">
-
-            <!-- Texte  bouton à gauche si non connecte  -->
-            <div sec:authorize="isAnonymous()" class="col-md-6 mb-4 mb-md-0">
+            <div class="col-md-6 mb-4 mb-md-0">
                 <h2 class="display-6 text-dark">Discutez en toute simplicité</h2>
                 <p class="lead text-secondary">
-                    Sur Bloop, créez votre profil, rejoignez des groupes, et échangez avec vos amis via messages privés ou discussions de groupe.
+                    Sur Bloop, créez votre profil, rejoignez des groupes, et échangez avec vos amis.
                 </p>
                 <a class="btn btn-primary btn-lg" th:href="@{/auth/register}">
                     Inscription gratuite
                 </a>
             </div>
-            <!-- Texte  bouton à gauche si connecté -->
-            <div sec:authorize="isAuthenticated()" class="col-md-6 mb-4 mb-md-0">
-                <h2 class="display-6 text-dark">Discutez en toute simplicité</h2>
-                <p class="lead text-secondary">
-                    Sur Bloop, créez votre profil, rejoignez des groupes, et échangez avec vos amis via messages privés ou discussions de groupe.
-                </p>
-                <a class="btn btn-primary btn-lg" th:href="@{/messagerie}">
-                    Messagerie
-                </a>
-            </div>
-
-
-
-            <!-- Illustration à droite -->
             <div class="col-md-6 text-center">
                 <img th:src="@{/img/7121.jpg}"
                      alt="Partage entre amis"
                      class="img-fluid"
                      style="max-height:400px; width:auto;" />
             </div>
-
         </div>
     </div>
 </section>
 
+<!-- Contenu pour utilisateurs authentifiés -->
+<div sec:authorize="isAuthenticated()">
 
+    <!-- Section Posts récents -->
+    <!-- Section Posts -->
+    <section class="container my-5">
+        <h2 class="mb-4">Tous les posts</h2>
 
+        <div th:if="${allPosts.isEmpty()}" class="alert alert-info">
+            Aucun post trouvé.
+        </div>
+
+        <div class="row g-4">
+            <div th:each="post : ${allPosts}" class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <p class="text-muted small mb-1" th:text="${#dates.format(post.datePost,'dd/MM/yyyy HH:mm')}">Date</p>
+                        <p class="card-text flex-grow-1" th:text="${post.textePost}">Contenu du post…</p>
+
+                        <div th:if="${post.imagePost != null}" class="mb-3">
+                            <img th:src="@{'/post/image/' + ${post.idPost}}"
+                                 alt="Image du post"
+                                 class="img-fluid rounded"/>
+                        </div>
+
+                        <!-- Réactions -->
+                        <div class="mt-2 d-flex align-items-center gap-3 flex-wrap">
+                            <form th:action="@{'/reaction/like/' + ${post.idPost}}" method="post">
+                                <button type="submit"
+                                        class="btn btn-sm"
+                                        th:text="${post.likedByCurrentUser} ? '💔 Annuler Like' : '❤️ Like'"></button>
+                            </form>
+                            <span th:text="${post.likeCount}">0</span>
+
+                            <form th:action="@{'/reaction/dislike/' + ${post.idPost}}" method="post">
+                                <button type="submit"
+                                        class="btn btn-sm"
+                                        th:text="${post.dislikedByCurrentUser} ? '❌ Annuler Dislike' : '👎 Dislike'"></button>
+                            </form>
+                            <span th:text="${post.dislikeCount}">0</span>
+
+                            <a th:href="@{'/post/' + ${post.idPost}}" class="btn btn-link btn-sm">💬 Commentaires</a>
+                        </div>
+
+                        <p class="mt-3">
+                            <i class="fa-solid fa-user me-1"></i>
+                            <span th:text="${post.utilisateur.pseudoUser}">Auteur</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Événements -->
+    <section class="container my-5">
+        <h2 class="mb-4 text-light">Tous les événements</h2>
+        <div th:if="${allEvents.isEmpty()}" class="alert alert-info">
+            Aucun événement trouvé.
+        </div>
+        <div class="row g-4">
+            <div th:each="evt : ${allEvents}" class="col-md-4">
+                <div class="card event-card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-dark" th:text="${evt.titre}">Titre événement</h5>
+                        <p class="card-text text-secondary text-truncate"
+                           th:text="${evt.description}">Description…</p>
+                        <ul class="list-unstyled small text-muted mb-3">
+                            <li>
+                                <i class="fa-regular fa-calendar me-1"></i>
+                                <span th:text="${#dates.format(evt.dateDebut,'dd/MM/yyyy HH:mm')}"></span>
+                                &nbsp;–&nbsp;
+                                <span th:text="${#dates.format(evt.dateFin,'dd/MM/yyyy HH:mm')}"></span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-location-dot me-1"></i>
+                                <span th:text="${evt.lieu}">Lieu</span>
+                            </li>
+                        </ul>
+                        <div class="mt-auto">
+                            <a th:href="@{'/evenement/' + ${evt.id}}"
+                               class="btn btn-primary btn-sm">Voir détail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Groupes -->
+    <section class="container my-5">
+        <h2 class="mb-4 text-light">Tous les groupes</h2>
+        <div th:if="${allGroups.isEmpty()}" class="alert alert-info">
+            Aucun groupe trouvé.
+        </div>
+        <div class="row g-4">
+            <div th:each="grp : ${allGroups}" class="col-md-3">
+                <div class="card h-100 text-center">
+                    <div th:if="${grp.logoGroupe != null}" class="mb-3">
+                        <img th:src="@{'/groupes/logo/' + ${grp.idGroupe}}"
+                             alt="Logo groupe"
+                             class="img-fluid rounded"
+                             style="max-height:80px;" />
+                    </div>
+                    <h5 class="card-title text-dark" th:text="${grp.nomGroupe}">Nom groupe</h5>
+                    <p class="card-text text-secondary text-truncate"
+                       th:text="${grp.themeGroupe}">Thème…</p>
+                    <div class="mt-auto">
+                        <a th:href="@{'/groupes/groupe?id=' + ${grp.idGroupe}}"
+                           class="btn btn-primary btn-sm">Voir groupe</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
 
 <!-- Footer & scripts -->
 <th:block th:replace="~{fragments :: footer}" />
 <th:block th:replace="~{fragments :: scripts}" />
+
 </body>
 </html>
