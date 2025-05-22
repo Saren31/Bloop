@@ -16,20 +16,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.EvenementService;
 import utcapitole.miage.bloop.service.PostService;
 import utcapitole.miage.bloop.service.ReactionService;
+import utcapitole.miage.bloop.service.RelationService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,6 +44,7 @@ class ProfilControllerTest {
     @Mock private PostService postService;
     @Mock private EvenementService evenementService;
     @Mock private ReactionService reactionService;
+    @Mock private RelationService relationService;
 
     @InjectMocks
     private ProfilController controller;
@@ -59,10 +62,6 @@ class ProfilControllerTest {
         return u;
     }
 
-    /**
-     * Filter de test : lit request.getUserPrincipal() pour l’authentification,
-     * ou crée un AnonymousAuthenticationToken si null.
-     */
     static class TestSecurityContextFilter implements Filter {
         @Override
         public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -93,23 +92,20 @@ class ProfilControllerTest {
 
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(controller)
-                .addFilters(new TestSecurityContextFilter())  // <— ajoute notre filter
+                .addFilters(new TestSecurityContextFilter())
                 .setViewResolvers(vr)
                 .build();
     }
 
     @Test
     void testAfficherMonProfil_Succes() throws Exception {
-        // Given
         Utilisateur u = new Utilisateur();
         u.setIdUser(1L);
         u.setNomUser("Test");
 
-        // on garde uniquement le stub utilisé par le contrôleur
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(u);
-        // on supprime le when(utilisateurService.getUtilisateurById(1L))...
+        when(relationService.getListeAmis(1L)).thenReturn(List.of());
 
-        // When / Then
         mockMvc.perform(get("/profil/voirProfil").principal(auth(u)))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("utilisateur"))
@@ -129,15 +125,20 @@ class ProfilControllerTest {
     void testVoirProfilAutre_Succes() throws Exception {
         Utilisateur moi = new Utilisateur();
         moi.setIdUser(1L);
+        moi.setAmis(new ArrayList<>());
+        moi.setDemandesRecues(new ArrayList<>());
+        moi.setDemandesEnvoyees(new ArrayList<>());
         Utilisateur autre = new Utilisateur();
         autre.setIdUser(2L);
 
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(moi);
         when(utilisateurService.getUtilisateurById(2L)).thenReturn(autre);
+        when(postService.getPostsByUtilisateur(2L)).thenReturn(List.of());
 
         mockMvc.perform(get("/profil/voir/2").principal(auth(moi)))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("utilisateur", autre))
-                .andExpect(view().name("VoirAutreProfil"));
+                .andExpect(view().name("voirAutreProfil"));
     }
 
     @Test
@@ -157,21 +158,19 @@ class ProfilControllerTest {
         Utilisateur moi = new Utilisateur();
         moi.setIdUser(1L);
 
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(moi);
         when(utilisateurService.getUtilisateurById(99L)).thenReturn(null);
 
         mockMvc.perform(get("/profil/voir/99").principal(auth(moi)))
-                .andExpect(status().isOk())
-                .andExpect(view().name("accueil"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/accueil"));
     }
 
     @Test
     void testSupprimerProfilConnecte_Succes() throws Exception {
-        // 1) Prépare l’utilisateur avec ID=1
         Utilisateur u = new Utilisateur();
         u.setIdUser(1L);
-        // pas besoin de stub utilisateurService.getUtilisateurConnecte()
 
-        // 2) Envoie la requête en fournissant le principal
         mockMvc.perform(delete("/profil/me")
                         .principal(auth(u))
                         .with(csrf())
@@ -179,13 +178,11 @@ class ProfilControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/auth/login?deleted"));
 
-        // 3) Vérifie l’appel au service
         verify(utilisateurService).supprimerUtilisateurEtRelations(1L);
     }
 
     @Test
     void testSupprimerProfilConnecte_Echec() throws Exception {
-        // On vide à nouveau ou pas de contexte → getAuthentication() valide mais getPrincipal() non Utilisateur
         SecurityContextHolder.clearContext();
         TestingAuthenticationToken badAuth =
                 new TestingAuthenticationToken("notAUser", null);
@@ -197,7 +194,6 @@ class ProfilControllerTest {
 
         verify(utilisateurService, never()).supprimerUtilisateurEtRelations(anyLong());
     }
-
 
     @Test
     void testAfficherFormulaireModification() throws Exception {
@@ -264,6 +260,7 @@ class ProfilControllerTest {
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(u);
         when(postService.getPostsByUtilisateur(1L)).thenReturn(List.of());
         when(utilisateurService.getEvenementsParUtilisateur(u)).thenReturn(null);
+        when(relationService.getListeAmis(1L)).thenReturn(List.of());
 
         mockMvc.perform(get("/profil/voirProfil").principal(auth(u)))
                 .andExpect(status().isOk())
@@ -278,7 +275,6 @@ class ProfilControllerTest {
         Utilisateur u = new Utilisateur();
         u.setIdUser(1L);
 
-        // Prépare un post avec réactions
         Post post = new Post();
         post.setIdPost(10L);
 
@@ -294,6 +290,7 @@ class ProfilControllerTest {
         when(utilisateurService.getEvenementsParUtilisateur(u)).thenReturn(List.of(event));
         when(evenementService.estInscrit(event, u)).thenReturn(true);
         when(evenementService.estInteresse(event, u)).thenReturn(false);
+        when(relationService.getListeAmis(1L)).thenReturn(List.of());
 
         mockMvc.perform(get("/profil/voirProfil").principal(auth(u)))
                 .andExpect(status().isOk())
@@ -313,13 +310,13 @@ class ProfilControllerTest {
         Evenement event = new Evenement();
         event.setId(21L);
 
-        // La liste contient bien un null maintenant
         when(utilisateurService.getUtilisateurConnecte()).thenReturn(u);
         when(postService.getPostsByUtilisateur(1L)).thenReturn(List.of());
         when(utilisateurService.getEvenementsParUtilisateur(u))
-                .thenReturn(Arrays.asList(event, null));  // ← remplacé List.of par Arrays.asList
+                .thenReturn(Arrays.asList(event, null));
         when(evenementService.estInscrit(event, u)).thenReturn(false);
         when(evenementService.estInteresse(event, u)).thenReturn(true);
+        when(relationService.getListeAmis(1L)).thenReturn(List.of());
 
         mockMvc.perform(get("/profil/voirProfil").principal(auth(u)))
                 .andExpect(status().isOk())
@@ -331,20 +328,15 @@ class ProfilControllerTest {
 
     @Test
     void testVoirProfilAutre_SansAuthentication() throws Exception {
-        // 1) Simule un utilisateur “authentifié”
-        //    (nécessaire pour passer le cast principal → Utilisateur)
         Utilisateur u = creerUtilisateurSimule();
         u.setIdUser(1L);
         TestingAuthenticationToken auth = auth(u);
 
-        // 2) Stub du service pour renvoyer null sur l’ID 2
+        when(utilisateurService.getUtilisateurById(1L)).thenReturn(u);
         when(utilisateurService.getUtilisateurById(2L)).thenReturn(null);
 
-        // 3) Requête avec principal de type Utilisateur
         mockMvc.perform(get("/profil/voir/2").principal(auth))
-                .andExpect(status().isOk())
-                .andExpect(view().name("accueil"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/accueil"));
     }
-
-
 }

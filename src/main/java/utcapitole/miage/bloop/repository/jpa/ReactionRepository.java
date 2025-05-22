@@ -44,5 +44,3 @@ public interface ReactionRepository extends JpaRepository<Reaction, Long> {
     int countByPostAndType(Post post, String type);
 
 }
-      Optional<Reaction> findByPostAndUtilisateur(Post post, Utilisateur utilisateur);
-      Optional<Reaction> findByPostIdPostAndUtilisateurIdUser(Long idPost, Long idUser);

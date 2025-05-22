@@ -47,8 +47,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * @return Une liste de posts associés au groupe donné.
      */
     List<Post> findByGroupe_IdGroupe(Long groupeId);
-}
+
 
     @EntityGraph(attributePaths = {"utilisateur"})
     @Query("SELECT p FROM Post p ORDER BY p.datePost DESC")
     List<Post> findAllWithUser();
+}
