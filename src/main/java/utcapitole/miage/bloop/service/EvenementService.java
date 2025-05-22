@@ -20,7 +20,7 @@ import java.util.List;
 public class EvenementService {
 
     private final EvenementRepository evenementRepository;
-    private UtilisateurRepository utilisateurRepository;
+    private final UtilisateurRepository utilisateurRepository;
 
     /**
      * Constructeur avec injection du repository d'événements.
