@@ -241,4 +241,7 @@ public class Evenement {
     public void setParticipants(List<Utilisateur> participants) {
         this.participants = participants;
     }
+
+
+
 }

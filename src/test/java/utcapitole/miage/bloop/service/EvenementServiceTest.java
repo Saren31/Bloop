@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,11 +19,13 @@ class EvenementServiceTest {
 
     private EvenementRepository evenementRepository;
     private EvenementService evenementService;
+    private UtilisateurRepository utilisateurRepository;
 
     @BeforeEach
     void setUp() {
         evenementRepository = mock(EvenementRepository.class);
-        evenementService = new EvenementService(evenementRepository);
+        utilisateurRepository = mock(UtilisateurRepository.class);
+        evenementService = new EvenementService(evenementRepository, utilisateurRepository);
     }
 
     @Test
@@ -59,9 +62,11 @@ class EvenementServiceTest {
     void testInscrireUtilisateur() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
-        e.setInscrits(new HashSet<>()); // Initialiser inscrits
+        u.setIdUser(0L);
+        e.setInscrits(new HashSet<>());
+        when(utilisateurRepository.findById(0L)).thenReturn(java.util.Optional.of(u));
         evenementService.inscrireUtilisateur(e, u);
-        assertThat(e.getInscrits()).contains(u); // Vérifier inscrits
+        assertThat(e.getInscrits()).contains(u);
         verify(evenementRepository).save(e);
     }
 
@@ -69,9 +74,11 @@ class EvenementServiceTest {
     void testInscrireUtilisateur_DejaInscrit() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
+        u.setIdUser(0L);
         Set<Utilisateur> inscrits = new HashSet<>();
         inscrits.add(u);
         e.setInscrits(inscrits);
+        when(utilisateurRepository.findById(0L)).thenReturn(java.util.Optional.of(u));
         evenementService.inscrireUtilisateur(e, u);
         verify(evenementRepository, never()).save(e);
     }
@@ -80,11 +87,12 @@ class EvenementServiceTest {
     void testRetirerUtilisateur() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
-        List<Utilisateur> participants = new ArrayList<>();
-        participants.add(u);
-        e.setParticipants(participants);
+        u.setIdUser(0L);
+        Set<Utilisateur> inscrits = new HashSet<>();
+        inscrits.add(u);
+        e.setInscrits(inscrits);
         evenementService.retirerUtilisateur(e, u);
-        assertThat(e.getParticipants()).doesNotContain(u);
+        assertThat(e.getInscrits()).doesNotContain(u);
         verify(evenementRepository).save(e);
     }
 
@@ -92,7 +100,7 @@ class EvenementServiceTest {
     void testRetirerUtilisateur_NonInscrit() {
         Evenement e = new Evenement();
         Utilisateur u = new Utilisateur();
-        e.setParticipants(new ArrayList<>());
+        e.setInscrits(new HashSet<>());
         evenementService.retirerUtilisateur(e, u);
         verify(evenementRepository, never()).save(e);
     }

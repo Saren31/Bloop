@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Événements des autres</title>
+</head>
+<body>
+<h1>Événements créés par d'autres utilisateurs</h1>
+
+<div th:if="${evenements != null}">
+    <div th:each="event : ${evenements}" style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+        <h2 th:text="${event.titre}"></h2>
+        <p><strong>Description:</strong> <span th:text="${event.description}"></span></p>
+        <p><strong>Lieu:</strong> <span th:text="${event.lieu}"></span></p>
+        <p><strong>Du:</strong> <span th:text="${#dates.format(event.dateDebut, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p><strong>Au:</strong> <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span></p>
+
+        <form th:action="@{'/evenement/inscription/' + ${event.id}}" method="post">
+            <button type="submit">✅ Je m'inscris</button>
+        </form>
+
+        <form th:action="@{'/evenement/interet/' + ${event.id}}" method="post">
+            <button type="submit">⭐ Je suis intéressé(e)</button>
+        </form>
+
+        <a th:href="@{'/evenement/' + ${event.id}}">➡ Voir les détails</a>
+    </div>
+</div>
+
+<a href="/accueil">Retour à l'accueil</a>
+</body>
+</html>

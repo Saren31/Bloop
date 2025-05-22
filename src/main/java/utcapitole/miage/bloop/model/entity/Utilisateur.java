@@ -112,10 +112,6 @@ public class Utilisateur implements UserDetails, Serializable {
     )
     private List<Groupe> groupes = new ArrayList<>();
 
-
-
-
-
     public List<Groupe> getGroupes() {
         return groupes;
     }
@@ -383,8 +379,17 @@ public class Utilisateur implements UserDetails, Serializable {
         this.tokenInscription = tokenInscription;
     }
 
+    public String getEmailUser() {
+        return emailUser;
+    }
 
+    public String getMdpUser() {
+        return mdpUser;
+    }
 
+    public boolean isValiderInscription() {
+        return validerInscription;
+    }
 
     /**
      * Récupère la liste des demandes d'amitié envoyées.

@@ -107,6 +107,7 @@ public class EvenementController {
         model.addAttribute(EVENT_ATRIBUTE, evenement);
         model.addAttribute("inscrit", utilisateur != null && evenementService.estInscrit(evenement, utilisateur));
         model.addAttribute("interesse", utilisateur != null && evenementService.estInteresse(evenement, utilisateur));
+        model.addAttribute("nombreParticipants", evenement.getInscrits() != null ? evenement.getInscrits().size() : 0);
         return "detailEvenement";
     }
 
@@ -213,4 +214,17 @@ public class EvenementController {
         model.addAttribute("participants", evenement.getInscrits());
         return "listeParticipants";
     }
+
+
+    @GetMapping("/autres")
+    public String afficherEvenementsDesAutres(Model model) {
+        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
+        if (utilisateur == null) return "login";
+
+        List<Evenement> evenements = evenementService.getEvenementsDesAutresUtilisateurs(utilisateur.getIdUser());
+        model.addAttribute("evenements", evenements);
+        return "evenementsDesAutres";
+    }
+
+
 }
