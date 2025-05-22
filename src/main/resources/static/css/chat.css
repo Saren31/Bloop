@@ -1,0 +1,57 @@
+/* chat.css */
+/* 1. Conteneur global */
+.chat-window {
+    border: 1px solid #ccc;
+    border-radius: .5rem;
+    padding: 1rem;
+    overflow-y: auto;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+
+/* 2. Bulles */
+.bubble {
+    max-width: 70%;
+    padding: .75rem 1rem;
+    border-radius: 1rem;
+    position: relative;
+    word-wrap: break-word;
+}
+/* gauche = incoming */
+.bubble.incoming {
+    background: #fff;
+    align-self: flex-start;
+    border-top-left-radius: 0;
+}
+/* droite = outgoing */
+.bubble.outgoing {
+    background: #d1e7dd;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+}
+
+/* 3. Métadonnées (nom + date) */
+.bubble .meta {
+    font-size: .75rem;
+    color: #666;
+    margin-bottom: .25rem;
+}
+
+/* 4. Poubelle de suppression */
+.bubble .delete-msg {
+    position: absolute;
+    top: .25rem;
+    right: .5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #dc3545;
+}
+
+/* 5. Scrollbar Chrome */
+.chat-window::-webkit-scrollbar { width: 6px; }
+.chat-window::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,.2);
+    border-radius: 3px;
+}

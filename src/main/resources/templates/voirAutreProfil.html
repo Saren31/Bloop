@@ -59,6 +59,12 @@
 
                 <div th:if="${estAmi}" class="alert alert-success p-2 mb-0">
                     <i class="bi bi-person-check"></i> Vous êtes amis
+
+                    <a th:href="@{/messagerie(destId=${utilisateur.idUser})}"
+                       class="btn btn-outline-success">
+                        <i class="fa-solid fa-envelope me-1"></i>
+                        Envoyer un message
+                    </a>
                 </div>
 
                 <div th:if="${!estAmi and !demandeRecue and !demandeEnvoyee}">
