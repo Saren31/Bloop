@@ -142,6 +142,9 @@ public class EvenementService {
     public boolean estInteresse(Evenement evenement, Utilisateur utilisateur) {
         return evenement.getInteresses().contains(utilisateur);
     }
+    public List<Evenement> getAllEvents() {
+        return evenementRepository.findAll();
+    }
 
     /**
      * Récupère les événements auxquels un utilisateur est inscrit, triés par date de début.

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Profil de [[${utilisateur.pseudoUser}]]</title>
+    <th:block th:replace="~{fragments :: headLinks}" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar -->
+<th:block th:replace="~{fragments :: navbar}" />
+
+<main class="container my-5 flex-fill">
+
+    <div class="card mx-auto" style="max-width:600px;">
+        <div class="card-body text-center">
+            <div th:if="${utilisateur.avatarUser != null}" class="mb-3">
+                <img th:src="@{'/utilisateurs/avatar/' + ${utilisateur.idUser}}"
+                     class="rounded-circle" style="width:120px;height:120px;object-fit:cover"/>
+            </div>
+            <h2 class="card-title mb-3" th:text="${utilisateur.pseudoUser}">Pseudo</h2>
+
+            <p><strong>Nom :</strong> <span th:text="${utilisateur.nomUser}"></span></p>
+            <p><strong>Prénom :</strong> <span th:text="${utilisateur.prenomUser}"></span></p>
+            <p><strong>Email :</strong> <span th:text="${utilisateur.emailUser}"></span></p>
+            <p><strong>Téléphone :</strong> <span th:text="${utilisateur.telUser}"></span></p>
+            <p>
+                <strong>Visibilité :</strong>
+                <span th:text="${utilisateur.visibiliteUser ? 'Publique' : 'Privée'}"></span>
+            </p>
+
+            <div class="d-flex justify-content-center gap-2 mt-4">
+                <div th:if="${demandeRecue}">
+                    <form th:action="@{/relations/accepter(
+                               idReceveur=${#authentication.principal.idUser},
+                               idEnvoyeur=${utilisateur.idUser})}"
+                          method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button class="btn btn-success btn-sm">
+                            <i class="bi bi-person-check-fill"></i> Accepter
+                        </button>
+                    </form>
+                    <form th:action="@{/relations/refuser(
+                               idReceveur=${#authentication.principal.idUser},
+                               idEnvoyeur=${utilisateur.idUser})}"
+                          method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="bi bi-person-x-fill"></i> Refuser
+                        </button>
+                    </form>
+                </div>
+
+                <div th:if="${demandeEnvoyee}" class="alert alert-warning p-2 mb-0">
+                    <i class="bi bi-clock-history"></i> Demande en attente
+                </div>
+
+                <div th:if="${estAmi}" class="alert alert-success p-2 mb-0">
+                    <i class="bi bi-person-check"></i> Vous êtes amis
+                </div>
+
+                <div th:if="${!estAmi and !demandeRecue and !demandeEnvoyee}">
+                    <form th:action="@{/relations/demande(
+                               idEnvoyeur=${#authentication.principal.idUser},
+                               idReceveur=${utilisateur.idUser})}"
+                          method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-person-plus-fill"></i> Ajouter en ami
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="mt-5">
+        <h3>Publications de <span th:text="${utilisateur.pseudoUser}"></span></h3>
+        <div th:if="${postsAutre != null and #lists.isEmpty(postsAutre)}"
+             class="alert alert-info">
+            Aucune publication.
+        </div>
+        <div class="row g-4" th:each="p : ${postsAutre}">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <p th:text="${p.textePost}"></p>
+                        <small class="text-muted"
+                               th:text="${#dates.format(p.datePost,'dd/MM/yyyy HH:mm')}"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="mt-4 text-center">
+        <a th:href="@{/accueil}" class="btn btn-link">← Retour à l'accueil</a>
+    </div>
+
+</main>
+
+<th:block th:replace="~{fragments :: footer}" />
+<th:block th:replace="~{fragments :: scripts}" />
+</body>
+</html>

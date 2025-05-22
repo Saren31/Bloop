@@ -55,6 +55,7 @@ public class SecurityConfig {
                                 "/confirm**",             // Confirmation par e-mail.
                                 "/relations/**",          // Gestion des relations.
                                 "/evenement/**",          // Gestion des événements.
+                                "/error",
                                 "/css/**", "/js/**", "/img/**" // Ressources statiques.
                         ).permitAll()                   // Autorise l'accès sans authentification.
                         .anyRequest().authenticated()   // Requiert une authentification pour toutes les autres requêtes.

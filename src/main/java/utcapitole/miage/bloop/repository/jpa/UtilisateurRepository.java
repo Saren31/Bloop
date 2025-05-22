@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface UtilisateurRepository
@@ -39,5 +40,8 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> 
      */
     @Query("SELECT u FROM Utilisateur u WHERE u.pseudoUser LIKE :pseudo%")
     List<Utilisateur> findByPseudoStartingWith(@Param("pseudo") String pseudo);
+
+
+
 
 }

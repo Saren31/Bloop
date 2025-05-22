@@ -9,6 +9,8 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 import utcapitole.miage.bloop.repository.jpa.PostRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
+import org.springframework.data.domain.Sort;
+
 
 import java.util.List;
 
@@ -164,4 +166,8 @@ public class PostService {
     public void save(Post post) {
         postRepository.save(post);
     }
+//recup tout les poste et par ordre du plus recent
+public List<Post> getAllPosts() {
+    return postRepository.findAllWithUser();
+}
 }
