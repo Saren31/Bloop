@@ -44,6 +44,8 @@ public class AccueilController {
         model.addAttribute("allEvents", evenementService.getAllEvents());
         model.addAttribute("allGroups", groupeService.getAllGroups());
 
+
+
         // ② Si on a un pseudo en requête, on recherche
         if (pseudo != null && !pseudo.isBlank()) {
             model.addAttribute("pseudo", pseudo);

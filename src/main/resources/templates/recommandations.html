@@ -9,10 +9,10 @@
 <div th:replace="fragments :: navbar"></div>
 
 <main class="container mt-5 pt-5">
-    <h1>Recommandations</h1>
+    <h2>Recommandations d'amis</h2>
 
     <section>
-        <h2>Recommandations d'amis</h2>
+
         <ul>
             <th:block th:if="${#lists.isEmpty(recommandations)}">
                 <li>Aucune recommandation pour le moment.</li>
