@@ -66,8 +66,8 @@ class GroupeControllerTest {
                         .param("descriptionGroupe", "Description de test")
                         .with(csrf())
                 )
-                .andExpect(status().isOk())
-                .andExpect(view().name("accueil"));
+                .andExpect(status().isFound()) // 302
+                .andExpect(redirectedUrl("/accueil"));
     }
 
     @Test
