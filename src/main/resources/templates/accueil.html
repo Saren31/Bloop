@@ -61,7 +61,7 @@
 <div sec:authorize="isAuthenticated()">
     <section class="container">
     <!-- Barre de recherche -->
-        <form th:action="@{/accueil}" method="get" class="input-group mb-4">
+        <form th:action="@{/accueil}" method="get" class="input-group mb-4 search-bar">
             <input
                     name="pseudo"
                     th:value="${pseudo}"
@@ -213,12 +213,12 @@
             Aucun groupe trouvé.
         </div>
         <!-- Bouton “Créer un groupe” -->
-        <li class="nav-item">
+        <div class="mb-4 d-inline-block">
             <a class="btn btn-outline-primary me-2"
                th:href="@{/groupes/creer}">
                 <i class="fa-solid fa-users"></i> Créer un groupe
             </a>
-        </li>
+        </div>
         <div class="row g-4">
             <div th:each="grp : ${allGroups}" class="col-md-3">
                 <div class="card h-100 text-center">
