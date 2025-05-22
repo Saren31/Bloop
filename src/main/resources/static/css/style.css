@@ -686,3 +686,11 @@ body {
 }
 
 
+/* ==== Override des cartes d’événements sur la page d’accueil ==== */
+section.container.my-5 .card.event-card {
+    background-color: #ffffff !important;
+    opacity: 1 !important;                  /* désactive toute transparence */
+    color: #333;
+}
+
+
