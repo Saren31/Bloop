@@ -20,6 +20,7 @@ import utcapitole.miage.bloop.service.UtilisateurService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Contrôleur pour gérer les opérations liées au profil utilisateur.
@@ -33,6 +34,9 @@ public class ProfilController {
     private final PostService postService;
     private final ReactionService reactionService;
     private final EvenementService evenementService;
+
+    public static final String REDIRECT_VOIR_PROFIL = "redirect:/profil/voirProfil";
+    public static final String ATTR_UTILISATEUR = "utilisateur";
 
     /**
      * Constructeur pour injecter les services nécessaires.
@@ -78,7 +82,7 @@ public class ProfilController {
         });
 
 
-        model.addAttribute("utilisateur", utilisateur);
+        model.addAttribute(ATTR_UTILISATEUR, utilisateur);
         model.addAttribute("posts", posts);
 
         List<Evenement> evenements = utilisateurService.getEvenementsParUtilisateur(utilisateur);
@@ -87,7 +91,7 @@ public class ProfilController {
         }
 
         evenements = evenements.stream()
-                .filter(e -> e != null)
+                .filter(Objects::nonNull)
                 .toList();
 
         model.addAttribute("evenements", evenements);
@@ -124,10 +128,10 @@ public class ProfilController {
             return "accueil"; // Redirection vers l'accueil
         }
         if (autre.getIdUser() == moi.getIdUser() ) {
-            return "redirect:/profil/voirProfil"; // Redirection vers son propre profil
+            return REDIRECT_VOIR_PROFIL; // Redirection vers son propre profil
         }
 
-        model.addAttribute("utilisateur", autre);
+        model.addAttribute(ATTR_UTILISATEUR, autre);
         return "VoirAutreProfil";
     }
 
@@ -165,7 +169,7 @@ public class ProfilController {
         if (utilisateur == null) {
             return "redirect:/auth/login";
         }
-        model.addAttribute("utilisateur", utilisateur);
+        model.addAttribute(ATTR_UTILISATEUR, utilisateur);
         return "modifierProfil";
     }
 
@@ -187,12 +191,12 @@ public class ProfilController {
         utilisateur.setTelUser(utilisateurModifie.getTelUser());
         utilisateur.setVisibiliteUser(utilisateurModifie.isVisibiliteUser());
         utilisateurService.save(utilisateur);
-        return "redirect:/profil/voirProfil";
+        return REDIRECT_VOIR_PROFIL;
     }
 
     @GetMapping("")
     public String redirectionProfilParDefaut() {
-        return "redirect:/profil/voirProfil";
+        return REDIRECT_VOIR_PROFIL;
     }
 
 }

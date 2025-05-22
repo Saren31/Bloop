@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import utcapitole.miage.bloop.dto.GroupeDTO;
+import utcapitole.miage.bloop.exception.LogoGroupeException;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.GroupeService;
@@ -69,7 +70,7 @@ public class GroupeController {
             return groupeService.enregistrerGroupe(groupe);
         } catch (IOException e) {
             // Gérer les erreurs liées au traitement du logo
-            throw new RuntimeException("Erreur lors du traitement du logo du groupe", e);
+            throw new LogoGroupeException("Erreur lors du traitement du logo du groupe", e);
         }
     }
 

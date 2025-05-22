@@ -24,6 +24,7 @@ public class EvenementController {
 
     private static final String LOGIN_VIEW = "login";
     private static final String EVENT_ATRIBUTE = "evenement";
+    private static final String EVENTS_ATRIBUTE = "evenements";
     private static final String REDIRECT_EVENT = "redirect:/evenement/";
 
     /**
@@ -84,7 +85,7 @@ public class EvenementController {
         if (utilisateur == null) return LOGIN_VIEW;
 
         List<Evenement> evenements = evenementService.getEvenementsParOrganisateur(utilisateur.getIdUser());
-        model.addAttribute("evenements", evenements);
+        model.addAttribute(EVENTS_ATRIBUTE, evenements);
         return "mesEvenements";
     }
 
@@ -190,7 +191,7 @@ public class EvenementController {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
         if (utilisateur == null) return LOGIN_VIEW;
         List<Evenement> evenements = evenementService.getEvenementsOuUtilisateurEstInscrit(utilisateur.getIdUser());
-        model.addAttribute("evenements", evenements);
+        model.addAttribute(EVENTS_ATRIBUTE, evenements);
         return "mesInscriptions";
     }
 
@@ -219,10 +220,10 @@ public class EvenementController {
     @GetMapping("/autres")
     public String afficherEvenementsDesAutres(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) return "login";
+        if (utilisateur == null) return LOGIN_VIEW;
 
         List<Evenement> evenements = evenementService.getEvenementsDesAutresUtilisateurs(utilisateur.getIdUser());
-        model.addAttribute("evenements", evenements);
+        model.addAttribute(EVENTS_ATRIBUTE, evenements);
         return "evenementsDesAutres";
     }
 

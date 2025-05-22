@@ -9,7 +9,6 @@ import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service pour gérer les relations entre utilisateurs, comme l'envoi de demandes d'amitié,
@@ -18,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class RelationService {
 
-    private UtilisateurRepository utilisateurRepository;
-    private GraphSyncService graphSyncService;
+    private final UtilisateurRepository utilisateurRepository;
+    private final GraphSyncService graphSyncService;
 
     /**
      * Constructeur pour injecter le dépôt des utilisateurs.
@@ -132,7 +131,8 @@ public class RelationService {
 
         return optUser.map(utilisateur -> utilisateur.getAmis().stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList())).orElseGet(ArrayList::new);
+                        .toList())
+                .orElseGet(ArrayList::new);
 
     }
 
