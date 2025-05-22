@@ -16,13 +16,12 @@ import java.util.List;
 public class EvenementService {
 
     private final EvenementRepository evenementRepository;
-
-    @Autowired
     private UtilisateurRepository utilisateurRepository;
 
     @Autowired
-    public EvenementService(EvenementRepository evenementRepository) {
+    public EvenementService(EvenementRepository evenementRepository, UtilisateurRepository utilisateurRepository) {
         this.evenementRepository = evenementRepository;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     public void creerEvenement(Evenement evenement) {
