@@ -102,20 +102,20 @@ public class ProfilController {
                                   Model model,
                                   Authentication authentication) {
 
-        // 1) Récupère le principal (non-géré)
+        //  Récupère le principal (non-géré)
         Object princ = authentication.getPrincipal();
         if (!(princ instanceof Utilisateur)) {
             return REDIRECT_VOIR_PROFIL;
         }
         Long moiId = ((Utilisateur) princ).getIdUser();
 
-        // 2) Recharge "moi" pour avoir une entité gérée
+        //  Recharge "moi" pour avoir une entité gérée
         Utilisateur moi = utilisateurService.getUtilisateurById(moiId);
         if (moi == null) {
             return "redirect:/auth/login";
         }
 
-        // 3) Récupère l'autre utilisateur
+        //  Récupère l'autre utilisateur
         Utilisateur autre = utilisateurService.getUtilisateurById(id);
         if (autre == null) {
             return "redirect:/accueil";
@@ -124,7 +124,7 @@ public class ProfilController {
             return REDIRECT_VOIR_PROFIL;
         }
 
-        // 4) Statut d'amitié
+        //  Statut d'amitié
         boolean estAmi         = moi.getAmis().contains(autre);
         boolean demandeRecue   = moi.getDemandesRecues().contains(autre);
         boolean demandeEnvoyee = moi.getDemandesEnvoyees().contains(autre);
