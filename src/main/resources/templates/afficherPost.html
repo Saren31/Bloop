@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <title>Confirmation</title>
+<head th:replace="~{fragments :: headLinks}">
+    <title>Détail du post</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
 </head>
-<body>
-<h2>Commentaires</h2>
-<ul>
-    <li th:each="commentaire : ${commentaires}">
-        <span th:text="${commentaire.utilisateur.pseudoUser}"></span> :
-        <span th:text="${commentaire.texte}"></span>
-    </li>
-</ul>
-<form th:action="@{'/post/' + ${post.idPost} + '/commenter'}" method="post">
-    <input type="text" name="texte" required />
-    <button type="submit">Commenter</button>
-</form>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Navbar -->
+<div th:replace="~{fragments :: navbar}"></div>
+
+<main class="container my-5 flex-fill">
+    <!-- Card du post -->
+    <div class="card mx-auto" style="max-width:700px;">
+        <div class="card-body">
+            <p class="text-muted small mb-1"
+               th:text="${#dates.format(post.datePost,'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</p>
+            <p th:text="${post.textePost}">Contenu du post…</p>
+            <div th:if="${post.imagePost != null}" class="mb-3">
+                <img th:src="@{'/post/image/' + ${post.idPost}}"
+                     class="img-fluid rounded" alt="Image du post"/>
+            </div>
+        </div>
+
+        <!-- Section commentaires -->
+        <div class="card-footer">
+            <h5 class="mb-4">Commentaires</h5>
+
+            <!-- Liste des commentaires -->
+            <div th:if="${#lists.isEmpty(commentaires)}" class="text-muted mb-3">
+                Aucun commentaire pour l’instant.
+            </div>
+            <div th:each="c : ${commentaires}"
+                 class="comment-bubble mb-3 p-3 bg-light rounded">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong th:text="${c.utilisateur.pseudoUser}">Pseudo</strong>
+                    <small class="text-muted"
+                           th:text="${#dates.format(c.dateCommentaire,'dd/MM/yyyy HH:mm')}">
+                        01/01/2025 12:01
+                    </small>
+                </div>
+                <div th:text="${c.texte}">Texte du commentaire…</div>
+            </div>
+
+            <!-- Formulaire de nouveau commentaire -->
+            <form th:action="@{'/post/' + ${post.idPost} + '/commenter'}"
+                  method="post"
+                  class="d-flex gap-2">
+                <input type="text"
+                       name="texte"
+                       class="form-control"
+                       placeholder="Ajouter un commentaire…"
+                       required/>
+                <button type="submit" class="btn btn-primary">Commenter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a th:href="@{/accueil}" class="btn btn-link">← Retour à l’accueil</a>
+    </div>
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments :: footer}"></div>
 </body>
 </html>
-
