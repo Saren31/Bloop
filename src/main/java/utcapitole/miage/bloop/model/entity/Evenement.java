@@ -3,9 +3,7 @@ package utcapitole.miage.bloop.model.entity;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -53,14 +51,6 @@ public class Evenement {
             inverseJoinColumns = @JoinColumn(name = "utilisateur_id")
     )
     private Set<Utilisateur> interesses; // Les utilisateurs intéressés par l'événement
-
-    @ManyToMany
-    @JoinTable(
-            name = "evenement_participants",
-            joinColumns = @JoinColumn(name = "evenement_id"),
-            inverseJoinColumns = @JoinColumn(name = "utilisateur_id")
-    )
-    private List<Utilisateur> participants = new ArrayList<>(); // Les utilisateurs participants à l'événement
 
     /**
      * Récupère les utilisateurs inscrits à l'événement.
@@ -222,24 +212,6 @@ public class Evenement {
      */
     public void setOrganisateur(Utilisateur organisateur) {
         this.organisateur = organisateur;
-    }
-
-    /**
-     * Récupère les utilisateurs participants à l'événement.
-     *
-     * @return Les participants de l'événement.
-     */
-    public List<Utilisateur> getParticipants() {
-        return participants;
-    }
-
-    /**
-     * Définit les utilisateurs participants à l'événement.
-     *
-     * @param participants Les participants de l'événement.
-     */
-    public void setParticipants(List<Utilisateur> participants) {
-        this.participants = participants;
     }
 
 
