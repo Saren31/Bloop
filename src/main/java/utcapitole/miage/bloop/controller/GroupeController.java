@@ -67,11 +67,15 @@ public class GroupeController {
 
             // Associer le créateur du groupe à l'utilisateur connecté
             groupe.setCreateurGroupe(utilisateurService.getUtilisateurConnecte());
-            return groupeService.enregistrerGroupe(groupe);
+            groupeService.enregistrerGroupe(groupe);
+            return "redirect:/accueil";
+
         } catch (IOException e) {
             // Gérer les erreurs liées au traitement du logo
             throw new LogoGroupeException("Erreur lors du traitement du logo du groupe", e);
         }
+
+
     }
 
     /**
