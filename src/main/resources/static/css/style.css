@@ -7,6 +7,7 @@
 body {
     margin: 0;
     padding: 0;
+    padding-top: 70px;
     font-family: 'Montserrat', sans-serif;
     color: #fff;
     overflow-x: hidden;
@@ -652,5 +653,30 @@ body {
         margin: 0 1rem;
     }
 }
+/* BARRE DE Recherche */
+.input-group .form-control {
+    border-radius: .5rem 0 0 .5rem;
+}
+.input-group .btn {
+    border-radius: 0 .5rem .5rem 0;
+}
+
+/* Cartes de résultats */
+.card {
+    border: none;
+    border-radius: .75rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+/* Boutons outline */
+.btn-outline-primary {
+    border-color: var(--violet);
+    color: var(--violet);
+}
+.btn-outline-primary:hover {
+    background: var(--violet);
+    color: #fff;
+}
+
 
 

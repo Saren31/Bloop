@@ -2,6 +2,7 @@ package utcapitole.miage.bloop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,20 +116,47 @@ public class ProfilController {
      * @param authentication L'authentification de l'utilisateur connecté.
      * @return Le nom de la vue pour afficher le profil ou une redirection si nécessaire.
      */
+    @Transactional //garde la session hibernate ouverte
     @GetMapping("/voir/{id}")
-    public String voirProfilAutre(@PathVariable Long id, Model model, Authentication authentication) {
-        Utilisateur moi = (Utilisateur) authentication.getPrincipal();
+    public String voirProfilAutre(
+            @PathVariable Long id,
+            Model model,
+            Authentication authentication) {
 
+        // 1) On récupère l'ID du principal
+        Utilisateur principalNonManaged = (Utilisateur) authentication.getPrincipal();
+        Long moiId = principalNonManaged.getIdUser();
+
+        //  On recharge "moi" depuis la base, *entité gérée*
+        Utilisateur moi = utilisateurService.getUtilisateurById(moiId);
+        if (moi == null) {
+            return "redirect:/auth/login";
+        }
+
+        //  On récupère l'autre utilisateur
         Utilisateur autre = utilisateurService.getUtilisateurById(id);
-        if (autre == null ) {
-            return "accueil"; // Redirection vers l'accueil
+        if (autre == null) {
+            return "redirect:/accueil";
         }
-        if (autre.getIdUser() == moi.getIdUser() ) {
-            return "redirect:/profil/voirProfil"; // Redirection vers son propre profil
+        if (autre.getIdUser() == (moi.getIdUser())) {
+            return "redirect:/profil/voirProfil";
         }
+
+
+        boolean estAmi         = moi.getAmis().contains(autre);
+        boolean demandeRecue   = moi.getDemandesRecues().contains(autre);
+        boolean demandeEnvoyee = moi.getDemandesEnvoyees().contains(autre);
+
+        // On récupère les posts publics de "autre"
+        List<Post> postsAutre = postService.getPostsByUtilisateur(autre.getIdUser());
 
         model.addAttribute("utilisateur", autre);
-        return "VoirAutreProfil";
+        model.addAttribute("estAmi", estAmi);
+        model.addAttribute("demandeRecue", demandeRecue);
+        model.addAttribute("demandeEnvoyee", demandeEnvoyee);
+        model.addAttribute("postsAutre", postsAutre);
+
+        return "voirAutreProfil";
     }
 
     /**
