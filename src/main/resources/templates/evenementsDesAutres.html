@@ -1,32 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+
+<head th:replace="fragments :: headLinks">
     <title>Événements des autres</title>
 </head>
-<body>
-<h1>Événements créés par d'autres utilisateurs</h1>
 
-<div th:if="${evenements != null}">
-    <div th:each="event : ${evenements}" style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-        <h2 th:text="${event.titre}"></h2>
-        <p><strong>Description:</strong> <span th:text="${event.description}"></span></p>
-        <p><strong>Lieu:</strong> <span th:text="${event.lieu}"></span></p>
-        <p><strong>Du:</strong> <span th:text="${#dates.format(event.dateDebut, 'dd/MM/yyyy HH:mm')}"></span></p>
-        <p><strong>Au:</strong> <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span></p>
+<body class="d-flex flex-column min-vh-100">
 
-        <form th:action="@{'/evenement/inscription/' + ${event.id}}" method="post">
-            <button type="submit">✅ Je m'inscris</button>
-        </form>
+<div th:replace="fragments :: navbar"></div>
 
-        <form th:action="@{'/evenement/interet/' + ${event.id}}" method="post">
-            <button type="submit">⭐ Je suis intéressé(e)</button>
-        </form>
+<div class="container mt-5 pt-5">
 
-        <a th:href="@{'/evenement/' + ${event.id}}">➡ Voir les détails</a>
+    <h1>Événements créés par d'autres utilisateurs</h1>
+
+    <div th:if="${evenements != null}">
+        <div th:each="event : ${evenements}" class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title" th:text="${event.titre}"></h2>
+                <p><strong>Description:</strong> <span th:text="${event.description}"></span></p>
+                <p><strong>Lieu:</strong> <span th:text="${event.lieu}"></span></p>
+                <p>
+                    <strong>Du:</strong> <span th:text="${#dates.format(event.dateDebut, 'dd/MM/yyyy HH:mm')}"></span> &nbsp;
+                    <strong>Au:</strong> <span th:text="${#dates.format(event.dateFin, 'dd/MM/yyyy HH:mm')}"></span>
+                </p>
+
+                <form th:action="@{'/evenement/inscription/' + ${event.id}}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-success me-2">✅ Je m'inscris</button>
+                </form>
+
+                <form th:action="@{'/evenement/interet/' + ${event.id}}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-warning">⭐ Je suis intéressé(e)</button>
+                </form>
+
+                <a th:href="@{'/evenement/' + ${event.id}}" class="btn btn-link float-end">➡ Voir les détails</a>
+            </div>
+        </div>
     </div>
+
+    <a th:href="@{/accueil}" class="btn btn-outline-primary mt-3">Retour à l'accueil</a>
+
 </div>
 
-<a href="/accueil">Retour à l'accueil</a>
+
+<div th:replace="fragments :: scripts"></div>
+
 </body>
 </html>
