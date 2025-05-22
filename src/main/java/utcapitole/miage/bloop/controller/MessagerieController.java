@@ -4,6 +4,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 
 /**
@@ -18,8 +19,10 @@ public class MessagerieController {
      * @return Le nom de la vue "messagerie" à afficher.
      */
     @GetMapping("/messagerie")
-    public String afficherMessagerie(@AuthenticationPrincipal Utilisateur utilisateurConnecte, Model model) {
+    public String afficherMessagerie(@AuthenticationPrincipal Utilisateur utilisateurConnecte, @RequestParam(name="destId", required=false) Long destId, Model model) {
         model.addAttribute("currentUserId", utilisateurConnecte.getIdUser());
+
+        model.addAttribute("destId", destId);
         return "messagerie";
     }
 }

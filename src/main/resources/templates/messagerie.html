@@ -2,14 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head th:replace="~{fragments :: headLinks}">
     <title>Messagerie – Bloop</title>
-
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap -->
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
     />
-
-    <!-- Ton CSS de chat (bulles, scrollbar…) -->
     <link rel="stylesheet" th:href="@{/css/chat.css}" />
 </head>
 <body class="d-flex flex-column vh-100">
@@ -21,15 +18,19 @@
 
     <h2 class="mb-4 text-white">Messagerie</h2>
 
-    <!-- 1) Champs cachés pour CSRF et currentUserId -->
     <input type="hidden"
            id="csrfToken"
            th:name="${_csrf.parameterName}"
            th:value="${_csrf.token}"
            th:data-header="${_csrf.headerName}" />
+
+    <!-- currentUserId fourni par le contrôleur -->
     <input type="hidden" id="currentUserId" th:value="${currentUserId}" />
 
-    <!-- 2) Sélecteur de destinataire -->
+    <!-- Si on a passé destId en GET, on le preload -->
+    <input type="hidden" id="destIdFromServer" th:value="${destId}" />
+
+    <!-- selectionner destinataire -->
     <div class="input-group mb-3">
         <input
                 type="number"
@@ -37,22 +38,16 @@
                 class="form-control"
                 placeholder="ID du destinataire"
         />
-        <button
-                class="btn btn-primary"
-                type="button"
-                onclick="chargerHistorique()"
-        >
+        <button class="btn btn-primary" onclick="chargerHistorique()">
             Charger
         </button>
     </div>
 
-    <!-- 3) Fenêtre de chat -->
-    <div id="historique" class="chat-window mb-3 flex-grow-1">
-        <!-- Les bulles seront injectées ici via JS -->
-    </div>
+    <!-- Fenêtre de chat -->
+    <div id="historique" class="chat-window mb-3"></div>
 
-    <!-- 4) Barre de saisie fixe -->
-    <form class="d-flex" onsubmit="envoyerViaWS(); return false;">
+    <!-- Barre de saisie -->
+    <form onsubmit="envoyerViaWS(); return false;" class="d-flex">
         <input
                 type="text"
                 id="contenu"
@@ -60,20 +55,15 @@
                 placeholder="Votre message…"
                 required
         />
-        <button class="btn btn-success" type="submit">Envoyer</button>
+        <button class="btn btn-success">Envoyer</button>
     </form>
-
 </main>
 
-<!-- Footer -->
+<!-- Footer & scripts -->
 <div th:replace="~{fragments :: footer}"></div>
+<div th:replace="~{fragments :: scripts}"></div>
 
-<!-- Bootstrap Bundle JS (optionnel, pour certains composants) -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-></script>
-
-<!-- SockJS & Stomp.js pour WebSocket -->
+<!-- SockJS & Stomp JS -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
@@ -82,10 +72,21 @@
     let destId = null;
     const currentUserId = Number(document.getElementById('currentUserId').value);
 
+    // Si le serveur a passé un destId, on l'inscrit et on charge direct
+    document.addEventListener('DOMContentLoaded', () => {
+        const preset = document.getElementById('destIdFromServer').value;
+        if (preset) {
+            document.getElementById('destId').value = preset;
+            chargerHistorique();
+        }
+    });
+
     function chargerHistorique() {
         destId = document.getElementById('destId').value;
         if (!destId) return alert("Saisis un ID destinataire !");
-        fetch(`/messages/history/${destId}`)
+        fetch(`/messages/history/${destId}`, {
+            headers: { [getCsrfHeader().header]: getCsrfHeader().token }
+        })
             .then(r => r.json())
             .then(msgs => {
                 const h = document.getElementById('historique');
@@ -95,15 +96,22 @@
         connecterWebSocket();
     }
 
+    function getCsrfHeader() {
+        const csrfInput = document.getElementById('csrfToken');
+        return {
+            header: csrfInput.getAttribute('data-header') || 'X-CSRF-TOKEN',
+            token: csrfInput.value
+        };
+    }
+
     function envoyerViaWS() {
         if (!destId) return alert("Charge une conversation d’abord !");
         const contenu = document.getElementById('contenu').value;
         if (stompClient && stompClient.connected) {
-            stompClient.send(
-                "/app/chat",
-                {},
-                JSON.stringify({ destinataireId: Number(destId), contenu })
-            );
+            stompClient.send("/app/chat", {}, JSON.stringify({
+                destinataireId: Number(destId),
+                contenu: contenu
+            }));
             document.getElementById('contenu').value = '';
         } else {
             alert("WebSocket non connecté !");
@@ -112,45 +120,19 @@
 
     function afficherMessage(msg) {
         const h = document.getElementById('historique');
-        const isMe = Number(msg.expediteur.idUser) === currentUserId;
-        const cls = isMe ? 'outgoing' : 'incoming';
-        const nom = msg.expediteur.nomUser || msg.expediteur.idUser;
-
-        // Création de la bulle
-        const bulle = document.createElement('div');
-        bulle.id = `msg-${msg.id}`;
-        bulle.className = `bubble ${cls}`;
-
-        // Métadonnées (nom + date)
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        meta.textContent = `${nom} • ${msg.dateEnvoi || ''}`;
-        bulle.appendChild(meta);
-
-        // Contenu du message
-        const texte = document.createElement('div');
-        texte.textContent = msg.contenu;
-        bulle.appendChild(texte);
-
-        // Icône de suppression si c'est moi
-        if (isMe) {
-            const del = document.createElement('span');
-            del.className = 'delete-msg';
-            del.textContent = '🗑️';
-            del.onclick = () => {
-                if (confirm('Supprimer ce message ?')) {
-                    stompClient.send(
-                        '/app/delete',
-                        {},
-                        JSON.stringify({ id: Number(msg.id) })
-                    );
-                }
-            };
-            bulle.appendChild(del);
+        let deleteIcon = '';
+        if (Number(msg.expediteur.idUser) === currentUserId) {
+            deleteIcon = `<span class="delete-msg" data-id="${msg.id}"
+                                   style="cursor:pointer;color:red;margin-left:8px;">🗑️</span>`;
         }
-
-        h.appendChild(bulle);
+        h.innerHTML += `<div id="msg-${msg.id}">
+                                <b>${msg.expediteur.nomUser || msg.expediteur.idUser}:</b>
+                                ${msg.contenu}
+                                <i style="color:grey;font-size:smaller">(${msg.dateEnvoi || ""})</i>
+                                ${deleteIcon}
+                            </div>`;
         h.scrollTop = h.scrollHeight;
+        ajouterListenersSuppression();
     }
 
     function connecterWebSocket() {
@@ -158,15 +140,33 @@
         const socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, () => {
-            stompClient.subscribe("/user/queue/messages", m => {
-                afficherMessage(JSON.parse(m.body));
+            stompClient.subscribe("/user/queue/messages", (message) => {
+                const msg = JSON.parse(message.body);
+                afficherMessage(msg);
             });
-            stompClient.subscribe("/user/queue/deleted", m => {
-                const data = JSON.parse(m.body);
-                const el = document.getElementById('msg-' + data.messageId);
-                if (el) el.remove();
+            stompClient.subscribe("/user/queue/deleted", (message) => {
+                const data = JSON.parse(message.body);
+                supprimerMessageDuDOM(data.messageId);
             });
         });
+    }
+
+    function ajouterListenersSuppression() {
+        document.querySelectorAll('.delete-msg').forEach(el => {
+            el.onclick = function() {
+                const msgId = this.getAttribute('data-id');
+                if (confirm("Supprimer ce message ?")) {
+                    if (stompClient && stompClient.connected) {
+                        stompClient.send("/app/delete", {}, JSON.stringify({ id: Number(msgId) }));
+                    }
+                }
+            };
+        });
+    }
+
+    function supprimerMessageDuDOM(msgId) {
+        const el = document.getElementById('msg-' + msgId);
+        if (el) el.remove();
     }
 </script>
 </body>
