@@ -6,26 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import utcapitole.miage.bloop.dto.UtilisateurDTO;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Post;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
-import utcapitole.miage.bloop.service.EvenementService;
-import utcapitole.miage.bloop.service.PostService;
-import utcapitole.miage.bloop.service.ReactionService;
-import utcapitole.miage.bloop.service.UtilisateurService;
+import utcapitole.miage.bloop.service.*;
 
+import java.util.*;
+import java.util.stream.Collectors;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-/**
- * Contrôleur pour gérer les opérations liées au profil utilisateur.
- * Fournit des endpoints pour afficher, modifier et supprimer des profils, ainsi que pour voir les profils d'autres utilisateurs.
- */
 @Controller
 @RequestMapping("/profil")
 public class ProfilController {
@@ -34,173 +26,173 @@ public class ProfilController {
     private final PostService postService;
     private final ReactionService reactionService;
     private final EvenementService evenementService;
+    private final RelationService relationService;
 
     public static final String REDIRECT_VOIR_PROFIL = "redirect:/profil/voirProfil";
-    public static final String ATTR_UTILISATEUR = "utilisateur";
+    public static final String ATTR_UTILISATEUR     = "utilisateur";
 
-    /**
-     * Constructeur pour injecter les services nécessaires.
-     *
-     * @param utilisateurService Service pour gérer les utilisateurs.
-     * @param postService Service pour gérer les posts.
-     */
     @Autowired
-    public ProfilController(UtilisateurService utilisateurService, PostService postService,ReactionService reactionService,EvenementService evenementService){
-        this.utilisateurService = utilisateurService;
-        this.postService = postService;
-        this.reactionService = reactionService;
-        this.evenementService = evenementService;
+    public ProfilController(UtilisateurService utilisateurService,
+                            PostService postService,
+                            ReactionService reactionService,
+                            EvenementService evenementService,
+                            RelationService relationService) {
+        this.utilisateurService  = utilisateurService;
+        this.postService         = postService;
+        this.reactionService     = reactionService;
+        this.evenementService    = evenementService;
+        this.relationService     = relationService;
     }
 
     /**
-     * Affiche le profil de l'utilisateur connecté.
-     *
-     * @param model Le modèle pour passer des données à la vue.
-     * @return Le nom de la vue pour afficher le profil ou une redirection vers l'accueil si l'utilisateur n'est pas connecté.
+     * Affiche le profil de l'utilisateur connecté (posts, événements, réactions, amis).
      */
+    @Transactional(readOnly = true)
     @GetMapping("/voirProfil")
     public String afficherMonProfil(Model model) {
         Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-
         if (utilisateur == null) {
             return "accueil";
         }
 
+        // --- Posts et réactions ---
         List<Post> posts = postService.getPostsByUtilisateur(utilisateur.getIdUser());
-
-
-        posts.forEach(post -> {
-            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
-            post.setLikeCount(reactionService.countLikes(post));
-        });
-
-        posts.forEach(post -> {
-            post.setLikedByCurrentUser(reactionService.isLikedBy(post, utilisateur));
-            post.setDislikedByCurrentUser(reactionService.isDislikedBy(post, utilisateur));
-            post.setLikeCount(reactionService.countLikes(post));
-            post.setDislikeCount(reactionService.countDislikes(post));
-        });
-
-
-        model.addAttribute(ATTR_UTILISATEUR, utilisateur);
-        model.addAttribute("posts", posts);
-
-        List<Evenement> evenements = utilisateurService.getEvenementsParUtilisateur(utilisateur);
-        if (evenements == null) {
-            evenements = List.of();
+        for (Post p : posts) {
+            p.setLikedByCurrentUser(
+                    reactionService.isLikedBy(p, utilisateur)
+            );
+            p.setDislikedByCurrentUser(
+                    reactionService.isDislikedBy(p, utilisateur)
+            );
+            p.setLikeCount(reactionService.countLikes(p));
+            p.setDislikeCount(reactionService.countDislikes(p));
         }
 
-        evenements = evenements.stream()
-                .filter(Objects::nonNull)
-                .toList();
+        // --- Événements ---
+        List<Evenement> evts = utilisateurService.getEvenementsParUtilisateur(utilisateur);
+        if (evts == null) evts = Collections.emptyList();
+        evts = evts.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
-        model.addAttribute("evenements", evenements);
-
-        Map<Long, Boolean> inscritMap = new HashMap<>();
+        Map<Long, Boolean> inscritMap   = new HashMap<>();
         Map<Long, Boolean> interesseMap = new HashMap<>();
-
-        for (Evenement e : evenements) {
+        for (Evenement e : evts) {
             inscritMap.put(e.getId(), evenementService.estInscrit(e, utilisateur));
             interesseMap.put(e.getId(), evenementService.estInteresse(e, utilisateur));
         }
 
-        model.addAttribute("inscritMap", inscritMap);
+        // --- Amis sous forme de DTO ---
+        List<UtilisateurDTO> amisDto = relationService.getListeAmis(utilisateur.getIdUser());
+
+        model.addAttribute(ATTR_UTILISATEUR, utilisateur);
+        model.addAttribute("posts",        posts);
+        model.addAttribute("evenements",   evts);
+        model.addAttribute("inscritMap",   inscritMap);
         model.addAttribute("interesseMap", interesseMap);
+        model.addAttribute("amis",         amisDto);
 
         return "voirProfil";
     }
 
-
     /**
-     * Affiche le profil d'un autre utilisateur en fonction de son identifiant.
-     *
-     * @param id L'identifiant de l'utilisateur à afficher.
-     * @param model Le modèle pour passer des données à la vue.
-     * @param authentication L'authentification de l'utilisateur connecté.
-     * @return Le nom de la vue pour afficher le profil ou une redirection si nécessaire.
+     * Affiche le profil d'un autre utilisateur, avec état de la relation.
      */
+    @Transactional(readOnly = true)
     @GetMapping("/voir/{id}")
-    public String voirProfilAutre(@PathVariable Long id, Model model, Authentication authentication) {
-        Utilisateur moi = (Utilisateur) authentication.getPrincipal();
+    public String voirProfilAutre(@PathVariable Long id,
+                                  Model model,
+                                  Authentication authentication) {
 
+        // 1) Récupère le principal (non-géré)
+        Object princ = authentication.getPrincipal();
+        if (!(princ instanceof Utilisateur)) {
+            return REDIRECT_VOIR_PROFIL;
+        }
+        Long moiId = ((Utilisateur) princ).getIdUser();
+
+        // 2) Recharge "moi" pour avoir une entité gérée
+        Utilisateur moi = utilisateurService.getUtilisateurById(moiId);
+        if (moi == null) {
+            return "redirect:/auth/login";
+        }
+
+        // 3) Récupère l'autre utilisateur
         Utilisateur autre = utilisateurService.getUtilisateurById(id);
-        if (autre == null ) {
-            return "accueil"; // Redirection vers l'accueil
+        if (autre == null) {
+            return "redirect:/accueil";
         }
-        if (autre.getIdUser() == moi.getIdUser() ) {
-            return REDIRECT_VOIR_PROFIL; // Redirection vers son propre profil
+        if (Objects.equals(autre.getIdUser(), moi.getIdUser())) {
+            return REDIRECT_VOIR_PROFIL;
         }
+
+        // 4) Statut d'amitié
+        boolean estAmi         = moi.getAmis().contains(autre);
+        boolean demandeRecue   = moi.getDemandesRecues().contains(autre);
+        boolean demandeEnvoyee = moi.getDemandesEnvoyees().contains(autre);
+
+        List<Post> postsAutre = postService.getPostsByUtilisateur(autre.getIdUser());
 
         model.addAttribute(ATTR_UTILISATEUR, autre);
-        return "VoirAutreProfil";
+        model.addAttribute("estAmi",         estAmi);
+        model.addAttribute("demandeRecue",   demandeRecue);
+        model.addAttribute("demandeEnvoyee", demandeEnvoyee);
+        model.addAttribute("postsAutre",     postsAutre);
+
+        return "voirAutreProfil";
     }
 
     /**
-     * Supprime le profil de l'utilisateur connecté.
-     *
-     * @param request La requête HTTP pour gérer la session.
-     * @return Une redirection vers la page de connexion avec un message approprié.
+     * Supprime le profil de l'utilisateur connecté et invalide la session.
      */
     @DeleteMapping("/me")
     public String supprimerProfilConnecte(HttpServletRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof Utilisateur utilisateur) {
-            utilisateurService.supprimerUtilisateurEtRelations(utilisateur.getIdUser());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object princ = auth.getPrincipal();
+        if (princ instanceof Utilisateur u) {
+            utilisateurService.supprimerUtilisateurEtRelations(u.getIdUser());
             SecurityContextHolder.clearContext();
             HttpSession session = request.getSession(false);
-            if (session != null) {
-                session.invalidate();
-            }
+            if (session != null) session.invalidate();
             return "redirect:/auth/login?deleted";
         }
         return "redirect:/auth/login?error";
     }
 
     /**
-     * Affiche le formulaire pour modifier le profil de l'utilisateur connecté.
-     *
-     * @param model Le modèle pour passer des données à la vue.
-     * @return Le nom de la vue pour modifier le profil ou une redirection vers la page de connexion.
+     * Formulaire de modification du profil.
      */
     @GetMapping("/modifier")
     public String afficherFormulaireModification(Model model) {
-        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) {
+        Utilisateur u = utilisateurService.getUtilisateurConnecte();
+        if (u == null) {
             return "redirect:/auth/login";
         }
-        model.addAttribute(ATTR_UTILISATEUR, utilisateur);
+        model.addAttribute("utilisateur", u);
         return "modifierProfil";
     }
 
     /**
-     * Traite la modification du profil de l'utilisateur connecté.
-     *
-     * @param utilisateurModifie Les données modifiées du profil.
-     * @return Une redirection vers la page du profil après modification ou vers la page de connexion si non authentifié.
+     * Traite la modification du profil.
      */
     @PostMapping("/modifier")
-    public String modifierProfil(@ModelAttribute("utilisateur") Utilisateur utilisateurModifie) {
-        Utilisateur utilisateur = utilisateurService.getUtilisateurConnecte();
-        if (utilisateur == null) {
+    public String modifierProfil(@ModelAttribute("utilisateur") Utilisateur modif) {
+        Utilisateur u = utilisateurService.getUtilisateurConnecte();
+        if (u == null) {
             return "redirect:/auth/login";
         }
-        utilisateur.setNomUser(utilisateurModifie.getNomUser());
-        utilisateur.setPrenomUser(utilisateurModifie.getPrenomUser());
-        utilisateur.setPseudoUser(utilisateurModifie.getPseudoUser());
-        utilisateur.setTelUser(utilisateurModifie.getTelUser());
-        utilisateur.setVisibiliteUser(utilisateurModifie.isVisibiliteUser());
-        utilisateurService.save(utilisateur);
+        u.setNomUser(modif.getNomUser());
+        u.setPrenomUser(modif.getPrenomUser());
+        u.setPseudoUser(modif.getPseudoUser());
+        u.setTelUser(modif.getTelUser());
+        u.setVisibiliteUser(modif.isVisibiliteUser());
+        utilisateurService.save(u);
         return REDIRECT_VOIR_PROFIL;
     }
 
+    /**
+     * Redirection par défaut vers /voirProfil.
+     */
     @GetMapping("")
     public String redirectionProfilParDefaut() {
         return REDIRECT_VOIR_PROFIL;
     }
-
 }
-
-
-
-

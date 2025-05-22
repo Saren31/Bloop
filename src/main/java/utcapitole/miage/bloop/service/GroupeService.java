@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Groupe;
 import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 
+import java.util.List;
+
 /**
  * Service pour gérer les opérations liées aux groupes.
  */
@@ -42,5 +44,9 @@ public class GroupeService {
      */
     public Groupe trouverGroupeParId(Long id) {
         return groupeRepository.findById(id).orElse(null);
+    }
+
+    public List<Groupe> getAllGroups() {
+        return groupeRepository.findAll();
     }
 }
