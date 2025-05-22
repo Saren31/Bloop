@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import utcapitole.miage.bloop.model.entity.Evenement;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.EvenementRepository;
+import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,10 +16,12 @@ import java.util.List;
 public class EvenementService {
 
     private final EvenementRepository evenementRepository;
+    private UtilisateurRepository utilisateurRepository;
 
     @Autowired
-    public EvenementService(EvenementRepository evenementRepository) {
+    public EvenementService(EvenementRepository evenementRepository, UtilisateurRepository utilisateurRepository) {
         this.evenementRepository = evenementRepository;
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     public void creerEvenement(Evenement evenement) {
@@ -38,16 +41,20 @@ public class EvenementService {
         if (evenement.getInscrits() == null) {
             evenement.setInscrits(new HashSet<>());
         }
-        if (!evenement.getInscrits().contains(utilisateur)) {
-            evenement.getInscrits().add(utilisateur);
+
+        Utilisateur userFromDb = utilisateurRepository.findById(utilisateur.getIdUser())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé : " + utilisateur.getIdUser()));
+
+        if (!evenement.getInscrits().contains(userFromDb)) {
+            evenement.getInscrits().add(userFromDb);
             evenementRepository.save(evenement);
         }
     }
 
 
     public void retirerUtilisateur(Evenement evenement, Utilisateur utilisateur) {
-        if (evenement.getParticipants().contains(utilisateur)) {
-            evenement.getParticipants().remove(utilisateur);
+        if (evenement.getInscrits().contains(utilisateur)) {
+            evenement.getInscrits().remove(utilisateur);
             evenementRepository.save(evenement);
         }
     }
@@ -85,6 +92,10 @@ public class EvenementService {
         return evenements;
     }
 
-
+    public List<Evenement> getEvenementsDesAutresUtilisateurs(Long idUser) {
+        Utilisateur organisateur = new Utilisateur();
+        organisateur.setIdUser(idUser);
+        return evenementRepository.findByOrganisateurIsNot(organisateur.getIdUser());
+    }
 
 }
