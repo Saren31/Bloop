@@ -212,6 +212,13 @@
         <div th:if="${allGroups.isEmpty()}" class="alert alert-info">
             Aucun groupe trouvé.
         </div>
+        <!-- Bouton “Créer un groupe” -->
+        <li class="nav-item">
+            <a class="btn btn-outline-primary me-2"
+               th:href="@{/groupes/creer}">
+                <i class="fa-solid fa-users"></i> Créer un groupe
+            </a>
+        </li>
         <div class="row g-4">
             <div th:each="grp : ${allGroups}" class="col-md-3">
                 <div class="card h-100 text-center">

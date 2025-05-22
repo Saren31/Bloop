@@ -1,40 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="fr">
-<head>
-    <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+
+<head th:replace="fragments :: headLinks">
     <title>Créer un Groupe</title>
 </head>
-<body>
-<h1>Créer un Nouveau Groupe</h1>
 
-<form th:action="@{/groupes/valider}" method="post" enctype="multipart/form-data">
-    <!-- CSRF token nécessaire pour POST -->
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<body class="d-flex flex-column min-vh-100">
 
-    <div>
-        <label for="nomGroupe">Nom du Groupe :</label>
-        <input type="text" id="nomGroupe" name="nomGroupe" required>
-    </div>
+<div th:replace="fragments :: navbar"></div>
 
-    <div>
-        <label for="themeGroupe">Thème du Groupe :</label>
-        <input type="text" id="themeGroupe" name="themeGroupe" required>
-    </div>
+<div class="container mt-5 pt-5">
 
-    <div>
-        <label for="descriptionGroupe">Description :</label>
-        <textarea id="descriptionGroupe" name="descriptionGroupe" rows="4" required></textarea>
-    </div>
+    <h1>Créer un Nouveau Groupe</h1>
 
-    <div>
-        <label for="logoGroupe">Logo du Groupe :</label>
-        <input type="file" id="logoGroupe" name="logoGroupe" accept="image/*">
-    </div>
+    <form th:action="@{/groupes/valider}" method="post" enctype="multipart/form-data" class="mt-4">
 
-    <div>
-        <button type="submit">Créer le Groupe</button>
-    </div>
-</form>
+        <!-- CSRF token -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="mb-3">
+            <label for="nomGroupe" class="form-label">Nom du Groupe :</label>
+            <input type="text" id="nomGroupe" name="nomGroupe" required class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label for="themeGroupe" class="form-label">Thème du Groupe :</label>
+            <input type="text" id="themeGroupe" name="themeGroupe" required class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label for="descriptionGroupe" class="form-label">Description :</label>
+            <textarea id="descriptionGroupe" name="descriptionGroupe" rows="4" required class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="logoGroupe" class="form-label">Logo du Groupe :</label>
+            <input type="file" id="logoGroupe" name="logoGroupe" accept="image/*" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer le Groupe</button>
+
+    </form>
+
+</div>
+
+<div th:replace="fragments :: footer"></div>
+
+<div th:replace="fragments :: scripts"></div>
 
 </body>
 </html>
