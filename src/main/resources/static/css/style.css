@@ -366,12 +366,13 @@ body {
     padding-top: 4rem;
 }
 
-.post-card {
+.create-post-page .post-card {
     width: 100%;
     max-width: 480px;
     margin: 0 1rem;
     margin-top: 50px;
 }
+
 
 .glass-card {
     background: rgba(255, 255, 255, 0.15);
@@ -677,6 +678,5 @@ body {
     background: var(--violet);
     color: #fff;
 }
-
 
 
