@@ -102,13 +102,15 @@ public class GroupeController {
     /**
      * Affiche la page d'un groupe.
      *
+     * @param id L'identifiant du groupe à afficher (optionnel).
      * @param model Le modèle contenant les données à afficher dans la vue.
      * @return Le nom de la vue pour afficher la page du groupe.
      */
     @GetMapping("/groupe")
-    public String afficherPageGroupe(Model model) {
+    public String afficherPageGroupe(@RequestParam(name="id", required=false) Long id, Model model) {
         Utilisateur utilisateurConnecte = utilisateurService.getUtilisateurConnecte();
         model.addAttribute("utilisateur", utilisateurConnecte);
+        model.addAttribute("groupeId", id);
         return "groupe";
     }
 

@@ -26,6 +26,8 @@
            th:value="${_csrf.token}"
            th:data-header="${_csrf.headerName}" />
 
+    <input type="hidden" id="groupeIdFromServer" th:value="${groupeId}" />
+
     <form onsubmit="envoyerPost(); return false;"
           class="d-flex flex-column gap-2">
       <textarea id="textePost"
@@ -105,6 +107,14 @@
       `;
         c.scrollTop = c.scrollHeight;
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const groupeIdElement = document.getElementById('groupeIdFromServer');
+        if (groupeIdElement && groupeIdElement.value) {
+            document.getElementById('groupeId').value = groupeIdElement.value;
+            chargerPosts();
+        }
+    });
 </script>
 
 </body>
