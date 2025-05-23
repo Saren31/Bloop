@@ -44,6 +44,7 @@ public class AuthService {
      */
     public String enregistrerUtilisateur(Utilisateur user, HttpServletRequest request, Model model) {
         if (!emailValide(user.getUsername())) {
+            System.out.println(user.getUsername());
             return erreur(model, user, "L'adresse e-mail doit se terminer par @ut-capitole.fr");
         }
 
@@ -52,7 +53,7 @@ public class AuthService {
         }
 
         user.setValiderInscription(false);
-        user.setMdpUser(passwordEncoder.encode(user.getPassword()));
+        user.setMdpUser(passwordEncoder.encode(user.getMdpUser()));
         user.setTokenInscription(UUID.randomUUID().toString());
 
         utilisateurRepository.save(user);

@@ -48,28 +48,28 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
-                                "/",                       // Page racine.
-                                "/auth/login",            // Page de connexion personnalisée.
-                                "/auth/register",         // Formulaire d'inscription.
-                                "/auth/register_user",    // Soumission du formulaire d'inscription.
-                                "/confirm**",             // Confirmation par e-mail.
-                                "/relations/**",          // Gestion des relations.
-                                "/evenement/**",          // Gestion des événements.
+                                "/",
+                                "/auth/login",
+                                "/auth/register",
+                                "/auth/register_user",
+                                "/confirm**",
+                                "/relations/**",
+                                "/evenement/**",
                                 "/error",
-                                "/css/**", "/js/**", "/img/**" // Ressources statiques.
-                        ).permitAll()                   // Autorise l'accès sans authentification.
-                        .anyRequest().authenticated()   // Requiert une authentification pour toutes les autres requêtes.
+                                "/css/**", "/js/**", "/img/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login")       // Page personnalisée de connexion.
-                        .defaultSuccessUrl("/accueil", true) // Redirection après connexion réussie.
-                        .failureHandler(authenticationFailureHandler) // Gestionnaire d'échec de connexion.
-                        .permitAll()                    // Autorise l'accès à la page de connexion.
+                        .loginPage("/auth/login")
+                        .defaultSuccessUrl("/accueil", true)
+                        .failureHandler(authenticationFailureHandler)
+                        .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/auth/logout")           // URL de déconnexion.
-                        .logoutSuccessUrl("/auth/login?logout") // Redirection après déconnexion.
-                        .permitAll()                    // Autorise l'accès à la déconnexion.
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/auth/login?logout")
+                        .permitAll()
                 );
 
         http.userDetailsService(userDetailsService);     // Utilise le service personnalisé pour la gestion des utilisateurs.
