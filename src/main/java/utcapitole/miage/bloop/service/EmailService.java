@@ -34,7 +34,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to); // Définit le destinataire
         message.setSubject("Confirmation d'inscription à Bloop"); // Définit le sujet de l'e-mail
-        message.setText("Bonjour ! Cliquez ici pour confirmer votre compte : " + confirmationLink); // Définit le contenu de l'e-mail
+        message.setText("Bonjour ! \nCliquez ici pour confirmer votre compte : " + confirmationLink); // Définit le contenu de l'e-mail
         mailSender.send(message); // Envoie l'e-mail
 
     }

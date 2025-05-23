@@ -22,9 +22,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws") // Définit le point de terminaison STOMP.
-                .setAllowedOriginPatterns("*") // Autorise toutes les origines (CORS).
-                .withSockJS(); // Active SockJS pour la compatibilité.
+        registry.addEndpoint("/ws") // Définit le point de terminaison STOMP
+                .setAllowedOriginPatterns("*") // Autorise toutes les origines (CORS)
+                .withSockJS(); // Active SockJS pour la compatibilité
     }
 
     /**
@@ -37,8 +37,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/queue", "/topic"); // Active un broker simple pour les files d'attente.
-        config.setApplicationDestinationPrefixes("/app"); // Préfixe pour les messages destinés à l'application.
-        config.setUserDestinationPrefix("/user"); // Préfixe pour les messages destinés à un utilisateur spécifique.
+        config.enableSimpleBroker("/queue", "/topic"); // Active un broker simple pour les files d'attente
+        config.setApplicationDestinationPrefixes("/app"); // Préfixe pour les messages destinés à l'application
+        config.setUserDestinationPrefix("/user"); // Préfixe pour les messages destinés à un utilisateur spécifique
     }
 }
