@@ -9,7 +9,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import utcapitole.miage.bloop.service.EvenementService;
 import utcapitole.miage.bloop.service.GroupeService;
 import utcapitole.miage.bloop.service.PostService;
-import utcapitole.miage.bloop.service.ReactionService;
 import utcapitole.miage.bloop.service.UtilisateurService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,7 +22,6 @@ class AccueilControllerTest {
     private GroupeService groupeService;
     private PostService postService;
     private UtilisateurService utilisateurService;
-    private ReactionService reactionService;
 
     @BeforeEach
     void setUp() {
@@ -31,14 +29,12 @@ class AccueilControllerTest {
         groupeService = Mockito.mock(GroupeService.class);
         postService = Mockito.mock(PostService.class);
         utilisateurService = Mockito.mock(UtilisateurService.class);
-        reactionService = Mockito.mock(ReactionService.class);
 
         AccueilController controller = new AccueilController(
                 evenementService,
                 groupeService,
                 postService,
-                utilisateurService,
-                reactionService
+                utilisateurService
         );
 
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();

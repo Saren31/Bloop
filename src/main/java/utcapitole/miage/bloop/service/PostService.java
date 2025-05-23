@@ -9,7 +9,6 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.repository.jpa.GroupeRepository;
 import utcapitole.miage.bloop.repository.jpa.PostRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
-import org.springframework.data.domain.Sort;
 
 
 import java.util.List;

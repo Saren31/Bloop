@@ -14,7 +14,6 @@ import utcapitole.miage.bloop.repository.jpa.PostRepository;
 import utcapitole.miage.bloop.repository.jpa.UtilisateurRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**

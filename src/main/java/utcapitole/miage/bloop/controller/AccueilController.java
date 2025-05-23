@@ -19,19 +19,16 @@ public class AccueilController {
     private final GroupeService groupeService;
     private final PostService postService;
     private final UtilisateurService utilisateurService;
-    private final ReactionService reactionService;
 
     @Autowired
     public AccueilController(EvenementService evenementService,
                              GroupeService groupeService,
                              PostService postService,
-                             UtilisateurService utilisateurService,
-                             ReactionService reactionService) {
+                             UtilisateurService utilisateurService) {
         this.evenementService = evenementService;
         this.groupeService = groupeService;
         this.postService = postService;
         this.utilisateurService = utilisateurService;
-        this.reactionService = reactionService;
     }
 
     @GetMapping

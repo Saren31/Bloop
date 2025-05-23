@@ -16,7 +16,6 @@ import utcapitole.miage.bloop.model.entity.Utilisateur;
 import utcapitole.miage.bloop.service.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/profil")
@@ -30,6 +29,8 @@ public class ProfilController {
 
     public static final String REDIRECT_VOIR_PROFIL = "redirect:/profil/voirProfil";
     public static final String ATTR_UTILISATEUR     = "utilisateur";
+    public static final String REDIRECT_LOGIN       = "redirect:/auth/login";
+
 
     @Autowired
     public ProfilController(UtilisateurService utilisateurService,
@@ -71,7 +72,7 @@ public class ProfilController {
         // --- Événements ---
         List<Evenement> evts = utilisateurService.getEvenementsParUtilisateur(utilisateur);
         if (evts == null) evts = Collections.emptyList();
-        evts = evts.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        evts = evts.stream().filter(Objects::nonNull).toList();
 
         Map<Long, Boolean> inscritMap   = new HashMap<>();
         Map<Long, Boolean> interesseMap = new HashMap<>();
@@ -107,12 +108,12 @@ public class ProfilController {
         if (!(princ instanceof Utilisateur)) {
             return REDIRECT_VOIR_PROFIL;
         }
-        Long moiId = ((Utilisateur) princ).getIdUser();
+        long moiId = ((Utilisateur) princ).getIdUser();
 
         //  Recharge "moi" pour avoir une entité gérée
         Utilisateur moi = utilisateurService.getUtilisateurById(moiId);
         if (moi == null) {
-            return "redirect:/auth/login";
+            return REDIRECT_LOGIN;
         }
 
         //  Récupère l'autre utilisateur
@@ -164,9 +165,9 @@ public class ProfilController {
     public String afficherFormulaireModification(Model model) {
         Utilisateur u = utilisateurService.getUtilisateurConnecte();
         if (u == null) {
-            return "redirect:/auth/login";
+            return REDIRECT_LOGIN;
         }
-        model.addAttribute("utilisateur", u);
+        model.addAttribute(ATTR_UTILISATEUR, u);
         return "modifierProfil";
     }
 
@@ -177,7 +178,7 @@ public class ProfilController {
     public String modifierProfil(@ModelAttribute("utilisateur") Utilisateur modif) {
         Utilisateur u = utilisateurService.getUtilisateurConnecte();
         if (u == null) {
-            return "redirect:/auth/login";
+            return REDIRECT_LOGIN;
         }
         u.setNomUser(modif.getNomUser());
         u.setPrenomUser(modif.getPrenomUser());

@@ -440,16 +440,4 @@ public class Utilisateur implements UserDetails, Serializable {
                 ", visibiliteUser=" + visibiliteUser +
                 '}';
     }
-
-
-
-    public String getEmailUser() {
-        return emailUser;
-    }
-    public String getMdpUser() {
-        return mdpUser;
-    }
-
-
-
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import utcapitole.miage.bloop.model.entity.Utilisateur;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface UtilisateurRepository
